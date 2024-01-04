@@ -1,0 +1,743 @@
+\chapter{Regression}
+\section{Model Based Regression}
+In this section we will study model-based regression, which means the models of the data and the error are given and we are only interested in finding the \textit{regression function}, also called \textit{optimal estimator}.
+
+Suppose we have $Y \in \mathbb{R}$ (that is our parameter of interest) and data $X \in \mathbb{R}^d$, both random variables.
+
+\begin{definition}
+    The optimal regression function is the mean of the posterior distribution of the target variable given the data, i.e. the \textbf{MMSE}:
+    \[
+        r(X) = \E{}{Y\mid X}
+    \]
+\end{definition}
+
+\begin{exercise}
+    Compute the regression function for the multiple linear regression model:
+    \[
+        Y = \beta_0 + \sum_{i=1}^{d} \beta_i X_i + \mathcal{E}
+    \]
+    where $Y$ is the response variable, $\beta_0$ is the intercept term, $\beta_i$ are the coefficients of the regressors $X_i$ and $\mathcal{E}$ is the error term.
+
+    The common assumption we do in multiple linear regression is that $\mathcal{E}$ is a zero mean random variable with variance $\sigma^2$.
+
+    Let us rewrite the model in matrix form:
+    \[
+        Y   = \beta^T X + \mathcal{E}
+    \]
+    where $\beta = (\beta_0, \beta_1, \dots, \beta_d)^T$ is the \textit{parameters} vector and $X = (1, X_1, \dots, X_d)^T$ is the \textit{predictors} vector.\footnote{We can write this both as $\beta^T X$ or $X^T \beta$ because the final product is a scalar thus the order of the product doesn't matter, but we will use the first notation.}
+
+    Now we can compute the regression function:
+    \[
+        r(X) = \E{}{Y \mid X} = \E{}{\beta^T X + \mathcal{E} \mid X}
+    \]
+    By applying the linearity properties of the expectation:
+    \[
+        r(X) = \beta^T \E{}{X \mid X}  + \E{}{\mathcal{E} \mid X}
+    \]
+    The first expectation $\E{}{X \mid X}$ is $X$ because we are conditioning on $X$ and $X$ is a constant given $X$, while the second expectation $\E{}{\mathcal{E} \mid X}$ is zero because in this setting we need to assume that $\mathcal{E}$ is conditionally zero mean given $X$.
+
+    In conclusion, we found that the optimal regression function for the multiple linear regression model is:
+    \[
+        r(X) = \beta^T X
+    \]
+
+\end{exercise}
+
+\begin{note}{Question}
+    Why is the error term conditionally zero mean given $X$?
+\end{note}
+\begin{exercise}
+    Find the relationship between $\beta$ and $X$ and $Y$. In particular, we want to find an expression for $\beta$ that depends on some moments of $X,Y$ and $XY$.
+
+    Assume we are working with the multiple linear regression model:
+    \[
+        Y = X^T \beta + \mathcal{E}
+    \]
+    where $Y \in \mathbb{R}$, $X \in \mathbb{R}^{(d+1) \times 1}$, $\beta \in \mathbb{R}^{(d+1) \times 1}$ and $\mathcal{E} \in \mathbb{R}$.
+
+    First we multiply on the left both members by $X$:
+    \[
+        \underset{(d+1) \times 1}{XY} = \underset{(d+1)\times 1}{X X^T\beta} + \underset{(d+1)\times 1}{X\mathcal{E}}
+    \]
+    Then we take expectation:
+    \[
+        \E{}{XY} = \E{}{X X^T} \beta + \E{}{X \varepsilon} \label{eq:1}
+    \]
+    And we compute each term separately.
+
+    For the first term, we can observe that the parameter vector is a constant with respect to $X$ so we can take it out of the expectation. To compute the expectation of the matrix $X^T X$, let's consider a generic entry:
+    \[
+        [X X^T]_{ij} = X_i X_j \to \E{}{[X X^T]_{ij}} = \E{}{X_i X_j}
+    \]
+    Since the expected value between $X_i X_j$ is a correlation, $XX^T$ is a quantity that describes the correlation between the data.
+    \begin{definition}
+        The matrix $R_X \triangleq \E{}{X X^T}$ is the \textbf{(auto)-correlation matrix}.
+    \end{definition}
+    The same reasoning can be applied to $\E{}{XY}$, where we get a corretlation between the data and the response variabile.
+    \begin{definition}
+        The matrix $R_{XY} \triangleq \E{}{X Y}$ is the \textbf{(cross)-correlation matrix}.
+    \end{definition}
+
+    As for the second term, since $X$ and $\mathcal{E}$ are not independent, we apply the tower property:
+    \[
+        \E{}{X \mathcal{E}} = \E{X}{\E{}{X \mathcal{E} | X}} = \E{X}{X \E{}{\mathcal{E} | X}} = 0
+    \]
+    since in the inner expectation $X$ is a constant, it can be taken out of the expectation and since we assumed that the error term is zero mean given $X$, we find out that the whole expectation is zero.
+
+    We can rewrite the equation \ref*{eq:1} as:
+    \[
+        R_{XY} =  R_X \beta
+    \]
+    And then solve for $\beta$:\footnote{By assuming that $R_x$ is invertible.}
+    \[
+        \beta = R_X^{-1} R_{XY}
+    \]
+    In conclusion we found out that in a model-based linear regression problem $\beta$ cannot be arbitrary, because it is uniquely determined by the correlation matrices of $X$ and $XY$.
+\end{exercise}
+
+\subsection{Connection between model-based and supervised}
+\textbf{\textit{What is changing with respect to the other part of the course?}}
+
+In the other part of the course we've worked in a \textbf{supervised} setting, meaning that we had a training set. We still had a model because we \textit{assumed} that the relationship between $Y$ and $X$ was linear, but we wanted to learn the parameters $\beta$ of the model from the data, making it a \textit{parametric regression} problem.
+
+Recall that the prediction phase it's our most important goal and it is the goal we would have if we knew the model. Since we don't have the model, in the \textit{parametric} setting, we need to assume a model and learn the parameters $\beta$. In that case, learning $\beta$ is instrumental to \textit{predict} $Y$.
+
+In our case, we are in a model-based setting, which means we do not have a training set. As we showed in the previous exercise, in our case, the parameters $\beta$ are not to be learned from the data, but they are uniquely determined by the correlation matrices of $X$ and $XY$.
+
+% Sentire registrazione
+% If we need information about $\beta$ we are solving inference\dots
+% This (regression) is the simplest example of \textbf{MMSE} estimator.
+% In practice we assume there is linear relationship and we don't have information about data, e.g. correlation matrix.
+
+%\paragraph*{Clarification}
+%When we have an estimation problem, we have our data and our goal is estimate %$Y$ from $X$. If we have one model we have one "theory", e.g. bayesian theory. In estimation, the MMSE is the optimal way to solve the problem.
+%
+%We have one model but this model is not perfectly known. We try to learn the %model, because our purpose is \textit{still} to estimate $Y$.
+%
+%In one case we have a \textbf{perfectly known model}, then we can use MMSE %theory, and we can compute the MMSE since we know the model and the distributions. In the other case we have a \textbf{model} but you don't know it perfectly. Then we have to \textbf{learn} the model. Then we need to learn %$\beta$. Note that the goal is still to estimate $Y$.
+
+Now the question is \textbf{\textit{how can we learn the model}}?
+
+In a supervised approach we use a \textbf{training set} $\tilde{X}$ (not a \textit{dataset}).
+\[
+    \tilde X=
+    \begin{bmatrix}
+        \tilde X_{11}     & \dots  & \tilde X_{1n}     \\
+        \vdots            & \ddots & \vdots            \\
+        \tilde X_{(d+1)1} & \dots  & \tilde X_{(d+1)n}
+    \end{bmatrix}\\
+\]
+That we can write compactly as:
+\[
+    \tilde{X} = \left[
+        \tilde{X}_1, \tilde{X}_2, \dots, \tilde{X}_n
+        \right]
+\]
+Where each $\tilde{X}$ is a vector with dimensions $(d+1) \times 1$.
+
+And the corrisponding values of the response variable, $\tilde{Y}$:
+\[
+    \tilde{Y} =   \left[
+        \tilde{Y}_1, \tilde{Y}_2, \dots, \tilde{Y}_n
+        \right]
+\]
+\begin{exercise}
+    Propose an estimator $\hat{\beta}$ based on the training set $(\tilde{X}, \tilde{Y})$, knowing that $\beta = R_x^{-1} R_{xy}$ and $Y = \beta^T X$.
+
+    We can find the estimator by replacing the correlation matrices with their empirical counterparts:
+    \[
+        \hat{\beta} = \left(\hat{R_X}\right)^{-1} \hat{R}_{xy}
+    \]
+    where the correlation matrices are defined as:
+    \[
+        [\hat{R}_{X}]_{ij} = \frac{1}{n} \sum_{m=1}^{n} \tilde{X}_{im} \tilde{X}_{jm}
+        \qquad
+        [\hat{R}_{XY}]_i = \frac{1}{n} \sum_{m=1}^{n} \tilde{X}_{im} \tilde{Y}_{m}
+    \]
+    % note that component $i$ is the row while component $j$ is the column.
+    We can rewrite the estimators by using the matrix notation:
+    \[
+        [\hat{R}_{X}]_{ij} = \frac{1}{n} \left[\tilde{X}\tilde{X}^T\right]_{ij}
+        \qquad
+        [\hat{R}_{XY}]_i = \frac{1}{n} \left[\tilde{X} \tilde{Y}^T\right]_i
+    \]
+    By replacing the correlation matrices in the estimator and simplyfing $n$ we get:
+    \[
+        \hat{\beta} = \left(\hat{R}_X\right)^{-1} \hat{R}_{XY} = \left(\tilde{X} \tilde{X}^T\right)^{-1}  \tilde{X} \tilde{Y}^T
+    \]
+
+    The \textbf{empirical estimator} of $\beta$ we found is the same as the one we obtained in the supervised approach. In that case, we minimized the RSS, which, if divided by $n$, is the empirical risk.
+    \[
+        RSS = \frac{1}{n} \sum_{m=1}^{n} \left(\tilde{Y}_m - \beta^T \tilde{X}_m \right)^2 \xrightarrow{n \to +\infty} \E{}{(Y - \beta^T X)^2}
+    \]
+\end{exercise}
+\begin{note}{Warning}
+    Sentire la registrazione da qui in poi.
+\end{note}
+
+The two things are connected only in this case.
+
+We took the optimal risk (that is the expectation) and we replaced it with the empirical risk. I am trying to do Bayes empirically. The difference is that we need a model. In MMSE we have a \textbf{general solution} that works for every model, in the \textbf{supervised approach} we need to impose or assume a model.
+
+Optimal Bayes is a benchmark performance. There is some optimal thing to do, we cannot do it. I impose one model and replace the \textit{optimal risk} with the \textit{empirical risk}.
+
+\subsection{Benchmark performance}
+
+Both in the model-based and supervised case, the final goal of the supervised regression is to make a prediction.
+
+In model-based regression we want to find the expression of $Y$ which allows us to compute $Y$ knowing the distribution of $X$ and the parameters. In supervised regression, we want to make a prediction by exploiting the information contained inside the training set pairs, which must reveal the link between $X$ and $Y$.
+
+Assume we have a training set $T_n = \{(X_i, Y_i)\}_{i=1}^n$ and we want to make a prediction for a new observation $(X_0, Y_0)$. Making a prediction means that we want to predict $Y_0$, that is not observed, given the observation $X_0$. It is important to remark that we are working under the assumption that $X_0$ and $Y_0$ share the same distribution of $X_i$ and $Y_i$.
+
+In the model-based approach, the optimal estimator is the regression function $r(X_0)$, which is given by the MMSE. In the supervised approach, the estimator is the regression function $\hat{r}(X_0)$, which is given by the minimization of the empirical risk. This function will be a \textbf{suboptimal} estimator, meaning that it will not reach the performance of the MMSE.
+
+\begin{theorem}\label{thm:1}
+    The error of the suboptimal regression function $\hat{r}(X_0)$ is given by:
+    \[
+        \E{}{(\hat{r}(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(\hat{r}(X_0) - r(X_0)\right)}
+    \]
+    where $\text{MMSE} = \E{}{(r(X_0) - Y_0)^2}$ is the error of the optimal estimator.
+\end{theorem}
+
+To prove this result, we first need to introduce the \textbf{orthogonality principle}.
+\begin{theorem}
+    The \textbf{orthogonality principle} states that the error of the optimal estimator is orthogonal to any (integrable) function of the data $g(X_0)$:
+    \[
+        \E{}{g(X_0) \left( r(X_0) - Y_0\right)} = 0
+    \]
+\end{theorem}
+
+\begin{proof}
+    To prove the theorem \ref*{thm:1}, we need to compare the error of the suboptimal estimator with the error of the optimal estimator. The error of $\hat{r}(X_0)$ is given by:
+    \[
+        \E{}{(\hat{r}(X_0) - Y_0)^2}
+    \]
+    In order to compare it with the optimal estimator, we need to add and subtract $r(X_0)$ from the error term:
+    \[
+        \E{}{(\hat{r}(X_0) - Y_0)^2} =  \E{}{([\hat{r}(X_0) - r(X_0)] + [r(X_0) - Y_0])^2}
+    \]
+    By expanding the square we get:
+    \[
+        \E{}{([\hat{r}(X_0) - r(X_0)]^2 + [r(X_0) - Y_0]^2 - 2 [\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0])^2}
+    \]
+    And applying the linearity property:
+    \[
+        \E{}{[\hat{r}(X_0) - r(X_0)]^2 }+ \E{}{[r(X_0) - Y_0]^2} - 2 \E{}{[\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0]}
+    \]
+    The first term quantifies how much our regression function is deviated from the optimal regression function, the second term is the MMSE, the third term need further discussion.
+
+    Since in the expectation there are two random variables $X_0$ and $Y_0$ and they are dependent, we cannot split the expectation. In order to get $X_0$ fixed, we would need to have a conditional expectation.
+
+    We apply the \textit{tower property}:
+
+    \begin{align*}
+        \E{}{[\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0]} = \E{X_0} {\E{Y_0}{\underbrace{[\hat{r}(X_0) - r(X_0)]}_{g(X_0)}[r(X_0-Y_0)]  \mid X_0}} = \\
+        = \E{X_0}{ \E{Y_0}{g(X_0) \left(r(X_0) - \underbrace{\E{}{Y_0 \mid X_0}}_{r(X_0)}\right)}} = 0                                         \\
+    \end{align*}
+
+    The last equality is true because of the \textbf{orthogonality principle}.
+
+    So we can rewrite the error of the $\hat{r}(X_0)$ as:
+    \[
+        \boxed{
+            \E{}{(\hat{r}(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(\hat{r}(X_0) - r(X_0)\right)}}
+    \]
+\end{proof}
+
+In conclusion, we can say that the error of the suboptimal estimator is the sum of the error of the optimal estimator and a \textbf{penalty term}, which is the squared difference between the arbitrary function and the optimal estimator. If our arbitrary function is the optimal estimator, the penalty term is zero, but if it differs, the penalty term increases.
+
+This result has been very useful to discover \textit{non-parametric approaches}. Before this result the non-parametric approaches tried to approximate the optimal regression function, but now we can try to find an arbitrary function that minimizes the penalty term. The only problem is that we don't know the optimal regression function, so we cannot compute easily the penalty term. As for the MMSE, it can be approximated by simulation.
+
+\section{Supervised Parametric Regression}
+\subsection{Simple Linear Regression}
+Let's consider a simple linear regression model:
+\[
+    Y = \beta_0 + \beta_1 X + \varepsilon
+\]
+where $\E{}{\varepsilon} = 0$. Assume we want to estimate the parameters $\beta_0$ and $\beta_1$ and find the estimated model:
+\[
+    \hat{Y} = \hat{\beta_0} + \hat{\beta_1} X
+\]
+
+Suppose we have a training set $\mathcal{D}_{tr} = \{(x_i, y_i)\}_{i=1}^n$. We can write:
+\[
+    \hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i \qquad i = 1,\dots, n
+\]
+
+\paragraph*{Ordinary Least Squares}
+The Ordinary Least Squares method let us estimate the parameters $\hat{\beta}_0$, $\hat{\beta}_1$ by minimizing the residual sum of squares, which is defined as following:
+\[
+    \text{RSS}(\beta_0, \beta_1) = \sum_{i=1}^{n} e_i^2 = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \sum_{i=1}^{n} (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
+\]
+
+Under the assumption that the error term $\underline{\varepsilon} = (\varepsilon_1, \dots, \varepsilon_n)^T$:
+\begin{itemize}
+    \item $\E{}{\varepsilon_i} = 0, \forall i$
+    \item $\var{\underline{\varepsilon}} = \sigma^2 I_n$ (homoscedasticity)
+\end{itemize}
+
+The \textbf{least square estimates} of the parameters are:
+\[
+    \underline{\beta}^T = \left(\hat{\beta}_0, \hat{\beta}_1\right) = \arg\min_{(\beta_0, \beta_1)} \sum_{i=1}^{n} (y_i - \beta_0 - \beta_1 x_i)^2
+\]
+
+If the error terms are independent and identically distributed as normals $\varepsilon_i \sim N(0, \sigma^2)$, then the \textit{least squares estimates} are equal to the ones we obtain by \textit{maximum likelihood estimation}.
+
+\paragraph*{Maximum Likelihood Estimation for linear regression}
+
+
+
+
+Now we want to find the maximum likelihood estimates for the parameters $\hat{\beta}_0$ and $\hat{\beta}_1$. In order to solve the maximization problem, we need to compute the gradient with respect to the parameters $\underline{\beta}$ and set it to zero:
+\[
+    \nabla_{\underline{\beta}} RSS(\beta_0, \beta_1) = 0
+\]
+
+\[
+    \begin{cases}
+        \frac{\partial RSS}{\partial \beta_0} = -2 \sum_{i=1}^{n} (y_i - \beta_0 - \beta_1 x_i) = 0 \\
+        \frac{\partial RSS}{\partial \beta_1} =   -2 \sum_{i=1}^{n} x_i (y_i - \beta_0 - \beta_1 x_i) = 0
+    \end{cases}
+\]
+\[
+    \begin{cases}
+        n\beta_0 + \beta_1 \sum_{i=1}^n x_i = \sum_{i=1}^{n} y_i \\
+        \beta_0 \sum_{i=1}^n x_i + \beta_1 \sum_{i=1}^n x_i^2 = \sum_{i=1}^{n} x_i y_i
+    \end{cases}
+\]
+Let's define the following quantities:
+\[
+    \overline{x} = \frac{1}{n} \sum_{i=1}^n x_i
+    \qquad
+    \overline{y} = \frac{1}{n} \sum_{i=1}^n y_i
+\]
+From the first equation we can find $\beta_0$:
+\[
+    \beta_0 = \overline{y} - \beta_1 \overline{x}
+\]
+Substituting this value into the second equation we can find $\beta_1$:
+\[
+    \overline{y} \sum_{i=1}^n x_i - \beta_1 \overline{x} \sum_{i=1}^n x_i + \beta_1 \sum_{i=1}^n x_i^2 = \sum_{i=1}^{n} x_i y_i \leftrightarrow \beta_1 = \frac{\sum_{i=1}^{n} x_i y_i - \overline{y} \sum_{i=1}^n x_i}{\sum_{i=1}^n x_i^2 - \overline{x} \sum_{i=1}^n x_i}
+\]
+
+The least squares estimates are the following:
+\[
+    \begin{cases}
+        \hat{\beta}_0 = \overline{y} - \hat{\beta}_1 \overline{x} \\
+        \hat{\beta}_1 = \frac{\sum_{i=1}^{n} (x_i - \overline{x})(y_i - \overline{y})}{\sum_{i=1}^n (x_i - \overline{x})^2}
+    \end{cases}
+\]
+
+The \textbf{Gauss-Markov} theorem states that the least squares estimates are the \textbf{best linear unbiased estimates} (BLUE) of the parameters $\beta_0$ and $\beta_1$.
+
+This means that the least squares estimates are unbiased and have the \textit{same} smallest variance:
+\[
+    \sigma^2 = \text{RSE}^2 = \frac{\text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{n-2}
+\]
+
+By assuming that the errors $\varepsilon_i$ are normally distributed, we can compute the confidence intervals for the parameters $\beta_0$ and $\beta_1$:
+Let's call $B_0$ and $B_1$ the random variables that represent the estimates of $\beta_0$ and $\beta_1$ respectively. Since we know the distribution of the errors $\varepsilon_i$, we can compute the distribution of $B_0$ and $B_1$:
+\[
+    B_0 \sim N(\beta_0, SE^2(B_0))
+\]
+\[
+    B_1 \sim N(\beta_1, SE^2(B_1))
+\]
+
+The following quantity:
+\[
+    \frac{B_1 - \beta_1}{SE(B_1)} \sim t_{n-1}
+\]
+is called \textbf{t-statistic} and it is used to compute the confidence interval for $\beta_1$. It is distributed a (Student) $t$-distribution with $n-2$ degrees of freedom.
+
+%─────────────────────── THIS SLIDE ──────────────────
+\subsection{Assesing the accuracy of the model}
+In order to understand if the inffered model is good enough, we should use an error metric. If we're working with a continuous target variable, we can use the \textit{RSE} or \textbf{residual standard error}. The residual standard error measures how much of the variability is not explained by our model.
+
+However, the residual standard error has the limitation that it depends on scale by the order of $Y$. If $Y$ is a large number, then the \textit{RSE} will also be a large number.
+
+This means that it is not always clear what constitutes a good RSE. An alternative measure of fit is the $\mathbf{R^2}$ \textbf{statistic}.
+
+This statistic represents the proportion of variance explained and it is independent of the scale of $Y$. The definition of \textit{R-squared} is the following:
+\[
+    R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}
+\]
+Where \textbf{TSS} is the \textit{total sum of squares} and it is defined as following:
+\[
+    TSS = \sum_{i=1}^{n} (y_i - \overline{y})^2
+\]
+This quantity measures the total variance in the response $Y$ and represents the amount of variability inherent in the response before the regression is performed. In contrast, RSS measures the amount of variability that is left unexplained after performing the regression.
+
+The difference between this two quantities measures the amount of variability in the response that is explained or removed by performing the regression and $R^2$ measures the proportion of variability in $Y$ that can be explained using $X$.
+When the $R^2$ statistic is close to $1$ it means that a large proportion of the variability in the response has been explained by the regression.
+When the $R^2$ statistic is close to $0$ it means that the regression did not explain much of the variability in the response and this might occur because the linear model is wrong or the inherent error is high or both.
+
+In the simple regression setting:
+\[
+    R^2 = r^2
+\]
+Where $r$ is the Pearson's correlation index between $X$ and $Y$:
+\[
+    r = \frac{\sum_{i=1}^{n} (x_i - \overline{x})(y_i - \overline{y})}{\sqrt{\sum_{i=1}^{n} (x_i - \overline{x})^2} \sqrt{\sum_{i=1}^{n} (y_i - \overline{y})^2}}
+\]
+The correlation index is a measure of the linear relationship between $X$ and $Y$. The $R^2$ statistic extends the concept of correlation between multiple predictors and the response.
+
+\subsection{Multiple Linear Regression}
+Suppose we have an input vector $X^T = (X_1, \dots, X_p)$ and we want to predict an output $Y$. The linear regression model has the form:
+\[
+    Y = f(X) + \varepsilon = \beta_0 + \sum_{j=1}^{p} \beta_j X_j + \varepsilon
+\]
+
+We can interpret the model as the following: $\beta_j$ is the average increase in $Y$ when $X_j$ increases by one unit holding all others constants.
+
+Note that despite being called \textbf{linear regression}, $X_j$ can come from different sources, such as:
+\begin{itemize}
+    \item transformations of the input function, e.g. $\log$
+    \item polynomial fit, e.g. $X_2 = X_1^2$
+    \item dummy coding of the levels of qualitative inputs
+    \item interaction between variables $X_3 = X_1 \cdot X_2$
+\end{itemize}
+
+
+\subsubsection*{Least squares estimates}
+Suppose we have an input vector $X^T = (X_1, \dots, X_p)$ and we want to predict an output $Y$. We need a regresison model, for example:
+\[
+    Y = f(X) + \varepsilon
+\]
+Under the linear assumption, we have:
+\[
+    Y = \beta_0 + \sum_{j=1}^{p} \beta_j X_j + \varepsilon
+\]
+Where $\underline{X} = (X_1, \dots, X_P)^T$ is the input vector and $\underline{\beta}$ is the parameter vector that we want to estimate.
+Given the training data $\mathcal{D}_{tr} = \{ (x_i, y_i) \}_{i=1}^n$
+we pick $\underline{\beta} = \left(\beta_0, \beta_1, \dots, \beta_p\right)^T$ to minimize the residual sum of squares.
+\[
+    \text{RSS}(\beta) = \sum_{i=1}^{n} (y_i - f(x_i))^2 = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2
+\]
+Since we can write our linear regression model in matrix form:
+\[
+    \vec{Y} = \begin{bmatrix}
+        y_1 \\ \dots \\ y_n
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 x_{11} x_{12} \dots x_{1p} \\
+        1 \dots                      \\
+        \vdots                       \\
+        1 x_{n1} x_{n2} \dots x_{np} \\
+    \end{bmatrix}
+\]
+\textcolor{red}{da finire}
+\[
+    \vec{Y} \underline{\underline{X}} \vec{\beta} + \vec{\varepsilon}
+\]
+So the estimated response on the traning set will be:
+\[
+    \hat{Y} = \underline{\underline{X}} \underline{\hat{\beta}}
+\]
+Now we can rewrite the formula of the \textit{RSS} in matrix form:
+\[
+    \text{RSS}(\underline{\beta})  = \sum_{i=1}^{n} \left(y_i - (\underline{\underline{X}} \underline{\beta})_i\right)^2 = (\underline{Y} - \underline{\underline{X}} \underline{\beta})^T(\underline{Y} - \underline{\underline{X}} \underline{\beta})
+\]
+Now we need to compute the gradient of the residual sum of squares with respect to the parameters. Let's recall first the following rules:
+\begin{enumerate}
+    \item $\nabla_x a^t x = \nabla_x x^T a =  a$
+    \item $\nabla_x x^T A x = A^t x + A x$
+\end{enumerate}
+The gradient of the RSS will be:
+\begin{align*}
+    \nabla_\beta \text{RSS} (\beta) & = \nabla_\beta \left((Y- X\beta)^T (Y-X\beta) \right) =                                 \\
+                                    & = \nabla_\beta \left(Y^T Y - Y^T X\beta - \beta^T X^T Y + \beta^T X^T X \beta \right) = \\
+                                    & = \nabla_\beta\left(Y^T Y - 2 \beta^T X^T Y + \beta^T X^T X \beta\right) =              \\
+                                    & = -2 X^T Y + (X^T X)^T \beta + (X^T X)^T \beta =                                        \\
+                                    & = X^T Y + (X^T X)^T \beta = 0 \iff \hat{\beta} = (X^T X)^{-1} X^T Y
+\end{align*}
+
+The \textit{least squares estimation} of the parameters are
+\[
+    \hat{\beta} = (X^T X)^{-1} X^T Y
+\]
+
+Note that in this computation we also found that:
+\[
+    X^T Y + (X^T X)^T \beta = X^T(Y-X\hat{\beta}) = 0 \Rightarrow e \perp X
+\]
+
+To confirm that this solution is actually a point of minimum, we need to check the \textbf{hessian matrix}, defined as following:
+\[
+    H_{RSS}^(\beta) = \frac{\partial^2 RSS(\beta)}{\partial \beta \partial \beta^T} = 2 X^T X
+\]
+Since this matrix is positively defined, then the estimator is always a point of minimum.
+
+Now we can substitute the parameters into $\hat{Y}$
+\[
+    \underline{\hat{Y}} = \underline{\underline{X}} \underline{\hat{\beta}} =   \underbrace{\underline{\underline{X}} (X^T X)^{-1} X^T}_{H} Y = HY
+\]
+We've found that $\hat{Y}$ depends directly on the original response and the constant of proportionality is a matrix $H$ called \textit{hat matrix}.
+
+
+
+\paragraph*{A geometrical view of least squares}
+Let's consider least squares regression with two predictors. The outcome vector $y$ is orthogonally projected onto the hyperplane spanned by the input vectors $x_1$ and $x_2$. The projecttion $\hat{y}$ represents the vector of the least squares predictions.
+
+\paragraph*{Variance of least squares estimator}
+Assuming input vector $x_i$ are non-random, and errors $\varepsilon_i$ are iid with $\E{}{\varepsilon_i} = 0$ and $\text{var}{\varepsilon_i} = \sigma^2$, then the \textbf{variance-covariance matrix} of $\vec{\hat{\beta}}$ is the following:
+\[
+    \text{var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2
+\]
+Also, as shown in the \textit{Gauss-Markow Theorem} $\vec{\hat{\beta}}$ is the best linear unbiased estimator of $\vec{\beta}$.
+If we don't have $\sigma^2$, we can compute and unbiased estimate of the variance parameter with the following:
+\[
+    \hat{\sigma}^2 = \frac{1}{n-p-1} RSS = \frac{1}{n-p-1} \sum_{i=1}^{n} (y_i -\hat{y}_i)^2
+\]
+
+\subsection*{Analysis of the regression model}
+While discussing the following tests, we will assume that \textbf{the linear model is the correct population model and $\varepsilon_i \sim^{iid} N(0,\sigma^2)$}. Under these assumptions:
+\[
+    \hat{\beta} \sim N_{p+1}\left(\beta, (X^T X)^{-1} \sigma^2\right)
+\]
+
+\[
+    (n-p-1) \hat{\sigma}^2 \sim \sigma^2 \chi^2_{n-p-1}
+\]
+and $\hat{\beta}$ and $\hat{\sigma}^2$ are statistically independent.
+
+In order to answer the question \textit{is a particular $X_j$ predictor important?} We could use the following hypotesis test:
+\[
+    H_0: \beta_j = 0 \qquad H_a:\beta_j \neq 0
+\]
+To run this test, we calculate the $t$-statistic:
+\[
+    t_j = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)} = \frac{\hat{\beta}_j}{\hat{\sigma} \sqrt{v_j}}
+\]
+where $v_j$ is the $j$-th diagonal element of $(X^T X)^{-1}$
+
+
+Again, according to the Gauss-Markov theorem, the estimator $\underline{\hat{\beta}}$ is unbiased and has the smallest variance among all the linear unbiased estimators. The variance-covariance matrix of $\underline{\hat{\beta}}$ is the following:
+\[
+    \var{\hat{\beta}} = (X^T X)^{-1} \sigma^2
+\]
+
+\paragraph*{Variable Selection}
+The F-statistic is one of the techniques adopted to select the predictors that are associated with the response. The task of determining the predictors is called \textit{variable selection}.
+
+\textit{Variable selection} is used to improve the \textbf{prediction accuracy}, because the least squares estimates have low bias but large variance. The variance is reduced by fitting a model that only contains the predictors that are actually associated with the response.
+
+\textit{Interpretation} is another reason to perform variable selection. We want to identify a smaller subset of predictors with the strongest relationship with the response.
+
+Other than the F-statistic, there are other \textit{statistics} to perform variable selection, such as Mallow's $C_p$, Akaike information criterion (AIC), Bayesian information criterion (BIC), adjusted $R^2$.
+
+There are also \textit{algorithms} to perform variable selection, such as \textit{best subsets selection}, \textit{forward selection}, \textit{backward selection}, \textit{stepwise selection}. This involves fitting all the possible subset of the predictors and then choose between them based on some criterion. This is the most computationally expensive method.
+
+\paragraph*{Forward selection} which starts with the \textit{null model} (only intercept term). At each step fit $p$ simple linear regressions and add to the model the variable that results in the lowest RSS, then add to that model the variable that results in the lowest RSS for the new two-variable model, and so on, until some stopping rule is satisfied.
+
+\paragraph*{Backward selection} which starts with all the variables in the model, then removes the variable with the largest p-value, that is the variable that is the least statistically significant. The new $(p-1)$-variable model is fit, and the variable with the largest p-value is removed. This procedure continues until a stopping rule is reached. This technique cannot be used if the number of predictors is greater than the number of samples, while forward selection can always be used.
+
+\paragraph*{Mixed selection} which starts with no variable in the model and add the variable that provides the best fit. However, if at any point the $p$-value for one of the variables in the model rises about a certain threshold, we remove it from the model. We continue to perform both the forward and backward steps until all variables in the model have a sufficiently low $p$-value and all variables outside the model would have a large p-value if added to the model.
+
+An important thing to note is that while an $R^2$ value close to $1$ indicates that the model explains a large portion of the variance in the response variable, it does not indicate that the model will predict future observations with great accuracy. In fact, $R^2$ will always increase when more variables are added to the model, even if only weakly associated with the response. This is because the $R^2$ statistics is computed on the training data and indicates a better fit on those data.
+
+When fitting a model, it can be useful to plot the data if it is possible.
+
+\subsection*{Confidence and prediction intervals}
+After fitting the multiple regression model, it is possible to predict $Y$ on the basis of a set of values for the predictors $X_1, X_2, \dots, X_p$. However, there is some uncertainty associated with this prediction which concernes coefficient estimates, the model bias and the irreducible error.
+
+The inaccuracy in the coefficient estimates is related to the reducible error.
+\[
+    E(y_0 - \hat{f}(x_0))^2 = \text{bias}(\hat{f}(x_0))^2 + \var(\hat{f}(x_0)) + \var{\epsilon}
+\]
+
+
+
+\subsection*{Qualitative predictors}
+
+\subsection*{Interactions}
+
+\subsection*{Non-linear effects of predictors}
+
+\subsection*{Diagnostics}
+
+\newpage
+\section{Supervised Non Parametric Regression}
+In this lecture we will consider a \textbf{supervised} and \textbf{non-parametric} or \textbf{distribution-free} setting, meaning that we don't know what are the models that define the data.
+
+The training set is defined as a set of $n$ pairs made by the features $X_i$ and the labels $Y_i$:
+\[
+    T_n \triangleq    \{(X_i, Y_i)\}_{i=1}^{n}
+\]
+where $X_i \in \mathbb{R}$ and $Y_i \in \mathbb{R}$. The pairs $(X_i, Y_i)$ are \textit{i.i.d.} samples.
+
+
+\paragraph*{Supervised problem}
+Since we are focusing on \textit{supervised} non-parametric approaches, the function $\hat{r}(X_0)$ will depend on the training set, and we will call it \textbf{estimated regression function}:
+\[
+    r_n(X_0) \triangleq r(X_0; T_n)
+\]
+
+Since $r_n(X_0)$ is a \textbf{family} of functions, for different realizations of the training set, we get a different function.
+% PLOT
+When deriving the error term, we were considering $\hat{r}(X_0)$ only as a deterministic function of $X_0$. Now if we take into account the training set, since it is a set of pairs of random variables, the expectation is not well defined.
+
+In order to solve this problem, we would need to condition the expectation on the training set, by computing the error for a fixed realization of $T_n$:
+\[
+    \E{}{(r_n(X_0) - Y_0)^2 \mid T_n} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right) \mid T_n}
+\]
+Since the MMSE does not depend on the training set, we can ignore the conditioning.
+
+Under the assumption that $(X_0, Y_0)$ is independent on the training set $T_n$, when applying the \textit{tower property}, we obtain:
+\[
+    \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)}
+\]
+
+The first expression is a \textbf{random error term}, because the expression depends on the random variable $T_n$, while the second expression is a \textbf{deterministic error term}, because we compute the expectation with respect to all the possible realizations of the training set.
+
+% rivedi questa parte
+In practical terms, if I had to implement these two expressions in MATLAB, for the first expression I would need compute it on a single training set, while for the second expression I would need to average over all the possible realizations of the training sets.
+
+Consistency means that the estimation error $\E{}{(r_n(X_0) - Y_0)^2}$ will converge to the MMSE as $n$ goes to infinity, meaning that the penalty term will go to zero. We can distinguish between two types of consistency:
+\begin{itemize}
+    \item \textbf{weak consistency}
+    \item \textbf{strong consistency}
+\end{itemize}
+
+\paragraph*{Asymptotic methods}
+From the Law of Large Numbers, we know that we can estimate the expected value of a distribution by using the arithmetic mean and we also know that the arithmetic mean is only an approximation of the true mean, which converges to the true mean only with $n \to \infty$.
+
+Even if we know that the arithmetic mean is an approximation, we still use it because it is a universal method, meaning that it does not depend on the specific problem. We can apply the same logic to the regression problem.
+
+An asymptotic method should guarantee that if we collected infinite information, we would get the optimal regression function. So, ideally, we want that when $n$ gets large, the penalty term goes to zero.
+
+\subsection*{Non-parametric regression}
+Let's consider a general regression problem:
+\[
+    Y_0 = r(X_0) + \mathcal{E}
+\]
+Where we didn't make any assumptions on our model, but we simply defined our error as:
+\[
+    \mathcal{E} = Y_0 - r(X_0)
+\]
+We can see that here it always holds that $\E{}{\mathcal{E} | X } = 0$. But this happens only because $r(X_0)$ is the optimal regression function by definition.
+
+To make a comparison, when we consider linear regression, we are trying to solve the following problem:
+\[
+    Y_0 = \beta^T X_0 + \mathcal{E}
+\]
+and we have \textbf{to make the assumption that} $\E{}{\mathcal{E} | X } = 0$ because we are making an assumption on the \textit{shape} of the optimal function.
+
+% plot
+Another remark: when considering a regression problem, we are trying to find $Y_0$ given $X_0$, that can vary in a continuous set. When we take one sample from our dataset:
+\[
+    Y_i = r(X_i) + \mathcal{E}_i
+\]
+this is going to be a single point on the plot.
+
+
+\paragraph*{Exercise} Find a method that allow us to approximate the optimal regression function:
+\[
+    r_n(X_0) \approx r(X_0) = \E{}{Y_0 \mid X_0}
+\]
+If we had no information on the data and we only wanted to find the mean of $Y_0$, we could use the arithmetic mean:
+\[
+    \E{}{Y_0} = \frac{1}{n} \sum Y_i
+\]
+What changes when we take into account an approximation? Given our training samples:
+\begin{align*}
+     & \{X_i\} = 0,1,0,1,0,1 \dots                  \\
+     & \{Y_i\} = y_1, y_2, y_3, y_4, y_5, y_6 \dots
+\end{align*}
+In order to estimate the mean of the labels given $X = 0$, we would compute the arithmetic mean only over the samples were the data is zero:
+\[
+    \E{}{Y \mid X = 0 } \approx \frac{y_1 + y_3 + y_5 + y_7}{4}
+\]
+And to find the conditional mean, we would repeat the same thing for every possible $X_i$ in our training set.
+
+Then our method would be the following: we select all the $Y_i$ where the $X_i$ that are equals, compute the conditional mean  and move the value of $X_i$. But this approach has a critical problem, which is that we won't ever find two same values of $X_i$ in the training set because the probability of draw the exact $X_i$ is always zero.
+
+The solution will involve taking into account \textit{points that are close to each other}.
+We continue the discussion about the supervised, non-parametric case, in which we have our training set $T_n$. Now we observe the feature $x_0$ and we want to predict its label $y_0$. Note that we likely don't already have a label $y_0$ for our point $x_0$, because we are assuming that $X_i$ is a continuous random variable. We could also assume that $X_i$ is a discrete variable but it is better to consider the general case.
+
+Since our assumption that $X_i$ is a continuous random variable, we know that the event $X_i = x_0$ is not an impossible event but it is highly unlikely because:
+\[
+    \Pr{X_i = x_0} = 0
+\]
+\textbf{Note} that although the probability is zero, the event is not impossible, which means that we can observe $x_0$. Let's consider the definition of probability by applying a strong law of large numbers:
+\[
+    \Pr{X_i = x_0} = \lim_{n \to +\infty} \frac{\#\{X_i = x_0\}}{n} = 0
+\]
+We can see that the probability of the event $X_i = x_0$ is zero in two cases: the first is that the number of occurences of the event is actually zero and the second case is that the number of the events grows \textbf{sublinearly} or slower than the number of samples.
+
+Note that the previous equation is valid for any realization of the random variable, which means that we will have \textit{almost surely} the same limit for each realization.
+
+From what we said, it is reasonable to assume that $x_0 \notin T_n$.
+
+Our goal is to approximate the following conditional probability:
+\[
+    \E{}{Y_0 \mid X_0 = x_0}
+\]
+From the definition of conditional probability for discrete variables we know that in order to compute this conditional probability we need to take all of the values equal to $x_0$ and average the labels of these points. For continuous variables, this definition does not hold because it is highly unlikely to find a value equal to $x_0$.
+
+The solution, at least in the approach that we will follow, will consist in a relaxation of the condition $X_0 = x_0$. In particular, we will take the values that lie in a \textbf{neighbourhood} of $x_0$, of size $h$, that we will call $I_h(x_0)$. We can write it formally using an \textit{indicator function}:
+\[
+    r_n^{(NK)}(x_0) = \frac{\sum_{i=1}^n Y_i \quad \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\} }{\sum_{i=1}^n \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\}}
+\]
+Note that we used the \textit{euclidean norm} because we are referring to a generic number of dimension $d$. This estimator is called \textbf{naive kernel estimator}. The main problem of this approach is that we don't know how many points will fall into the neighbourhood.
+
+If we wanted a fixed number of points in the neighbourhood, we would need to use another estimator, called the \textbf{nearest neighbour estimator}. With this estimator, we fix $k$, that is the number of points that we want in the neighbourhood and we take the $k$ closest neighbours of $x_0$ as points that constituites the neighbourhood.
+
+To formally define this estimator, we need to introduce the \textit{sorted list notation}:
+\[
+    X_{(1)}(x_0), \dots, X_{(n)}(x_0) \text{ s.t. } \lVert X_{(1)}(x_0) - x_0 \rVert \leq \lVert X_{(2)}(x_0) - x_0 \rVert \leq \dots \lVert X_{(n)}(x_0) - x_0 \rVert
+\]
+
+Where $X_{(1)}(x_0)$ is the closest sample to $x_0$, $X_{(2)}(x_0)$ is the second closest sample and so on. We can use the follwing notation to denote also the labels:
+\[
+    \binom{X_{(1)}(x_0)}{Y_{(1)}(x_0)}, \dots, \binom{X_{(n)}(x_0)}{Y_{(n)}(x_0)}
+\]
+Note that $Y_{(n)}(x_0)$  is not the $n$-th closest label, but the label associated to the $n$-th closest sample to $x_0$. Now we can define the nearest neighbour estimator:
+\[
+    r_n^{(NN)}(x_0) = \frac{1}{k} \sum_{i=1}^{k} Y_(i) (x_0)
+\]
+
+For a good approximation of the conditional probability we need two things: many samples in the neighbourhood of $x_0$ and we need that the neighbourhood is small. The first condition is a consequence of the \textbf{LLN}.
+
+When the number of sample grows, the number of points in the neighbourhood should grow too. We can justify this reasoning in this way:
+\[
+    \frac{\#\{X_i \in I_h(x_0)\}}{n} \stackrel{n \to +\infty}{\approx} \Pr{X_i \in I_n(X_0)} = p > 0
+\]
+When the number of samples grows, we can approximate the number of points that lie in the neighbourhood over $n$ as the probability that we will find a point in the interval. Since this probability is a positive number $p$, it means that the number of points grows linearly with the number of samples.
+
+The second condition states that the neighbourhood should be enough small, this is also called \textbf{principle of locality}. This is the reason why these methods are also called \textbf{local methods}.
+
+There seem to be an apparent contradiction, which is that if we reduce the size of the neighbourhood $h \to 0$, then the number of points in neighbourhood reduces to, thus violating the first condition. We may think that we can consider $h$ as a very small fixed number. In this case we are not converging to the real expectation value so we lose the locality princple.
+
+The only way to guarantee both conditions is to scale the size of the neighbourhood $h$ along with increasing the number of samples. But this has to happen under certain conditions that we will now introduce. Fristly, we try to approximate the probability that a point lies in $I_h(x_0)$:
+\[
+    \Pr{X_i \in I_h(X_0)} \approx f_X(x_0) 2 h_n
+\]
+because we can assume hat if $h$ is very small, then the area under curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the pdf of $x_0$.
+
+We also know that we can approximate the probability by the definition given by the frequentist approach:
+\[
+    \Pr{X_i \in I_n(X_0)} \approx \frac{\#{X_i \in I_h(x_0)}}{n} \approx f_X(x_0) 2 h_n
+\]
+From this, we can derive that:
+\[
+    \text{no. of points } \propto h_n n
+\]
+From this relation, in order to guarantee the the principle of locality we want that for $n \to +\infty$, $h_n \to 0$, while to guarantee LLN we need that $h_n n \to +\infty$, which are two reasonable requirements.
+
+If $h_n$ scales with law $\frac{1}{n^p}$ with $p>1$, then we won't converge, while if $h_n$ scales with law $\frac{1}{\sqrt{n}}$ then we will converge.
+
+We can conclude that for this estimator, $h_n$ should scale sublinearly while $n$ grows linearly.
+
+\textbf{Note} that if we have $d$ dimensions, since we need to compute the volume of the hypercube that approximates the area under the curve, the number of points given by:
+\[
+    \text{no. of points } \propto f_x(x_0) 2 h^d_n
+\]
+This means that if we increase $d$, $n$ should grow exponentially to match the growth rate of $h$, and this is also known as the \textit{curse of dimensionality}.
+
+As for the K-NN estimator, it can be proved that it is \textbf{weakly consistent}.
+
+For this estimator, the number of points is given by the parameter $k_n$, so the conditions are reversed with respect to the naive estimator. For this estimator, we need to guarantee that $k_n \to +\infty$ in order to satisfy the LLN requirement and $\frac{k_n}{n} \to 0$ in order to satisfy the locality requirement.
+
+\section{Exercise}
+

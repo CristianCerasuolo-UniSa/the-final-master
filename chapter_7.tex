@@ -1,0 +1,306 @@
+\chapter{Cluster Analysis}
+\section{PCA}
+\textbf{Principal Component Analysis} is a linear transformation that projects the data onto the space.
+The feature space is described in terms of the principal components. PCA has the following characteristics:
+\begin{itemize}
+    \item the transformed features are uncorrelated
+    \item the first transformed feature has the highest variance among the others, the second transformed feature has the second highest variance among the others, and so on...
+    \item If our features indicated something like the temperature, the pressure and so on, then after projecting them onto the new space, they will lose that meaning.
+\end{itemize}
+
+An example of akin transformation is the Fourier transform, that maps all the samples of a sinusoidal function into one single features that represents the frequency. In this case, the \textit{base} of the space in which we want to project the new features is known, but in the principal component analysis case we need to learn first the \textit{bases} of the new space from the data.
+
+\paragraph*{Principal Component Analysis Construction}
+Assume we have a dataset $X^{\prime} \in \mathbb{R}^{n \times p}$. A preliminary thing to do is to center the dataset by subtracting the mean $\mu$ of each feature from the corresponding feature.
+\[
+    \mu = \frac{1}{n} \sum_{i = 1}^{N} x^{\prime}_i
+\]
+\[
+    X = \begin{bmatrix}
+        x^{\prime}_1 - \mu_1 \\
+        x^{\prime}_2 - \mu_2 \\
+        \vdots               \\
+    \end{bmatrix}
+\]
+Principal Component Analysis applying the following linear transformation:
+\[
+    T = X W
+\]
+where $W \in \mathbb{R}^{p \times p}$ is the projection matrix which contains the \textbf{principal directions} as columns and $T \in \mathbb{R}^{n \times p}$ are the \textbf{principal components} of $X$, i.e. the new representation of $X$ in the space described by the principal directions. By construction, we assume that the principal directions are orthonormal, i.e. $W^T W = I$.
+
+Each row of $X$ is a sample of the dataset, each column of $W$ is a principal direction, so the dot product between a row of $X$ and a column of $W$ is the projection of the sample onto the principal direction. In other words, By mutiplying $X$ by $W$ we are applying the dot product on each feature, thus projecting each feature onto the principal directions.
+
+Now we want to understand \textit{how do we obtain the matrix} $W$. We know that the \textbf{first} column of $T$ should have the highest variance among the others. So we will need to solve the following optimization problem:
+\[
+    w^{(1)} = \arg \max_{\omega \in \mathbb{R}^p} \left\{\frac{1}{n-1} \sum_{i = 1}^{n} \left(\sum_{i = 1}^{P} x_{ij} \omega_j \right)^2\right\} \quad \text{s.t.} \|w\|^2 = 1
+\]
+This problem is constrained by the fact that the norm of $w$ must be equal to $1$ because we impose that the principal directions are orthonormal.
+
+Note that the inner sum is the dot product between the $i$-th sample and the respective principal direction $w$ so it gives us the squared sum of the principal components, which averaged for the number of samples gives us the variance of the $j$-th principal component (recall $x$ is zero-mean because we scaled the features).
+
+Rewriting the problem in matrix notation:
+\[
+    w^{(1)} = \arg \max_{\omega \in \mathbb{R}^p} \|X\omega\|^2 = \arg \max \left(\omega^T X^T X \omega\right)\quad \text{s.t.} \|w\|^2 = 1
+\]
+Under the assumption of orthonormality, we can rewrite the problem as:
+\[
+    w^{(1)} = \arg \max \left(\frac{\omega^T X^T X \omega}{\omega^T \omega}\right)\quad \text{s.t.} \|w\|^2 = 1
+\]
+The function we want to maximize is known as \textbf{Rayleigh quotient} and we know that if $X^T X$ is a positive semi-defined matrix then the Rayleigh quotient is maximized by \textbf{the eigenvector corresponding to the largest eigenvalue} of $X^T X$.
+
+Now in order to find the other principal directions we first need to find the orthogonal part of the projection, by projecting the data onto the space spanned by the first principal direction and then subtracting the projection from the data. We can visually understand this by looking at the following figure:
+
+[TODO: add figure]
+
+We can perform this projection by applying the following transformation:
+\[
+    X_k = X - X \sum_{i=1}^{k-1} w^{(i)} w^{(i)T}
+\]
+Where $k$ is the number of the principal direction we want to compute.  We can now apply the same procedure as before to find the $k$-th principal direction. Then it can be shown that the $k$-th principal direction is the eigenvector corresponding to the $k$-th largest eigenvalue of $X^T X$.
+
+To sum up we've shown that the principal directions are the eigenvectors of the covariance matrix $X^T X$ and the principal components are the eigenvectors associated to the largest eigenvalues of $X^T X$.
+
+\paragraph*{Data Covariance Matrix}
+The covariance matrix of $X \in \mathbb{R}^{n \times p}$ is defined as:
+\[
+    C = \frac{1}{n-1} \sum_{i=1}^n x_i^T x_i = \frac{1}{n-1} X^T X
+\]
+We will now show that the eigenvalues are the variances of each principal component. Let us consider the first eigenvalue, by definition of eigenvalue and eigenvector we have:
+\[
+    A u^{(k)} = \lambda_k u^{(k)} \to X^T X w^{(1)} = \lambda_1 w^{(1)}
+\]
+Multiplying both sides by $(w^{(1)})^T$ we get:
+\[
+    (w^{(1)})^T X^T X w^{(1)} = \lambda_1 w^{(1)}(w^{(1)})^T \to \|X w^{(1)}\|^2 = \lambda_1 \|w^{(1)} \|^2 = \lambda_1
+\]
+Then by definition of variance we have:
+\[
+    \text{Var}\left[X w^{(1)}\right] = \frac{1}{n-1} \|X w^{(1)}\|^2 = \frac{\lambda_1}{n-1}
+\]
+So we have shown that the eigenvalues of $X^T X$ are (proportional to) the variances of the principal components.
+
+Another characteristics of the principal component analysis is that it \textit{gives us uncorrelated data} in the new space. To show this, let us consider the covariance matrix of the principal components:
+\[
+    \frac{T^T T}{n-1} = \frac{W^T X^T X W}{n-1} = \frac{W^T W \Lambda W W^T}{n-1} = \frac{\Lambda}{n-1}
+\]
+First we used the fact that $X^T X$ is similar to $W \lambda W^T$ and then the fact that $W^T W = I$ because we imposed orthogonality.
+So we have shown that the covariance matrix of the principal components is a diagonal matrix, which means that all the covariances are zero, i.e. the principal components are uncorrelated.
+
+\paragraph*{Dimensionality Reduction}
+We can use PCA to select only a subset of size $m$ of the principal components, thus reducing the dimensionality of the data. We can do this by selecting the first $m$ columns of $T$.
+
+In this way we are selecting the $m$ principal component that explain the most variance of the data. We can compute the \textbf{percentage of variance explained} or \textbf{PVE} by the $m$ principal components as:
+\[
+    PVE = \frac{\sum_{k=1}^m \lambda_k}{\sum_{j=1}^p \lambda_j}
+\]
+% something about the rank of the covariance matrix 
+
+The main drawback of applying PCA is that we are losing the meaning of the features (explainability), so we are not able to interpret the data anymore.
+
+\paragraph*{PCA and Singular Value Decomposition}
+\textbf{Singular Value Decomposition} is a generalization of the eigenvalue decomposition for rectangular matrices. Let us consider a matrix $M \in \mathbb{R}^{n \times p}$, then we can decompose it as:
+\[
+    M = U \Sigma V^T
+\]
+where $U \in \mathbb{R}^{n \times n}$ and $V \in \mathbb{R}^{p \times p}$ are orthogonal matrices respectively called \textbf{left singular vectors} and \textbf{right singular vectors}, while $\Sigma \in \mathbb{R}^{n \times p}$ is a \textit{rectangular diagonal} matrix with the singular values of $M$. Since the elements under the diagonal of $\Sigma$ are zero, we can cut the matrix to simplify the calculations.
+
+If we decompose $X$ as $X = U \Sigma V^T$ then we can rewrite the covariance matrix as:
+\[
+    X^T X = (U \Sigma V^T)^T U \Sigma V^T = V \Sigma^T U^T U \Sigma V^T = V \Sigma^T \Sigma V^T
+\]
+because $U$ is defined as an orthogonal matrix, so $U^T U = I$.
+So we found out that the covariance matrix of $X$ is similar to $\Sigma^T \Sigma$ and we know that similar matrices have the same eigenvalues.
+
+If we call $\sigma_i$ the $i$-th singular value of $X$ then we have that $\sigma_i^2$ is equal to the $i$-th eigenvalue of $X^T X$.
+
+We can also show that:
+\[
+    T = X V = U \Sigma V^T V = U \Sigma
+\]
+
+\section{Clustering}
+\section*{Clustering}
+Clustering are a familiy of unsupervised learning problems, where we we want to group objects in non-overlapping subsets, called clusters, according to a criterion of \textit{similarity}.
+
+In other kind of problems, such as classiifcation and regression, we want to minimize the error terms, while in clustering we want to maximize the similarity between the objects in the same cluster.
+
+There are four main families of clustering:
+\begin{itemize}
+    \item \textbf{Combinatorial}, where we want to minimize over the set of all possible assigments, a suitable function based on the chosen similarity measure. This is a combinatorial problem since we have a large number of possible assignments.
+    \item \textbf{Distribution-based}, where we assume that the data observations have been drawn from a mixture of \textbf{generative models}, and we want to find the parameters of the models. The parameters of the models are estimated from the observation using an \textit{expectation-maximization} algorithm. After the parameters have been estimated, we can assign each observation to a model according to the probability of being generated by one of the models.
+    \item \textbf{Hierarchical}, assign each data observation to a cluster according to the similairt among pair of groups of observations. This is done by building a \textit{tree structure} to represent the data. Such structure can be obtained by using a \textit{bottom-up} or \textit{top-down} approach and the algorithms are called respectively \textit{agglomerative} or \textit{divisive} clustering.
+    \item \textbf{Density-based}, where clusters follow more closely the spatial arrangement of the data. The clusters are defined as regions with densely packed observation. Density is usually intendend as the number of observations within a given volume.
+\end{itemize}
+
+\subsection*{K-Means}
+The K-Means algorithm is a combinatorial clustering algorithm.
+
+The number of clusters $K$ is a parameter of the algorithm, and it is usually chosen by the user. The algorithm is iterative and its goal is to find the optimal assigment of the observation that minimizes the following sum of squares:
+\[
+    J = \sum_{n=1}^{N} \sum_{k=1}^K r_{nk} \|x_n - \mu_k\|^2
+\]
+
+Where $r_{nk}$ is a variable that is equal to $1$ if the observation $x_n$ is assigned to the cluster $C_k$, and $0$ otherwise; while $\mu_k$ is the \textbf{centroid} of the cluster $C_k$, defined as:
+\[
+    \mu_k = \frac{\sum_{n=1}^{N} r_{nk} x_n}{\sum_{n=1}^{N} r_{nk}}
+\]
+The centroid can be seen as the \textit{baricenter} of the cluster $C_k$. \textbf{Note} that we are minimizing a quantity that represents how dispersed the observations are around the centroid of each cluster.
+
+There is a problem with this formulation, that is the fact that the centroids are a function of the assigments, but we don't know both of them. So a \textit{naive} solution would be to enumerate both of them and choose the best one, and this is why it is called a combinatorial problem.
+
+However, we know that given the centroids, the assigments $r_{nk}$ should be:
+\[
+    r_{nk} = 1 \text{if } k = \arg\min_{j} \|x_n - \mu_j\|^2
+\]
+and $0$ otherwise. This is called the \textbf{nearest neighbor condition}. If the assigments follow this rule, this will reduce the objective function. Given the assigments, the centroids can be computed by definition \textbf{centroid condition}.
+
+\begin{algorithm}
+    \SetAlgoLined
+    Input: data set $X$, number of clusters $K$, initial centroids $\mu_k$ \\
+    \Repeat{termination criterion is met}{
+        form $K$ clusters assigning each observation to the nearest centroid \\
+        recompute the centroids $\mu_k$ of the clusters \\
+    }
+    \caption{Lloyd's algorithm for K-Means}
+\end{algorithm}
+
+% plot
+
+\paragraph*{Convergence}
+At each step of the algorithm, the objective function $J$ is becoming smaller and smaller. This is not sufficient to prove that the algorithm converges, because the algorithm may diverge to -$\infty$. However, sinche the objective function is bounded below by $0$ (because it is a squared sum) the algorithm must converge, at least to a local minimum.
+
+Even if both the neighborhood condition and the centroid condition are satisfied, the algorithm may not converge to the global optimum. These two conditions are necessary but not sufficient for convergence to the global optimum.
+
+% proof of necessary condition
+
+
+In the last lecture, we've showed that the K-Means algorithm is guaranteed to converge to a local minimum of the objective function under the nearest neighbor condition and the centroid condition.
+
+If we initialize the centroids in the right way, the algorithm will converge to the global minimum. However, if we initialize the centroids in the wrong way, the algorithm may converge to a local minimum. This is because there are different configurations of the centroids that satisfy the two conditions, but for us they are not equivalent.
+
+% example 
+
+Another thing is that the algorithm will converge in a finite number of steps, but the number of steps may be very large, due to the combinatorial nature of the problem. In practice, the algorithm is stopped when the change in the objective function is below a certain threshold.
+
+\subsection*{Gaussian Mixture Model}
+The Gaussian Mixture Model is a distribution-based clustering algorithm. The idea is that we assume that the observations have been generated by a mixture of $K$ Gaussian distributions, each of which is representative of a cluster. The parameters of the model are estimated from the observations using an \textit{expectation-maximization} algorithm.
+
+With $K$ clusters, the mixture model for the distribution of the entry $x_n$ is defined as:
+\[
+    p(x_n) = \sum_{k=1}^{K} \pi_k p_k (x_n \mid \theta_k)
+\]
+where the coefficients $\pi_k$ are called \textbf{mixing probabilities}, and they are constrained to be non-negative and to sum to $1$. The mixing probabilities are to be learned from the data.
+
+In the Gaussian Mixture Model, the individual likelihoods $p_k(\cdot \mid \theta_k)$ are $h$-dimensional Gaussian distributions, parametrized by the mean $\mu_k$ and the covariance matrix $\Sigma_k$:
+\[
+    p_k(x \mid \mu_k, \Sigma_k) = \frac{1}{(2\pi)^{\frac{h}{2}} \sqrt{\det \Sigma_k}} \exp{\frac-{1}{2}(x-\mu_k)^T \Sigma_k^{-1} (x-\mu_k)}
+\]
+
+The unknown parameters of the model are the mixing probabilities $\pi_k$, the means $\mu_k$ and the covariance matrices $\Sigma_k$ for $k=1, \ldots, K$.
+
+We could use the maximum likelihood estimator to estimate the parameters of the model, but there is no closed form solution for the maximization, because all of the quantities we find depend on a term called \textbf{responsibility} $\gamma_{nk}$ that is not known and depends on the parameters on the model.
+\[
+    \gamma_{nk} = \frac{\pi_k p_k(x \mid \mu_k, \Sigma_k)}{\sum_{j=1}^{K} \pi_j p_j(x \mid \mu_j, \Sigma_j)}
+\]
+while the parameters can be computed as:
+\[
+    \pi_k = \frac{1}{N} \sum_{n=1}^{N} \gamma_{nk}
+\]
+\[
+    \mu_k = \frac{\sum_{n=1}^{N} \gamma_{nk} x_n}{\sum_{n=1}^{N} \gamma_{nk}}
+\]
+\[
+    \Sigma_k = \frac{\sum_{n=1}^{N} \gamma_{nk} (x_n - \mu_k)(x_n - \mu_k)^T}{\sum_{n=1}^{N} \gamma_{nk}}
+\]
+This is why we use the expectation-maximization algorithm. The algorithm is iterative and the basic idea is to estimate in an alternating manner the estimation of unknown coefficients and responsibilities.
+
+\begin{algorithm}
+    \SetAlgoLined
+    Input: data set $X$, number of clusters $K$, initial parameters $\mu, \Sigma, \pi$ \\
+    \Repeat{termination criterion is met}{
+        \textbf{Expectation step:} with the parameters fixed we compute the responsibility \\
+        \textbf{Maximization step:} with the  \\
+    }
+    \caption{EM algorithm for Gaussian Mixture Model}
+\end{algorithm}
+
+
+
+The Expectation-Maximization algorithm is a general algorithm used not only in GMM clustering to find maximum likelihood solutions when there are latent variables.
+
+A latent variable is a variabile that cannot be observed directly, but it is useful to explain the observed data. In the case of the Gaussian Mixture Model, the latent variable is the Gaussian from which the observation has been generated.
+
+The Expectation-Maximization algorithm actually maximizes a surrogate objective function which allows to maximize the likelihood function of interest, because in the expectation step it computes the expectation of the log-likelihood with respect to the conditional distribution of the latent variables given the observations, while the maximization step find the parameters that maximize the expectation and will then be used for the next expectation step.
+
+The convergence conditions are similar to the K-Means algorithm. EM is not guaranteed to converge to the global maximum of the likelhood, but it is guaranteed to increase the value of the likelihood function at each step.
+
+\subsection*{Hierarchical Clustering}
+Hierarchical clustering can be performed in two ways: agglomerative or divisive.
+We will focus on the \textbf{agglomerative clustering}, which starts from \textbf{singleton clusters}, that are the single data observations. At each step of the algorithm, the two most similar clusters are merged. There are different \textit{similarity measures} that we can use to find similar clusters.
+
+\begin{algorithm}
+    \SetAlgoLined
+    Input: data set $X$ \\
+    \Repeat{One single cluster remains}{
+        Examine all pairs of subgroups, and merge the most similar \\
+    }
+    \caption{EM algorithm for Gaussian Mixture Model}
+\end{algorithm}
+
+The dissimilarity $d(G,H)$ between two groups of observations $G$ and $H$ is computed from the pairwise dissimilarities $d_{ii^{\prime}}$ between the observations in the two groups. There are different ways to compute the dissimilarity between two groups:
+\begin{itemize}
+    \item \textbf{Single-linkage}
+    \item \textbf{Complete-linkage}
+    \item \textbf{Group average}
+    \item \textbf{Ward's criterion}
+\end{itemize}
+
+\paragraph*{Single Linkage}
+The single linkage measure is defined as:
+\[
+    d_{SL}(G,H) = \min_{i \in G, i^{\prime} \in H} d_{ii^{\prime}}
+\]
+
+The similarity among subgroups is based on the similarity between the \textbf{nearest observations}. This method tends to produce \textbf{elongated clusters}, with non-elliptical shapes and it is sensitive to noise and outliers.
+
+\paragraph*{Complete Linkage}
+The complete linkage measure is defined as:
+\[
+    d_{CL}(G,H) = \max_{i \in G, i^{\prime} \in H} d_{ii^{\prime}}
+\]
+The similarity among subgroups is based on the similarity between the \textbf{farthest observations}. This method tends to produce compact clusters, because it merges the smallest diameter clusters first. It is still sensitive to noise and outliers.
+
+\paragraph*{Average Group}
+The average group measure is defined as:
+\[
+    d_{GA}(G,H) = \frac{1}{N_G N_H} \sum_{i \in G} \sum_{i^{\prime} \in H} d_{ii^{\prime}}
+\]
+
+The similarity among subgroups is based on the average similarity between the "centroid" of the groups. This methods is in between the single and complete linkage.
+
+\paragraph*{Ward's Criterion}
+Ward's criterion is defined as:
+\[
+    d_W(G,H) = \frac{N_G N_H}{N_G + N_H} \| \mu_G - \mu_H \|^2
+\]
+where $\mu_G$ and $\mu_H$ are the centroids of the groups $G$ and $H$ respectively.
+
+It can be shown that this method is equivalent to measuring the increase of variance when merging two groups.
+
+\paragraph*{Dendogram}
+The final output of the agglomerative clustering is a binary tree structure called \textbf{dendogram}, in which the root of this structure represents the entire dataset, while the leaves represent singleton clusters. Only by slicing the dendogram at a given height we obtain the cluster, this means that, differently from the other algorithms, $K$ is not an input of the algorithm but a parameter chosen by the user. $K$ depends on the specific application domain.
+
+To choose the number of clusters, there are different \textit{heuristics} scores that can be used:
+\begin{itemize}
+    \item \textbf{Silhouette score}
+    \item \textbf{Caliniski-Harabasz score}
+\end{itemize}
+
+\paragraph*{Silhouette Score}
+\paragraph*{Caliniski-Harabasz score}
+
+\subsection*{DBSCAN}
+DBSCAN is a density-based clustering algorithm. This algorithm segments the data observations by looking at dense regions with a given \textit{reachability}.
+
+
+Differently from other clustering algorithms, can classify points as \textit{noisy points}. This is because some points may not belong to any cluster, because they are not dense enough\dots

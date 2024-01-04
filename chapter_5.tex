@@ -1,0 +1,465 @@
+\chapter{Classification}
+
+\section{Introduction}
+This lecture is about classification, also called decision making or hypothesis testing. In order to study classification, we will follow a path similar to the one on regression, that is we will find, at first, the best that we can do if we already have the model, then we will examine the case where the parameter is not random and finally we will study the supervised approach.
+
+In classification, I have data $X$ and $\Theta$ that is the parameter I am interested in and it is discrete, which means that:
+\[
+    \Theta \in \{\theta_1, \theta_2, \dots, \theta_H\}
+\]
+where each $\theta_i$ is called a \textbf{class} or an \textbf{hypothesis}.
+
+In some contexts, the parameter $\Theta$ is said to be \textbf{categorical}, which means that each class is a category. Since we are interested in the probability of each class, it's equivalent to consider them as a category or as a discrete number. However, there is a slight difference in the two terminologies, because if the parameter is discrete, then its classes will be numbers like $1, 2, \dots, H$, while if the parameter is categorical, then its classes will be categories such as cat, dog, bird, et cetera.
+
+In regression we quantify the error using as a metric the distance between the true value and the predicted value; thus it makes no sense to use categories in regression. In classification we don't care about the distance between categories, because the concept is not properly defined. We have only two possibilities that are: we belong to the category or not. Also, to quantify the error instead of using the MSE, we use the probability of error.
+
+It is important to stress that in the classification problem, during the prediction we are not instered in \textit{estimating} a class, but we are interested in make a choice about the class.
+
+The performance metric will be the error probability:
+\[
+    \Pr{\hat{\Theta}(X) \neq \Theta }
+\]
+
+In telecommunication we used maximum error probability \textbf{MAP}.
+
+\section{Model-Based Classification}
+
+\subsection{Bayesian approach}
+Let us first use the bayesian approach to find the best performances. We define the \textbf{posterior distribution} of the hypothesis as the following p.m.f:
+\[
+    \Pr{\Theta = \theta \mid X}
+\]
+Also we define the \textbf{prior distribution} as the following p.m.f:
+\[
+    \pi(\theta) = \Pr{\Theta = \theta}
+\]
+
+Note that the most complete information about the parameter $\Theta$ is given by the posterior distribution. We cannot have more information than the one give by this distribution.
+
+%% DA CONTROLLARE
+Usually, the prior distribution is not very informative, we can assume that it is given by one over the number of hypothesis for $\theta$ and zero for all the other possibile hypothesis.
+
+    [PLOT]
+
+It is intuitive and in this case correct to find that in order to minimize the probability of making a mistake, we decide for the parameter that has the highest probability according to the posterior distribution, that is also the way to maximize the probability to make the right choice.
+
+%% DA CONTROLLARE
+Remember that in the regression case we wanted to minimze the MSE by finding the value that maximized the likelihood. $\dots$
+
+Recall that the \textit{prior} is embedded in the posterior through Bayes' rule.
+
+We can formally show that this choice maximizes the probability of making the right choice and that this minimizes the error probability, but we won't do that.
+
+We are now interested in answering the question \textit{does the system learn correctly if we have many data?}
+
+\paragraph*{Bayes' update}
+In regression, we have the prior $\pi(\theta)$ and the likelihood $\ell(X \mid \theta)$ which is usually a vector and it is the generative mechanism of our data. Let us call $\mu(\theta \mid X)$ the posterior distribution that in Bayesian statistic is usually also called \textbf{belief}. From Bayes' rule, we know the expression of the posterior:
+\[
+    \mu(\theta \mid X) = \frac{\pi (\theta) \ell(x\mid\theta)}{\sum_{\theta^{\prime}} \pi(\theta^{\prime}) \ell(x\mid \theta^{\prime}  )}
+\]
+Where the denominator is a normalizing constant called \textbf{marginal distribution}.
+
+We can verify the expression of the marginal distribution by computing the sum of the marginal distribution over all the possible $\theta^{\prime}$ and checking if it equals 1. % fallo
+
+When $x$ is frozen, the marginal distribution is just a normalizing constant, so the belief is proportional to prior times the likelihood:
+\[
+    \mu(\theta \mid X) \propto \pi(\theta) \ell(x \mid \theta)
+\]
+This expression is also called Bayes update.
+
+
+\textbf{\textit{What can I expect from a good learning system?}}
+Assume that I observe $X = \left[X_1, \dots, X_n\right]$ that are i.i.d according to $\ell(X_i \mid \theta_0)$.
+Ideally, I'd want that, if the true hypothesis is $\theta_0$, $\mu(\theta_0 \mid X) \to 1$ when $n \to +\infty$. This means that not only I want that the probability of the error is zero but also that my system has the highest posterior distribution possible.
+
+\begin{proof}
+    Let us compute the ratio between the posterior distribution if the parameter is $\theta_0$ and the posterior distribution if the parameter is a certain $\theta \neq \theta_0$.
+    \[
+        \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} = \frac{\pi(\theta_0) \prod_{i=1}^N \ell(X_i \mid \theta_0 )}{m(x)} \frac{m(x)}{\pi(\theta) \prod_{i=1}^N \ell(X_i \mid \theta)} = \frac{\pi(\theta_0)}{\pi(\theta)} \frac{\prod_{i=1}^N \ell(X_i \mid \theta_0)}{\prod_{i=1}^N \ell(X_i \mid \theta)}
+    \]
+    By applying the log to both members:
+    \[
+        \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) = \log \left(\frac{\pi(\theta_0)}{\pi(\theta)}\right) + \log\left(\frac{\prod_{i=1}^N \ell(X_i \mid \theta_0)}{\prod_{i=1}^N \ell(X_i \mid \theta)}\right)
+    \]
+    Observe that by applying logarithm property, the product becomes a sum. Then we divide both members by $n$:
+    \[
+        \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) =\frac{1}{n} \log \left(\frac{\pi(\theta_0)}{\pi(\theta)}\right) + \frac{1}{n} \sum_{i=1}^N \log \left(\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}\right)
+    \]
+    When $n$ approaches infinity, the first term goes to zero because the ratio of the priors is a finite number, while the second term converges (according to the law of large numbers) to the expected value \textbf{computed under the true hypotesis} of the logarithm of the ratio of the likelihoods.
+
+    \[
+        \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) \xrightarrow{n \to +\infty} \E{\ell(\cdot \mid \theta_0)}{\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}}
+    \]
+
+
+\end{proof}
+
+This expectation is called \textbf{Kullback-Leibler divergence}.
+\[
+    \E{\ell(\cdot \mid \theta_0)}{\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}} \triangleq D_{KL} (\theta_0 \mid\mid \theta)
+\]
+In general, the Kullback-Leibler divergence explains how different are two distributions. It is a non-negative number that is zero if and only if the two distributions are equal.The greater the distributions are different, the greater the divergence.
+If $p$ and $q$ are two pmfs, then:
+\[
+    D_{KL}(p \mid \mid q) =\sum_{x \in X} p(x) \log\frac{p(x)}{q(x)} = \E{p}{\log \frac{p(x)}{q(x)}}
+\]
+If $p$ and $q$ are two pdfs, then:
+\[
+    D_{KL}(p \mid \mid q) =\int p(x) \log\frac{p(x)}{q(x)} dx
+\]
+
+Now we're going to prove that, given that the ratio of belief converges to the Kullback-Leibler divergence, our system learns the correct hypothesis.
+\begin{proof}
+    We've shown that the quantity for $n \to +\infty$ converges to the Kullback-Leibler divergence that is a non-negative quantity.
+    \[
+        \frac{1}{N} \log\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} \to D_{KL} (\theta_0 \mid \mid \theta) > 0
+    \]
+    Under the assumption of \textbf{identifiability}, that is the assumption that $\ell(x\mid \theta_0) \neq \ell(x \mid \theta)$, if we multiply both members by N, we get that $D_{KL}$ goes to $+\infty$. But this means that also the first member should diverge to infinity and we know that a logarithm will diverge only if its argument diverges:
+    \[
+        \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} \to +\infty
+    \]
+    This quantity can diverge either if the numerator goes to infinity or the denominator goes to zero. Since the posterior distribution is a probability, it is a finite number, so we have that $\mu(\theta\mid X) \to 0 $ and this implies, given the identifiability property that $\mu(\theta_0 \mid X) \to 1$.
+\end{proof}
+
+
+With respect to the previous lesson, we are going to find what happens if our data is generated by an arbitrary function $f$, that we are going to assume is not the likelihood function of the true hypothesis.
+
+As in the previous proof, we are going to compute the ratio between the belief of $\theta$ given $x$ and the belief of a $\theta^{\prime}$ given $x$.
+\[
+    \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{\pi(\theta) \ell(x \mid \theta)}{\pi(\theta^{\prime} \ell(x \mid \theta^{\prime} ))} = \frac{\pi(\theta)}{\pi(\theta^{\prime} )} \prod_{i=1}^N \frac{\ell(x_i \mid \theta)}{\ell(x_i \mid \theta^{\prime} )}
+\]
+Now we apply the logarithm to both members and we divide both members by $n$:
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{1}{n} \log \frac{\pi(\theta)}{\pi(\theta^{\prime} )} +  \frac{1}{n} \sum_{i=1}^n \log \frac{\ell(x_i \mid \theta)}{\ell(x_i \mid \theta^{\prime} )}
+\]
+Now we observe that the ratio of the prior functions goes to zero when $n$ goes to $+\infty$ because it is a constant divided by $n$. This has also another concrete meaning, that is if we have many data, the prior information we had at the start is ignored. We observed the same behaviour during the MSE analysis, where when $n$ was large the prior information was unuseful. [CORREGGERE].
+
+Even though we have a strong bias at the start, with infinite data we discard the prior information. The only exception to this is when the one of the hypotesis has the prior function equal to zero. In that case, we cannot remove the initial bias mathematically and it also makes sense in the concrete, because
+
+Then we got:
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{1}{n} \sum_{i=1}^n Z_i
+\]
+where each $Z_i$ is independent and identically distributed to the ratio of the likelihoods. When $n$ goes to $+\infty$, according to the law of large numbers we know that the term on the right converges to the expected value of $Z$
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{Z}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
+\]
+Each $Z_i$ is generated by the true generative mechanism that is the function $f(X)$. Thus we can write:
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{f}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
+\]
+Now we can multiply and divide the argument of the logarithm by $f(X)$ to obtain an expression that depends on the Kullback-Leibler divergence.
+\[
+    \E{f}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )} \frac{f(X)}{f(X)}} = \E{f}{\log \frac{f(x)}{\ell(x \mid \theta^{\prime} )}} - \E{f}{\log\frac{f(x)}{\ell(x \mid \theta)}}
+\]
+So we found that:
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} \xrightarrow{n \to +\infty} D_{KL} \left(f || \ell(\cdot \mid \theta^{\prime} )\right) - D_{KL}\left(f || \ell(\cdot \mid \theta)\right)
+\]
+let's rewrite the this expression by using a slightly changed notation:
+\[
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} \xrightarrow{n \to +\infty} D_{KL} \left(f || \theta^{\prime} \right) - D_{KL}\left(f ||  \theta\right)
+\]
+In order to find \textit{which hypothesis will the system learn}, we need to recall that the chain of implications in the previous proof, required the ratio of beliefs to converge to a positive value (when $n$ approaches $+\infty$):
+\[
+    \frac{1}{n} \frac{\mu(\theta^\ast \mid X)}{\mu(\theta^{\prime}  \mid X)} \to D_{KL} \left(f || \theta^{\prime} \right) - D_{KL}\left(f ||  \theta\right) > 0
+\]
+Now, we consider a $\theta^\ast$ that isn't an arbitrary hypothesis, but we assume there exists:
+\[
+    \theta^\ast \colon D_{KL}\left(f||\theta^{\prime} \right) > D_{KL} \left(f||\theta^\ast\right) \qquad \forall \theta^{\prime} \neq \theta^{\ast}
+\]
+If this condition is satisfied, then the chain of implications used in the last lecture holds again and we can use it to prove that $\mu(\theta^{\ast} \mid X) \to 1$.
+
+\textbf{Note} that $\theta^{\ast} $ is the hypothesis that has the smalled distance (in terms of the Kullback-Leibler divergence) from the true distribution.
+
+In our proof, there is still a singularity case but it is removed under the assumption of unidentifiability. [WHICH ONE?]
+
+    [INSERT PLOT]
+In this example, our system will learn the hypothesis $\theta_3$.
+
+From this proof, we found out that our model approximates the truth when our model is the closest in terms of Kullback-Leibler divergence to the true model.
+
+Note that this is the general case, and the previous proof was a special case of this. It is simple to show that if $f(x) = \ell(x \mid \theta_0)$, the minimum will be the true hypothesis $\theta_0$.
+
+\paragraph*{Exercise}
+Having defined
+\[
+    \mu_n(\theta) \triangleq \mu(\theta \mid x_1, \dots, x_n)
+\]
+Can you find a relationship between $\mu_n(\theta)$ and $\mu_{n-1}(\theta)$?
+We know that:
+\[
+    \mu_n(\theta) \propto \pi(\theta) \prod_{i=1}^n \ell(x_i \mid \theta) = \pi(\theta) \prod_{i=1}^{n-1} \ell(x_i \mid \theta) \ell(x_n \mid \theta)
+\]
+and that
+\[
+    \mu_{n-1}(\theta) \propto \pi(\theta) \prod_{i=1}^{n-1} \ell(x_i \mid \theta)
+\]
+So we can infer that:
+\[
+    \mu_n(\theta) = \mu_{n-1}(\theta) \ell(x_n \mid \theta)
+\]
+This is none other that \textit{Bayes' rule} where our past belief $\mu_{n-1}(\theta)$ is the current prior. This property, called \textbf{sequential property}, explains why we talked about \textit{Bayes' updates}: by doing successive updates we starts from the prior and step by step we update our belief with new evidence given from the likelihood.
+
+This property holds only thanks to the hypothesis of \textbf{independendence} of the data. With an independent model, all the knowledge we have at a certain step is contained in the current belief. This property is really important, due to computation reasons, because it simplifies the calculations and allows to use Bayes updates in a streaming setting. In some ways it can be considered as a form of online learning.
+
+\subsection{Neyman-Pearson Criterion}
+Now we want to find what happens when our parameter $\Theta$ is deterministic. First of all, let us clarify that in the Bayes problem we encountered before, $\Theta$ was random, even though we worked with fixed value of theta. This is because the same reasoning applies to any choice of the hypothesis.
+
+Suppose we have only $2$ classes, that are $\theta \in \{-1, 1\}$. \textit{In this case, is our performance metric still the error probability?} No, because we have two different error probabilities. It is important to stress that the only indicators we will need to explain classification are the ones containes in the ROC curve:
+\[
+    \alpha = \Pr{\text{choose } 1 \mid -1\text{ is true}} \qquad \text{ type 1 error probability}
+\]
+\[
+    \beta = \Pr{\text{choose } -1 \mid 1\text{ is true}} \qquad \text{ type 2 error probability}
+\]
+By contrast, in the Bayesian setting, our error probability was given, according to the theorem of the total probability, by the arithmetic average of the two errors:
+\[
+    P_{err} = \alpha \pi(-1) + \beta \pi(+1) = \alpha \pi(-1) + \beta [1-\pi(-1)]
+\]
+
+Now we want to find \textit{what is the optimal strategy to use?} Note that we cannot minimize both errors, because if we lower one error, the other one increases. For example, in target detection we want to minimize the false negatives. The optimal strategy is the \textbf{Neyman-Pearson Criterion}, which requires to \textbf{minimize $\beta$ over all possible strategies that ensure that $\alpha \leq \alpha^\ast$.}
+The solution of this criterion is to compare the likelihood ratio to a threshold $\gamma$, which depends on $\alpha^\ast$:
+\[
+    \frac{\ell(x \mid +1)}{\ell(x \mid -1)} \lessgtr^{-1}_{+1} \gamma_{\alpha^\ast}
+\]
+
+Let use recall the ROC curve that is the following:
+[PLOT]
+
+The straight line is the silliest decisor, which uses a \textit{randomized rule}, for example, if $\alpha=0.5$ and $\beta=0.5$, it flips a coin and decides.
+
+Next lecture we will discuss about the relationship betweem Neyman-Pearson criterion and the MAP rule and also how to increase the performance of a decisor.
+
+\section{Supervised Classification}
+In our previous lessons, we have seen model-based classification, both the bayesian setting and the Neyman-Person case. In this lesson, we will see how to perform supervised classification. The setting is similar to the one of the regression.
+We have our classes
+\[
+    \Theta \in \{\theta_1, \theta_2, \dots, \theta_H\}
+\]
+and our features $X \in \mathbb{R}^d$. As in the regression case, we will have to define a risk function based on the model-based theory (the MMSE) and then use the empirical version of the risk to perform the supervised classification.
+
+In the regression case, we have seen that the MMSE is
+\[
+    \text{MMSE} = \min_f \mathbb{E}\left[ \left( Y - f(X) \right)^2 \right]
+\]
+
+We now replace $\mu(\theta\mid X)$ with $\hat{\mu}_\beta(\theta \mid X) \in f$. $f$ will be a parametric class, which has $\beta$ as a paramater. We will then have to pick a function of this class which will always be a probability mass function for each value of $f$.
+
+Assume that now we have picked a model. Our goal is to find a function $\hat{\mu}$ which error probability is comparable to the one of $\mu$. But there is a problem that we have to replace the error probability with something that we can use in optimization theory. We can use the Kullback-Leibler divergence.
+
+So now our goal is to find:
+\[
+    \beta^\ast = \arg\min_{\beta \in \mathbb{R}^M} \overline{D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right)
+\]
+By definition of Kullback-Leibler divergence, we have that:
+\[
+    \text{D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right) = \E{\mu}{\log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}} = \sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)} = f_\beta(X)
+\]
+Since we need a number but we have a function of $X$, we can take the expectation of $f_\beta(X)$ to get a number. This version of the Kullback-Leibler divergence is called \textbf{conditional Kullback-Leibler divergence}.
+
+\[
+    \text{conditional } D_{KL} = \E{X}{\sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}}
+\]
+
+\textbf{Note:} In information theory, to get the conditional quantities of some measures like the entropy and the Kullback-Leibler divergence, we don't need to apply the conditional probability formula, but we just need to take the expectation of this quantities.
+
+Let's rewrite the conditional Kullback-Leibler divergence in a shorter form:
+\[
+    \overline{D}_{KL}(\mu \mid\mid \hat{\mu}_\beta) = \E{X, \Theta}{\log \frac{\mu(\Theta \mid X)}{\hat{\mu}_\beta(\Theta \mid X)}}
+\]
+To sum up:
+\begin{enumerate}
+    \item We want to approximate the optimal posterior mean $\mu$ with $\hat{\mu}_\beta$.
+    \item We found a way to measure the quality of the approximation, the conditional Kullback-Leibler divergence.
+    \item We need to minimize the Kullback-Leibler divergence and find $\beta^\ast$
+    \item We do not know the posterior mean but we can show that it is not useful to find $\beta^\ast$.
+\end{enumerate}
+Assume we have a training set $T_n = \{\theta_i, x_i\}_{i=1}^N$ and our classes are $\Theta = \{1, 2, \dots, H\}$.
+
+We can define the empirical conditional Kullback-Leibler divergence (our \textit{empirical risk}) as:
+\[
+    \overline{D}_{KL} = \frac{1}{N} \sum_{i=1}^{N} \log \frac{\mu(\theta_i \mid x_i)}{\hat{\mu}_\beta(\theta_i \mid x_i)}
+\]
+
+Now we have a problem. We want to minimize the conditional Kullback-Leibler divergence, but we do not know the posterior mean $\mu$. Let us isolate $\mu$ in the non-empirical conditional Kullback-Leibler divergence formula:
+\[
+    \overline{D}_{KL} = - \E{X, \Theta}{\log \frac{1}{\mu(\Theta \mid X)}} + \E{X, \Theta}{\log \frac{1}{\hat{\mu}_\beta(\Theta \mid X)}}
+\]
+
+Now we define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
+\[
+    \mathcal{H} = \E{X}{\log \frac{1}{p(X)}} \text{ nats}
+\]
+For a discrete random variable:
+\[
+    \mathcal{H}(p) = \sum_{\theta} p(\theta) \log \frac{1}{p(\theta)}
+\]
+
+We define the \textbf{cross-entropy} as:
+\[
+    \mathcal{H}(p;q) = \sum_{\theta} p(\theta) \log \frac{1}{q(\theta)}
+\]
+The Kullback-Leibler divergence is also called \textbf{relative entropy}. Observing the decomposition we've written before, we have that the first term is the conditional entropy of the true distribution.
+
+Now we can rewrite a conditional Kullback-Leibler divergence in terms of entropy and cross-entropy:
+\[
+    \overline{D}_{KL}(p;q) = \mathcal{H}(p;q) - \mathcal{H}(p)
+\]
+Since we know that the Kullback-Leibler divergence is always positive, we can write:
+\[
+    \mathcal{H}(p;q) = \mathcal{H}(p) + \overline{D}_{KL}(p;q)
+\]
+
+So we found out that the cross-entropy between two distributions $p$ and $q$ is given by the sum of the entropy and the Kullback-Leibler divergence. This result is used to explain the \textit{lower bound of compression}. The number of bits in the compression of some data described by a random variable $X$ is given by the entropy of $X$. If we know the distribution of $X$, we can use the cross-entropy to compress $X$. The number of bits needed to compress $X$ is given by the entropy of $X$ plus the Kullback-Leibler divergence between the true distribution and the one we used to compress $X$. If we use the right distribution, then the Kullback-Leibler divergence is zero and we can compress $X$ with the same number of bits of the entropy of $X$.
+
+We found that
+\[
+    \overline{D}_{KL} = - \parbox{10em}{conditional entropy \\of the true distribution} + \parbox{15em}{ conditional cross-entropy\\ between true and \\ candidate distribution}
+\]
+Note that the first term does not depend on $\beta$ but it is a function of the problem. So we can minimize the conditional Kullback-Leibler divergence by minimizing the second term only. Note that without knowing the conditional entropy of the posterior mean we cannot find the value of the minimum, but we can still solve the optimization problem that requires us to find the minimizer. As in the regression part where we had the MMSE, the first term is an unbeatable error and it is an attribute of the problem, depending on the joint distribution of $X$ and $\Theta$.
+
+Now our optimization problem is:
+\[
+    \beta^\ast = \arg\min_{\beta \in \mathbb{R}^M} \frac{1}{N} \sum_{i=1}^{N} \log \frac{1}{\hat{\mu}_\beta(\theta_i \mid x_i)}
+\]
+But now two problem arises:
+\begin{itemize}
+    \item \textit{How do we implement this minimation problem?} We will see in the next lecture.
+    \item \textit{How do we choose $\hat{\mu}_\beta$?}
+\end{itemize}
+
+\subsection*{Logistic Regression}
+To choose $\hat{\mu}_\beta$, there are lots of different standard methods. As an example we will see the \textbf{logistic regression}. In particular, we will see the \textbf{binary logistic regression}, where we have $\Theta \in \{1,-1\}$.
+
+Let us start by obtaining the decision function from the MAP rule:
+\[
+    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \lessgtr 1 \Leftrightarrow \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)} \Leftrightarrow \log \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)} \lessgtr 0
+\]
+By defining:
+\[
+    f_\beta(X) \triangleq \log \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)}
+\]
+We derive $\mu$ as a function of $f$:
+\[
+    \mu = \frac{1}{1 + e^{-f}}
+\]
+and we can rewrite it for each class:
+\[
+    \hat{\mu}_{\beta}(\theta) = \frac{1}{1 + e^{-\theta f_\beta(X)}}
+\]
+
+When the problem is linearly separable, we can use \textbf{logistic regression}, by imposing $f_\beta(X) = \beta^T X$.
+
+\textbf{Important note:} This theory applies also for the m-ary case and for arbitrary decision functions that are not the MAP rule. The motive for why we use the sigmoid function is not because we need a value from 0 to 1 but because it allows us to write the posterior mean as a function of the decision function, and because it is impractical to use the posterior distribution in a supervised learning context. In any case, it is better to not to be reliant on the sigmoid function while doing binary classification.
+
+\section{Exercises}
+\subsection{Exercise 1}
+Suppose I have iid features $x = [x_1, x_2]^T$ and labels $\Theta \in \{\theta_0, \theta_1\}$. Let us assume for simplicity that the variance is $1$.
+
+Given the vector $m = [m_1 m_2]^T$, under the hypothesis "-1" the features are $x_i \sim N(0, \sigma^2)$, while under the hypothesis "+1" the features are $x_i \sim N(m_i, 1)$, for $i=1,2$.
+
+Let us compute the likelihood of the data under the two hypothesis:
+\[
+    \ell(x \mid -1 ) = \frac{1}{2\pi} \exp{-\frac{1}{2} x_1^2 - \frac{1}{2} x_2^2 } = \frac{1}{2\pi} \exp{- \frac{\|x\|^2}{2}}
+\]
+\[
+    \ell(x \mid -1 ) = \frac{1}{2\pi} \exp{- \frac{\|x-m\|^2}{2}}
+\]
+\paragraph*{Bayesian case}
+Applying Bayes rule we know that:
+\[
+    P(-1 \mid x) \propto \pi(-1) \exp{- \frac{\|x\|^2}{2}}
+\]
+\[
+    P(+1 \mid x) \propto \pi(+1) \exp{- \frac{\|x-m\|^2}{2}}
+\]
+Now we can apply the Bayesian test:
+\[
+    \frac{P(+1 \mid x)}{P(-1 \mid x)} \gtrless^{+1}_{-1} 1
+\]
+We take the logarithm to simplify:
+\[
+    \log \frac{P(+1 \mid x)}{P(-1 \mid x)} \gtrless^{+1}_{-1} 0 \Leftrightarrow \log\frac{\pi(+1)}{\pi(-1)} -  \frac{\|x-m\|^2}{2} + \frac{\|x\|^2}{2}
+\]
+
+Now let us simplify the squared norm:
+\begin{align*}
+    \|x-m\|^2 = (x-m)^T (x-m) = \\
+    = x^T x + m^T m - x^T m - m^T x = \|x\|^2 + \|m\|^2 - 2m^T x
+\end{align*}
+\textbf{Note:} in case the two features are correlated, we found out that the term is $(x-m)^T C (x-m)$, where $C$ is the variance-covariance matrix.
+
+The final log posterior ratio is:
+\[
+    \log \frac{P(+1 \mid x)}{P(-1 \mid x)} = \log\frac{\pi(+1)}{\pi(-1)} + m^T x - \frac{\|m\|^2}{2}
+\]
+
+
+From the Bayesian test statistic we can obtain quickly the log-likelihood ratio between they are equal unless for the ratio of the prior.
+\[
+    \log \frac{\ell(x \mid +1)}{\ell(x \mid -1)} = m^T x - \frac{\|m\|^2}{2}
+\]
+\textbf{Note}: the Bayesian test is a particular application of the Neyman-Pearson test, where the threshold is set. This threshold is the one that minimizes the probability of error.
+\[
+    P_{err} = \pi(-1) \alpha + \pi(+1)\beta
+\]
+In the Neyman-Pearson case we can change the threshold, but the Bayesian test picks a particular pair $(\alpha, \beta)$ that minimizes the probability of error. Altough the Bayesian test should give us the \textit{optimum}, in most practical application we prefer to use the Neyman-Pearson Lemma because we can obtain a decisor with a fixed value of $\alpha$.
+
+\paragraph*{Analytical ROC Curve}
+In this case, to implement the Neyman Pearson decisor, I can use the log-likelihood ratio, because it is a monotonic function of the likelihood ratio, and then I can remove the costants because they can be absorbed in the threshold.
+
+Then the test statistic becomes:
+\[
+    m^T x \gtrless^{+1}_{-1} \gamma
+\]
+Since the test statistic is a linear combination of gaussians and so a gaussian itself, we can compute the probabilities of the error in closed form.
+\[
+    z = m^T x = m_1 x_1 + m_2 x_2
+\]
+Under the hypothesis "-1" we have $z \sim N(0, \|m\|^2)$, while under the hypothesis "+1" we have $z \sim N(\|m\|, \|m\|^2)$.
+\begin{proof}
+    Under the hypothesis "-1" we have that both $x_1$ and $x_2$ are gaussian with mean $0$ and variance $1$.
+    \[
+        \E{}{z} = \E{}{m_1 x_1 + m_2 x_2} = m_1 \E{}{x_1} + m_2 \E{}{x_2} = 0
+    \]
+    For the variance:
+    \[
+        \text{Var}(z) = \text{Var}(m_1 x_1 + m_2 x_2) = m_1^2 \text{Var}(x_1) + m_2^2 \text{Var}(x_2) = \|m\|^2
+    \]
+    Under the hypothesis "+1" we have that $x_1$ and $x_2$ are gaussian with mean $m_1$ and $m_2$ and variance $1$.
+    \[
+        \E{}{z} = \E{}{m_1 x_1 + m_2 x_2} = m_1 \E{}{x_1} + m_2 \E{}{x_2} = \|m\|^2
+    \]
+    And the same as before for the variance.
+\end{proof}
+Now we can compute the probability of error of type I:
+\[
+    \alpha = P\left[m^T x > \gamma \mid y = -1\right] = P\left[N(0, \|m\|^2)\right] = Q\left(\frac{\gamma}{\|m\|}\right)
+\]
+And the sensitivity:
+\[
+    1 - \beta = P\left[m^T x < \gamma \mid y = +1\right] = P\left[N(\|m\|^2, \|m\|^2)\right] = Q\left(\frac{\gamma - \|m\|^2}{\|m\|}\right)
+\]
+
+This allow us to find the equation of the ROC curve.
+\[
+    \frac{\gamma}{\|m\|} = Q^{-1}(\alpha) \Rightarrow 1-\beta = Q\left(Q^{-1}(\alpha) - \|m\|\right)
+\]
+\paragraph*{Shape of the optimal distribution}
+In the supervised case, we want to learn the posterior distribution $P(y \mid x)$. For the results we mentioned about monotonicity, we can use the log posterior ratio to find the optimal \textbf{function} $f^\ast(x)$.
+
+When doing logistic regression, we imposed a particular shape for the posterior distribution that is:
+\[
+    f_\beta(x) = \beta^T x + \beta_0
+\]
+And by equating the log posterior ratio to this function:
+\[
+    \log \frac{P(+1 \mid x)}{P(-1 \mid x)} = \log\frac{\pi(+1)}{\pi(-1)} + m^T x - \frac{\|m\|^2}{2} = \beta^T x + \beta_0
+\]
+We can find the optimal parameters $\beta$ and $\beta_0$:
+\[
+    \beta = m \qquad \beta_0 = \log\frac{\pi(+1)}{\pi(-1)} - \frac{\|m\|^2}{2}
+\]
+
+Some notes: we've showed that the optimal function belongs to the family of function we've chosen and the intercept contains the prior.
