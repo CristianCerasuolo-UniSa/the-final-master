@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.17)  5 JAN 2024 16:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.17)  5 JAN 2024 16:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -887,29 +887,73 @@ Overfull \hbox (21.00185pt too wide) detected at line 236
  []
 
 [23] [24] [25] [26] [27] [28] [29] [30] [31]
-Overfull \hbox (19.84563pt too wide) in paragraph at lines 561--562
+Overfull \hbox (19.84563pt too wide) in paragraph at lines 560--561
 \T1/cmr/m/n/10 In this lec-ture we will con-sider a \T1/cmr/bx/n/10 su-per-vised \T1/cmr/m/n/10 and \T1/cmr/bx/n/10 non-parametric \T1/cmr/m/n/10 or \T1/cmr/bx/n/10 distribution-
  []
 
 [32] [33] [34]
-Overfull \hbox (9.2358pt too wide) detected at line 689
+Overfull \hbox (9.2358pt too wide) detected at line 688
 \OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 ; [] ; X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )[]\OMS/cmsy/m/n/10 k\OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 k ^^T k\OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 k ^^T [] k\OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 k
  []
 
 [35]) (./chapter_4.tex [36]
 Chapter 4.
-) (./chapter_5.tex [37
-
-] [38
+[37
 
 ]
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 27.
+ (/home/miriam/.TinyTeX/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+<./figures/lec_15_validation_set.png, id=490, 862.22125pt x 332.24126pt>
+File: ./figures/lec_15_validation_set.png Graphic file (type png)
+<use ./figures/lec_15_validation_set.png>
+Package pdftex.def Info: ./figures/lec_15_validation_set.png  used on input line 38.
+(pdftex.def)             Requested size: 276.00105pt x 106.34978pt.
+
+Overfull \hbox (26.93333pt too wide) in paragraph at lines 51--52
+\T1/cmr/m/n/10 Split the data $[]$ into a val-i-da-tion set $\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]; y[]\OT1/cmr/m/n/10 )$ \T1/cmr/m/n/10 and a train-ing set $\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]; y[]; [] ; x[]; y[]\OT1/cmr/m/n/10 )$\T1/cmr/m/n/10 .
+ []
+
+[38 <./figures/lec_15_validation_set.png>]
+<./figures/lec_15_k_fold_cv.png, id=501, 815.045pt x 349.305pt>
+File: ./figures/lec_15_k_fold_cv.png Graphic file (type png)
+<use ./figures/lec_15_k_fold_cv.png>
+Package pdftex.def Info: ./figures/lec_15_k_fold_cv.png  used on input line 77.
+(pdftex.def)             Requested size: 276.00105pt x 118.28775pt.
+ [39]
+<./figures/lec_15_investment_simulations.png, id=510, 510.90875pt x 466.74374pt>
+File: ./figures/lec_15_investment_simulations.png Graphic file (type png)
+<use ./figures/lec_15_investment_simulations.png>
+Package pdftex.def Info: ./figures/lec_15_investment_simulations.png  used on input line 111.
+(pdftex.def)             Requested size: 276.00105pt x 252.13757pt.
+ [40 <./figures/lec_15_k_fold_cv.png>]
+<./figures/lec_15_bootstrap.png, id=520, 693.59125pt x 621.32124pt>
+File: ./figures/lec_15_bootstrap.png Graphic file (type png)
+<use ./figures/lec_15_bootstrap.png>
+Package pdftex.def Info: ./figures/lec_15_bootstrap.png  used on input line 131.
+(pdftex.def)             Requested size: 276.00105pt x 247.24422pt.
+ [41 <./figures/lec_15_investment_simulations.png>]
+<./figures/lec_15_bootstrap_2.png, id=528, 788.9475pt x 325.215pt>
+File: ./figures/lec_15_bootstrap_2.png Graphic file (type png)
+<use ./figures/lec_15_bootstrap_2.png>
+Package pdftex.def Info: ./figures/lec_15_bootstrap_2.png  used on input line 149.
+(pdftex.def)             Requested size: 276.00105pt x 113.77237pt.
+ [42 <./figures/lec_15_bootstrap.png>] [43 <./figures/lec_15_bootstrap_2.png>]
+Overfull \hbox (36.55554pt too wide) in paragraph at lines 198--199
+[]\T1/cmr/bx/n/10 dimension re-duc-tion\T1/cmr/m/n/10 , in which we project the $\OML/cmm/m/it/10 p$ \T1/cmr/m/n/10 pre-dic-tors into a $\OML/cmm/m/it/10 M\OMS/cmsy/m/n/10 ^^@$\T1/cmr/m/n/10 dimensional
+ []
+
+[44] [45] [46] [47] [48] [49] [50] [51]) (./chapter_5.tex [52]
 Chapter 5.
-[39] [40] [41] [42] [43] [44]
+[53
+
+] [54] [55] [56] [57] [58]
 Overfull \hbox (5.08118pt too wide) in paragraph at lines 235--237
 \T1/cmr/m/n/10 In our pre-vi-ous lessons, we have seen model-based clas-si-fi-ca-tion, both the bayesian
  []
 
-[45] [46] [47] [48] [49]) (./chapter_6.tex [50] [51] [52
+[59] [60] [61] [62] [63]) (./chapter_6.tex [64] [65] [66
 
 ]
 Chapter 6.
@@ -925,7 +969,7 @@ Package mdframed Info: mdframed works in twoside mode on input line 22.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 22.
-[53]
+[67]
 Package mdframed Info: mdframed works in twoside mode on input line 62.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
@@ -947,7 +991,7 @@ Package mdframed Info: mdframed works in twoside mode on input line 87.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 87.
-[54]
+[68]
 Package mdframed Info: mdframed works in twoside mode on input line 102.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
@@ -968,7 +1012,7 @@ Package mdframed Info: mdframed works in twoside mode on input line 134.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 134.
- [55]
+ [69]
 Package mdframed Info: mdframed works in twoside mode on input line 139.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
@@ -981,31 +1025,31 @@ Package mdframed Info: mdframed works in twoside mode on input line 155.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 155.
- [56] [57]) (./chapter_7.tex [58]
+ [70] [71]) (./chapter_7.tex [72]
 Chapter 7.
-[59
+[73
 
-] [60] [61] [62] [63] [64] [65] [66]) [67] (./master.aux)
+] [74] [75] [76] [77] [78] [79] [80]) [81] (./master.aux)
  ***********
 LaTeX2e <2023-06-01>
 L3 programming layer <2023-06-05>
  ***********
 Package rerunfilecheck Info: File `master.out' has not changed.
-(rerunfilecheck)             Checksum: F66AEC02B3DB96DB5639D0F92D49E739;7377.
+(rerunfilecheck)             Checksum: BA1B80521DD918FE8CEC26AC91F03C2F;7801.
  ) 
 Here is how much of TeX's memory you used:
- 26605 strings out of 477695
- 505008 string characters out of 5831364
+ 26725 strings out of 477695
+ 507824 string characters out of 5831364
  1874759 words of memory out of 5000000
- 46365 multiletter control sequences out of 15000+600000
- 540109 words of font info for 98 fonts, out of 8000000 for 9000
+ 46429 multiletter control sequences out of 15000+600000
+ 540422 words of font info for 99 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 104i,18n,104p,841b,586s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbi1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0800.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0700.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2488.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600pk></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on master.pdf (67 pages, 526235 bytes).
+ 104i,18n,104p,858b,586s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbi1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0800.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0700.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2488.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </home/miriam/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600pk></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></home/miriam/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
+Output written on master.pdf (81 pages, 1220623 bytes).
 PDF statistics:
- 1286 PDF objects out of 1440 (max. 8388607)
- 719 compressed objects within 8 object streams
- 216 named destinations out of 1000 (max. 500000)
- 381 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1446 PDF objects out of 1728 (max. 8388607)
+ 833 compressed objects within 9 object streams
+ 268 named destinations out of 1000 (max. 500000)
+ 430 words of extra memory for PDF output out of 10000 (max. 10000000)
 
