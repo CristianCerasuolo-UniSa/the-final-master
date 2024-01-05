@@ -1,144 +1,207 @@
 \chapter{Optimization}
 
-\section{Assumptions}
-Lots of problem in statistical learning can be formulated as optimization problem. Thus, optimization is important because we need to find how solve the optimization problems in a computationally efficient way. Many statistical learning tasks involve the minimization of a \textit{cost} function. This function is also sometimes called \textit{cost}, \textit{loss}, \textit{risk} or \textit{objective} function.
+\section{Optimization in data analysis}
+Lots of problem in statistical learning can be formulated as optimization problems. Thus, optimization is important because we need to know how solve the optimization problems in a computationally efficient way.
 
-This is the generic form of an \textit{unconstrained minimization problem}:
+Assume that we have \textbf{random data} $D \in \mathcal{D}$ as feature-label pairs: $D = (X,Y)$.
+
+\begin{definition}
+    The \textbf{loss} function $Q_\beta(d)$ is a function of $d \in D$ parameterized by $\beta \in \mathbb{R}^p$.
+\end{definition}
+\begin{definition}
+    The \textbf{cost} function, also known as \textit{risk} or \textit{objective} function, is defined as the loss function averaged over $D$:
+    \[
+        J(\beta) = \E{}{Q_\beta(D)}
+    \]
+\end{definition}
+
+%Another thing is the more we relax the assumptions, the less information we get. \textit{The less we ask, the less we get.} For example, when I work under the assumption that
+
+%A \textbf{performance guarantee} means that whatever we do the dataset seems to work, meaning that we can apparently obtain some information.
+
+\begin{definition}
+    We can define statistical learning as an optimization problem as the \textit{unconstrained minimization} of the \textit{cost function}:
+    \[
+        \min_{\beta \in \mathbb{R}^p} J(\beta) = \E{}{Q_\beta(D)}
+    \]
+\end{definition}
+
+For example in the regression case we minimize the mean-square-error while in the classification case we minimize the conditional cross-entropy.
+
+\paragraph*{Regression}
+In the regression case, the loss function is the error:
 \[
-    \min_{\beta} J(\beta)
+    Q_\beta(d) = Q_\beta(x,y) = (x^T\beta - y)^2
 \]
-Where $\beta \in \mathbb{R}^d$.
-
-    [YAPPING]
-
-Example with the regression case.
-
-Example with the logistic regression case.
-
-Another thing is the more we relax the assumptions, the less information we get. \textit{The less we ask, the less we get.} For example, when I work under the assumption that
-
-A \textbf{performance guarantee} means that whatever we do the dataset seems to work, meaning that we can apparently obtain some information.
-
-In order to define our problem, let us assume that we have our \textbf{random data} $D \in \mathcal{D}$ in form: $D = (X,Y)$.
-We then choose a \textbf{loss function} $Q_\beta(d)$, that defines our actual cost without taking expectation. $\beta \in \mathbb{R}^p$ is our vector of parameters.
-
-For example, if we consider linear regression and we pick our data $d=\{ x,y \} $, then the loss function will be $Q_\beta(d)= Q_\beta(x,y)= (y-\beta^T X)^2$.
-
-Then, assuming that the statistical distribution of $D$ is known, our task is to minimize the \textbf{loss averaged over $D$}:
+Then the cost function will be the mean square error:
 \[
-    J(\beta) = \E{}{Q_\beta(D)}
+    J(\beta) = \E{}{(X^T \beta - Y)^2}
 \]
 
-Now are going to state the \textbf{assumptions} that we require to introduce the gradient descent algorithm.
-But first some remarks:
-\begin{itemize}
-    \item Our \textit{averaged loss function} is $J: \beta \in \mathbb{R}^{p} \to  j \in \mathbb{R}$.
-    \item $\nabla J(\beta)$ is the gradient of our \textit{averaged loss function} and it is a vector of dimensions $p \times 1$, where each element is $\frac{\partial J(\beta)}{\partial \beta_i}$
-    \item we are going to use the \textbf{euclidean norm} as a norm.
-\end{itemize}
-
-We need two assumptions: (1) \textbf{Lipschitz continuity} and \textbf{convexity}.
-First, remember that a function is continuous if two points become closer, then the values of the function evaluated in those two points also becomes closer, that is the difference between the two points becomes closer to zero. When we say a function is continuous, we don't know that is the rate with which they become closer. This is why we need to introduce the \textit{Lipschitz-continuity of the gradient}. The definition is the following:
+\paragraph*{Classification}
+In the logistic regression case, the loss function is the cross-entropy:
 \[
-    \forall \beta_1, \beta_2 \colon \| \nabla J(\beta_2) - \nabla J(\beta_1)\| \leq \delta \|\beta_2 - \beta_1\|
+    Q_\beta(d) = Q_\beta(x,y) = \log\left(1+e^{-y x^T \beta}\right)
 \]
-That is that the difference of the gradient is upper bounded by the difference of the parameters times a constant. When the gradient is Lipschitz-continuous we usually say \textit{the gradient varies smoothly}.
-
-\textbf{Note:} if a function is Lipschitz-continuous then it is also continuous.
-
-Now let us introduce the convexity. A \textbf{convex combination} is the sum of two quantites weighted respectively by the coefficient $\alpha$ and $1-\alpha$. We say that a function is \textbf{convex} if
+Then the cost function will be the \textit{conditional} cross-entropy:
 \[
-    \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
+    J(\beta) = \E{}{\log\left(1+e^{-y x^T \beta}\right)}
 \]
-we have that:
+\section{Problem assumptions}
+\begin{remark}
+    Given the cost function $J: \beta \in \mathbb{R}^{p} \to  j \in \mathbb{R}$, $\nabla J(\beta)$ is the gradient of the cost function and it is a vector of dimensions $p \times 1$, where each element is $\frac{\partial J(\beta)}{\partial \beta_i}$. The norm we are going to use is the \textbf{euclidean norm}.
+\end{remark}
+
+\subsection{Lipschitz Continuity}
+First, remember that a function is continuous if two points become closer, then the values of the function evaluated in those two points also becomes closer, that is the difference between the two points becomes closer to zero.
 \[
-    J(\alpha \beta_1 + (1-\alpha)\beta_2) \leq \alpha J(\beta_1) + (1-\alpha)J(\beta_2)
+    x_1 - x_2 \to 0 \implies f(x_1) - f(x_2) \to 0
 \]
-which means that the function evaluated in the convex combination of the two parameters lies also below the chord that is described by the convex combination of the parameters.
+When we say a function is continuous, we don't know that is the rate with which they become closer. This is why we need to introduce the \textbf{Lipschitz-continuity of the gradient}.
 
-    [IMMAGINE]
+\begin{definition}
+    A function is defined \textbf{Lipschitz continuous} if:
+    \[
+        \forall \beta_1, \beta_2 \colon \| \nabla J(\beta_2) - \nabla J(\beta_1)\| \leq \delta \|\beta_2 - \beta_1\|
+    \]
+    i.e. the difference of the gradient compute for the parameters $\beta_1, \beta_2$ is upper bounded by the difference of the parameters times a constant $\delta > 0$, called \textbf{Lipschitz constant}.
+\end{definition}
 
+When the gradient is Lipschitz-continuous we usually say \textit{the gradient varies smoothly}.
+
+\begin{theorem}
+    \[
+        \text{Lipschitz continuity} \implies \text{continuity}
+    \]
+\end{theorem}
+\subsection{Convexity}
+
+\begin{definition}
+    A \textbf{convex combination} is the sum of two quantites weighted respectively by the coefficient $p$ and $1-p$.
+    \[
+        c = p x_1 + (1-p) x_2
+    \]
+    By definition, the convex combination of $x_1$ and $x_2$ always lies in between of $x_1$ and $x_2$.
+\end{definition}
+
+\begin{definition}
+    A function $f(x)$ is \textbf{convex} if for every $x_1, x_2$, $x_1 \neq x_2$ and for every $p \in (0,1)$, the function evaluated in the convex combination of $x_1$ and $x_2$ lies always below the chord that is described by the convex combination.
+    \[
+        f(p x_1 + (1-p) x_2) \leq p f(x_1) + (1-p) f(x_2) \qquad \forall \alpha \in (0,1) \text{ and } \forall x_1 \neq x_2
+    \]
+\end{definition}
+
+Another assumption of the optimization problems in statistical learning is that the cost function $J(\beta)$ need to be \textit{convex}:
+\[
+    J(\alpha \beta_1 + (1-\alpha)\beta_2) \leq \alpha J(\beta_1) + (1-\alpha)J(\beta_2) \qquad  \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
+\]
+
+% immagine 
 The most frequent convention in optimization is doing \textbf{minimization}, and thus assuming that the cost function is convex. However, if we need to solve a \textit{maximization problem}, then we would need a \textit{concave} function.
 
-Obviously, since the definition of convexity involves a less or equal definition, then the definition of \textit{strict convexity} involves a strict less than sign. A function is \textbf{strictly convex} if:
-\[
-    \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
-\]
-we have that:
-\[
-    J(\alpha \beta_1 + (1-\alpha)\beta_2) < \alpha J(\beta_1) + (1-\alpha)J(\beta_2)
-\]
+\begin{definition}
+    A function $J(\beta)$ is said to be \textbf{strictly convex} if:
+    \[
+        J(\alpha \beta_1 + (1-\alpha)\beta_2) < \alpha J(\beta_1) + (1-\alpha)J(\beta_2) \qquad \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
+    \]
+\end{definition}
 
-Then we have another definition, which is the \textbf{strong convexity}. A function is \textbf{strongly convex} if:
-\[
-    \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
-\]
-we have that:
-\[
-    J(\alpha \beta_1 + (1-\alpha)\beta_2) \leq \alpha J(\beta_1) + (1-\alpha)J(\beta_2) - \frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2
-\]
-where $\nu$ is a positive strong-convexity constant.
+\begin{definition}
+    A function $J(\beta)$ is said to  be \textbf{strongly convex} if:
+    \[
+        J(\alpha \beta_1 + (1-\alpha)\beta_2) \leq \alpha J(\beta_1) + (1-\alpha)J(\beta_2) - \frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2
+    \]
+    \[
+        \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
+    \]
+    where $\nu >0 $ is the \textbf{strong-convexity constant}.
+\end{definition}
 
-Since the term $\frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2$ is always positive, then we have that even if the function will be equal to the chord, it will be always above the chord, thus implying the strict convexity.
+\begin{theorem}
+    We have the following chain of implications:
+    \[
+        \text{strong convexity} \implies \text{strict convexity} \implies \text{convexity}
+    \]
+\end{theorem}
+Since the term $\frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2$ is always positive, then we have that even if the function will be equal to the chord, it will be always under the chord, thus implying the strict convexity.
+\paragraph*{Hessian matrix}
+The Hessian matrix, indicated with $\nabla^2 J(\beta)$, is the matrix of second derivatives of a function. It is a matrix of dimensions $p \times p$, where each element is $\frac{\partial^2 J(\beta)}{\partial \beta_i \partial \beta_j}$.
 
-So we have the following chain of implications:
-\[
-    \text{strong convexity} \implies \text{strict convexity} \implies \text{convexity}
-\]
+\begin{definition}
+    A matrix is said to be \textbf{positive definite} if all of its eigenvalues are positive. The notation $A > B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive definite matrix}.
+\end{definition}
 
-\textbf{Note:} we are assuming $\delta \in \mathbb{R}$ and $\nu \in \mathbb{R}$, but the definition holds only for positive values.
+\begin{definition}
+    A matrix is said to be \textbf{positive semi-definite} if all of its eigenvalues are non-negative. The notation $A \geq B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive semi-definite matrix}. We can also use the symbol $\succ$ and $\succeq$.
+\end{definition}
 
-The Hessian matrix, indicated with $\nabla^2 J(\beta)$, is the matrix of second derivatives of a function. This matrix is a matrix of dimensions $p \times p$, where each element is $\frac{\partial^2 J(\beta)}{\partial \beta_i \partial \beta_j}$.
+We can rewrite the definitions of convexity in terms of the Hessian matrix.
+\begin{definition}
+    A function $J(\beta)$ is said to be \textbf{convex} if:
+    \[
+        \nabla^2 J(\beta) \geq 0 \ \forall \beta
+    \]
+\end{definition}
 
-The notation $A > B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive definite matrix}. If $A \geq B$ then $A-B$ is a \textbf{positive semi-definite matrix}. We can also use the symbol $\succ$ and $\succeq$.
-
-When a matrix is positive definite it means that all its eigenvalues are positive. When a matrix is positive semi-definite it means that all its eigenvalues are non-negative.
-
-We can rewrite the definitions of convexity in terms of the Hessian matrix. A function is \textbf{convex} if:
-\[
-    \nabla^2 J(\beta) \geq 0 \ \forall \beta
-\]
 For example, let us consider the one dimensional case: if the second derivative is positive, then the function is convex.
-A function is \textbf{strictly convex} if:
-\[
-    \nabla^2 J(\beta) > 0 \ \forall \beta
-\]
-Finally, a function is \textbf{strongly convex} if:
-\[
-    \nabla^2 J(\beta) \geq \nu I \ \forall \beta
-\]
-Which means that for all the choice of the paramters $\beta$ the Hessian matrix is greater or equal than the threshold $\nu$ times the identity matrix.
 
-The parabola is the most common example of a strongly convex function. An example of function that is not strongly convex but convex is the exponential function $e^{-x}$, because we cannot find a $\nu$ such that the function is greater or equal than that threasold. This is also because the exponential function is bounded from below by zero.
+\begin{definition}
+    A function $J(\beta)$ is said to be \textbf{strictly convex} if:
+    \[
+        \nabla^2 J(\beta) > 0 \ \forall \beta
+    \]
+\end{definition}
 
-The MSE cost used in linear regression is strongly convex if the covariance matrix $\E{}{XX^T}$ is invertible.
+\begin{definition}
+    A function $J(\beta)$ is said to be \textbf{strongly convex} if:
+    \[
+        \nabla^2 J(\beta) \geq \nu I \ \forall \beta
+    \]
+    where $\nu > 0$ is the \textbf{strong-convexity constant}.
+\end{definition}
 
-It can be shown that the covariance matrix is positive semi-definite and symmetric.
+The parabola is the most common example of a strongly convex function.
 
-If the covariance matrix is invertible then the determinant is non-zero and thus each eigenvalue of the matrix is non-zero.
+An example of function that is not strongly convex but convex is the exponential function $e^{-x}$, because we cannot find a $\nu$ such that the function is greater or equal than that threshold. This is also because the exponential function is bounded from below by zero.
+
+%\paragraph*{Example}
+
+%The MSE cost used in linear regression is strongly convex if the covariance matrix $\E{}{XX^T}$ is invertible.
+
+%It can be shown that the covariance matrix is positive semi-definite and symmetric.
+
+%If the covariance matrix is invertible then the determinant is non-zero and thus each eigenvalue of the matrix is non-zero.
 
 \section{Gradient Descent}
 Finding the minimum of a function is not an easy problem because we need to find the point where the derivative is zero; but this alone does not guarantee that we have found the minimum, because it could be a maximum or a saddle point. And even if we ascertain that the point is a point of minimum, we don't know if it is a local or global minimum.
 
 So algorithms like the gradient descent are very useful when our problem has a complex formulation.
-The basic idea of the gradient descent is to start from a random point and then move in the direction of the negative gradient, which is the direction of the steepest descent. The gradient descent is an iterative algorithm, which means that we need to repeat the same operation multiple times.
+The basic idea of the gradient descent is to start from a random point and then move in the opposite direction of the gradient, which is the direction of the steepest descent. The gradient descent is an iterative algorithm.
 
-Each time we update the parameters in the gradient descent algorithm, we are moving by a step of size $\mu$, which is usually called \textit{step-size}. We can show that if $\mu$ is small enough, then the gradient descent algorithm converges to the minimum of the function, the size of $\mu $ is determined by $\delta$ and $\nu$.
-But if we choose a step-size that is too large, then the algorithm may not converge.
+\begin{algorithm}[H]
+    \SetAlgoLined
+    Set a starting point $\beta_0$ \\
+    \For{$i=1,2,\dots$}{
+        $\beta_{i} = \beta_{i-1} - \mu \nabla J\beta_{i-1}$
+    }
+    \caption{Gradient Descent}
+\end{algorithm}
 
-If we use a \textbf{constant step-size}, then we can show that for $\mu$ smaller than a certain value (which depends on the Lipschitz constant $\delta$ and the strong-convexity constant $\nu$), the gradient descent converges to the exact minimizer. The algorithm converges at a \textit{geometric} rate on the order $O(\rho^i)$ where $\rho \in (0,1)$ is a decreasing function of the step-size $\mu$ and also depends on $\delta$ and $\nu$.
+Each time we update the parameters in the gradient descent algorithm, we are moving by a step of size $\mu$, which is usually called \textit{step-size}. We can show that if $\mu$ is small enough (where small is determined by $\delta$ and $\nu$), then the gradient descent algorithm converges to the minimum of the function. But if we choose a step-size that is too large, then the algorithm may not converge.
 
-If use a \textbf{decaying step-size}, then if we consider an iteration-dependent step-size $\mu = \mu(i)$, with $\sum_{i=0}^{+\infty} \mu(i) = +\infty$ and $\lim \mu(i) = 0$, the gradient descent converges to the exact minimizer with a \textit{non-geometric} rate.
+If we use a \textbf{constant step-size}, then we can show that for $\mu$ smaller than a certain value (which depends on the Lipschitz constant $\delta$ and the strong-convexity constant $\nu$), the gradient descent converges to the \textbf{exact minimizer}.
+
+%If $\mu$ is greater than a certain value, then the gradient descent 
+
+The algorithm converges at a \textit{geometric} rate on the order $O(\rho^i)$ where $\rho \in (0,1)$ is a decreasing function of the step-size $\mu$ and also depends on $\delta$ and $\nu$.
+
+If use a \textbf{decaying step-size}, then if we consider an iteration-dependent step-size $\mu = \mu(i)$, with $\sum_{i=0}^{+\infty} \mu(i) = +\infty$ and $\lim_{i \to +\infty} \mu(i) = 0$, the gradient descent converges to the \textbf{exact minimizer} with a \textit{non-geometric} rate. In practice, the convergence is still guaranteed but it is slower.
 
 A typical choice is $\mu(i) = \frac{\tau}{i + 1}$ with $\tau > 0$, yielding a convergence rate of $O(\frac{1}{i^{2 \nu \tau}})$.
 
+\subsection{Gradient Descent Limitations}
 
-
-In the previous lecture we've seen that the Gradient Descent algorithm with constant step-size converges \textit{exponentially}\footnote{In some books also linearly or geometrically} to the optimal solution of the problem. With decaying step-size, the convergence is still guaranteed but it is slower.
-
-\section{Stochastic Gradient Descent}
-
-In practice we cannot compute the cost function $\E{}{Q_\beta(D)}$ because we do not know the distribution of $D$. However, by using our dataset $\{d_i\}_{i=1}^n$, we can compute the empirical risk:
+In practice, we cannot compute the cost function $\E{}{Q_\beta(D)}$ because we do not know the distribution of $D$. However, by using our dataset $\{d_i\}_{i=1}^n$, we can compute the empirical risk:
 \[
     J_{emp}(\beta) = \frac{1}{n}\sum_{i=1}^{n} Q_\beta(d_i)
 \]
@@ -150,7 +213,8 @@ In practice, we do not use this empirical risk because the computation of the gr
     \item it is not suited for distributed application
 \end{itemize}
 
-The solution is using an \textbf{instantaneous approximation of the gradient} based on individual samples:
+\section{Stochastic Gradient Descent}
+The solution to the limitations of the gradient descent is using an \textbf{instantaneous approximation of the gradient} based on individual samples:
 \[
     \hat{\nabla J_i}(\beta) = \nabla Q_\beta(d_i)
 \]
@@ -168,30 +232,28 @@ The stochastic gradient descent algorithm is the following:
     \caption{Stochastic Gradient Descent}
 \end{algorithm}
 
-\textbf{Note:} $\beta_i$ is a stochastic process and the instantaneous approximation of the gradient is a \textit{noisy} estimate of the true gradient based on the current sample $d_i$.
-
-As time progresses, we are putting more samples. At the end we are computing the average of the gradients of the loss function for each sample but we are doing this over time.
-
+With respect to the gradient descent:
+\begin{itemize}
+    \item we are using an instantaneous approximation of the gradient based on individual samples that is \textit{noisy} estimate of the true gradient based on the current sample $d_i$, which means we are not considering the information contained in the other samples.
+    \item $\beta_i$ is a stochastic process, since it depends on the random samples $d_i$.
+    \item We are computing the average \textit{over time} of the gradients of the loss function for each sample.
+\end{itemize}
 \paragraph*{Constant step-size}
-We can show that with constant step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) never reach the optimal solution. This is due to the \textit{gradient noise} that is the \textit{inherent} randomness of the gradient.
+We can show that with constant step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) never reach the optimal solution. This is due to the \textit{gradient noise} that is the \textit{inherent} randomness of the gradient. The iterates are \textit{oscillating} around the exact minimizer.
 
-If we see a plot we can see that the iterates are \textit{oscillating} around the optimal solution.
 
-If we use a smaller step size, we are focusing in a large quantity of data in the sliding window.
+For a $\mu$ smaller than a certain value (which depends on $\delta$ and $\nu$), the iterates $\beta_i$ oscillates in a smaller neighbourhood of the true minimizer $\beta^\ast$.
 
-For a $\mu$ smaller than a certain value (which depends on $\delta$ and $\nu$), the iterates $\beta_i$ oscillates in a smaller neighbourhood of the true minimizer $\beta^\ast$. The error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to a steady-state error $O(\mu)$ at a geometric rate $O(\rho^i)$ (exponential convergence).
+The error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to a steady-state error $O(\mu)$ at a geometric rate $O(\rho^i)$ where $\rho \in (0,1)$ is a decreasing function of the step-size $\mu$ and also depends on $\delta$ and $\nu$.
 
-    [TODO: add plot]
-
-The solution to this problem is making $\mu$ smaller, but then we will surely have a slower convergence, this is because if $\mu$ is smaller then $\rho$ is higher and this means that it will take more time to converge.
+The more smaller is $\mu$ the more are the data that we are averaging, which means that we are considering more the previous information and less the current information. In practice that the stochastic gradient descent with constant step-size allows us to react to data drifts within a fixed number of samples that it is about $\frac{1}{\mu}$. This means that if we set $\mu = 0.01$ we can react to data drifts within 100 samples.
 
 \paragraph*{Decaying step-size}
 We can show that with decaying step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) converge to the exact minimizer and the error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to zero.
 
 If $\mu(i) = \frac{\tau}{i+1}$ for $\tau > \frac{1}{\nu}$ the convergence rate it $O(\frac{1}{i})$.
 
-In conclusion, we can say that decaying step-sizes converge to the exact minimizer but they are not suited to online tasks, because the algorithm cannot react to data drifts since the updates are given less importance due to the increasingly smaller values of $\mu(i)$. We can still use it in \textit{batch} applications rather than online tasks.
+\paragraph*{Online learning}
+We can say that decaying step-sizes converge to the exact minimizer but they are not suited to online tasks, because the algorithm cannot react to data drifts since the updates are given less importance due to the increasingly smaller values of $\mu(i)$. We can still use it in \textit{batch} applications rather than online tasks.
 
 By contrast, constant step-sizes are suited to online tasks, but they do not converge to the exact minimizer. However, they converge to a neighbourhood of the minimizer and they are able to react to data drifts. The smaller the $\mu$, the better the accuracy of the algorithm, but the slower the convergence.
-
-\textbf{Note:} we can say in practice that the stochastic gradient descent with constant step-size allows us to react to data drifts within a fixed number of samples that it is about $\frac{1}{\mu}$. This means that if we set $\mu = 0.01$ we can react to data drifts within 100 samples.
