@@ -164,13 +164,27 @@ The parabola is the most common example of a strongly convex function.
 
 An example of function that is not strongly convex but convex is the exponential function $e^{-x}$, because we cannot find a $\nu$ such that the function is greater or equal than that threshold. This is also because the exponential function is bounded from below by zero.
 
-%\paragraph*{Example}
+\begin{theorem}
+    The MSE cost used in linear regression is strongly convex if the covariance matrix $\E{}{X^TX}$ is invertible.
+\end{theorem}
 
-%The MSE cost used in linear regression is strongly convex if the covariance matrix $\E{}{XX^T}$ is invertible.
+\begin{proof}
+    First we are going to prove that the Hessian matrix of the MSE cost is $\nabla^2 J(\beta) = 2 \E{}{X^TX}$.
 
-%It can be shown that the covariance matrix is positive semi-definite and symmetric.
+    Let $X \in \mathbb{R}^{1 \times p}$ be the matrix of the features, $\beta \in \mathbb{R}^{p \times 1}$ and $Y \in \mathbb{R}$ be the target variable.
+    Let us compute the gradient of the MSE cost:
+    \begin{align*}
+        \nabla J(\beta) = \nabla_\beta \E{}{(X \beta - Y)^2} =  \E{}{\nabla_\beta(X \beta - Y)^2} \\ = \E{}{\nabla_\beta(\beta^T X^T X \beta - 2 \beta^T X^T Y + Y^T Y)} = \\
+        = \E{}{2 X^T X \beta - 2 X^T Y}
+    \end{align*}
+    Then we can compute the Hessian matrix:
+    \begin{align*}
+        \nabla^2 J(\beta) = \nabla_\beta \nabla_\beta J(\beta) = \nabla_\beta \E{}{2 X^T X \beta - 2 X^T Y} = \\
+        = \E{}{2 X^T X} = 2 \E{}{X^T X}
+    \end{align*}
 
-%If the covariance matrix is invertible then the determinant is non-zero and thus each eigenvalue of the matrix is non-zero.
+    Any covariance matrix is positive semi-definite and symmetric. Since the covariance matrix is positive semi-definite, then all of its eigenvalues are non-negative. Since the covariance matrix is then the determinant of the covariance matrix is non-zero, which means that all of its eigenvalues are non-zero. Thus, the eigenvalues of the covariance matrix are positive, and greater then the minimum eigenvalue $\lambda_{min} = \nu$, which proves the strong convexity of the MSE cost.
+\end{proof}
 
 \section{Gradient Descent}
 Finding the minimum of a function is not an easy problem because we need to find the point where the derivative is zero; but this alone does not guarantee that we have found the minimum, because it could be a maximum or a saddle point. And even if we ascertain that the point is a point of minimum, we don't know if it is a local or global minimum.

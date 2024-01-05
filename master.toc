@@ -1,10 +1,10 @@
 \babel@toc {english}{}\relax 
 \contentsline {chapter}{\numberline {1}Fundamentals}{5}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Linear Algebra}{5}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Law of Large Numbers}{5}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Bayes's Rule}{5}{section.1.3}%
-\contentsline {section}{\numberline {1.4}Theorem of the total expectation}{5}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Tower Property}{5}{section.1.5}%
+\contentsline {section}{\numberline {1.2}Law of Large Numbers}{6}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Bayes's Rule}{6}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Theorem of the total expectation}{6}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Tower Property}{6}{section.1.5}%
 \contentsline {chapter}{\numberline {2}Estimation Theory}{7}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Introduction to Data Analysis}{7}{section.2.1}%
 \contentsline {subsection}{\numberline {2.1.1}Data Analysis}{7}{subsection.2.1.1}%
@@ -42,9 +42,9 @@
 \contentsline {section}{\numberline {6.2}Problem assumptions}{68}{section.6.2}%
 \contentsline {subsection}{\numberline {6.2.1}Lipschitz Continuity}{68}{subsection.6.2.1}%
 \contentsline {subsection}{\numberline {6.2.2}Convexity}{68}{subsection.6.2.2}%
-\contentsline {section}{\numberline {6.3}Gradient Descent}{70}{section.6.3}%
+\contentsline {section}{\numberline {6.3}Gradient Descent}{71}{section.6.3}%
 \contentsline {subsection}{\numberline {6.3.1}Gradient Descent Limitations}{71}{subsection.6.3.1}%
-\contentsline {section}{\numberline {6.4}Stochastic Gradient Descent}{71}{section.6.4}%
-\contentsline {chapter}{\numberline {7}Cluster Analysis}{73}{chapter.7}%
-\contentsline {section}{\numberline {7.1}PCA}{73}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Clustering}{76}{section.7.2}%
+\contentsline {section}{\numberline {6.4}Stochastic Gradient Descent}{72}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Cluster Analysis}{75}{chapter.7}%
+\contentsline {section}{\numberline {7.1}PCA}{75}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Clustering}{78}{section.7.2}%
