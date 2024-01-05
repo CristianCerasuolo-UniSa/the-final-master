@@ -22,10 +22,67 @@ In general, the relationship between the eigenvectors and the eigenvalues is the
 \section{Law of Large Numbers}
 
 \section{Bayes's Rule}
+\begin{theorem}
+    Bayes's rule states that:
+    \[
+        p(x|y) = \frac{p(y|x) p(x)}{p(y)}
+    \]
+\end{theorem}
+\begin{proof}
+    By definition of conditional probability we have:
+    \[
+        p(x|y) = \frac{p(x,y)}{p(y)} \to p(x,y) = p(x|y) p(y)
+    \]
+    and
+    \[
+        p(y|x) = \frac{p(x,y)}{p(x)} \to p(x,y) = p(y|x) p(x)
+    \]
+    \[
+        p(x|y) p(y) = p(y|x) p(x) \to p(x|y) = \frac{p(y|x) p(x)}{p(y)}
+    \]
+\end{proof}
 
-\section{Theorem of the total expectation}
+\section{Fundamental theorem of expectation}
+Assume if have a discrete random variable $Y$ and a function $h(Y)$ and I want to compute the expected value of $h(Y)$. By definition of expected value, by fixing $Z = h(Y)$, we have:
+\[
+    \E{}{Z} = \sum_{z \in Z} z p(z) = \sum_{y \in Y} h(y) p(z)
+\]
+The fundamental theorem of expectation states that we can compute the expected value of $h(Y)$:
+\[
+    \E{}{h(Y)} = \sum_{y \in Y} h(y) p(y)
+\]
 
 \section{Tower Property}
+Suppose we have two discrete random variables $X$ and $Y$ and $h$ that is a function of $X$ and $Y$.
+\begin{theorem}
+    The \textbf{tower property} states that we can compute the expected value of $h(X,Y)$ by first computing the conditional expected value of $h(X,Y)$ given $X$ and then computing the expected value of the result over $X$.
+    \[
+        \E{Y}{h(X,Y)} = \E{X}{\E{Y}{h(X,Y) \mid X}}
+    \]
+\end{theorem}
+
+\begin{proof}
+    By definition of mean of discrete random variables:
+    \[
+        \E{Y}{h(X,Y)} = \sum_{x \in X} \sum_{y \in Y} h(x,y) p(x,y)
+    \]
+    By apply Bayes's rule, we can rewrite $p(x,y)$:
+    \[
+        \sum_{x \in X} \sum_{y \in Y} h(x,y) p(x,y) = \sum_{x \in X} \sum_{y \in Y} h(x,y) p(y|x) p(x)
+    \]
+    Since $p(x)$ does not depend on the second summation term, we can rewrite it outside the summation term:
+    \[
+        \sum_{x \in X}  p(x) \sum_{y \in Y} h(x,y) p(y|x)
+    \]
+    We can observe that now the second summation term is by definition the conditional mean of $h(X,Y)$:
+    \[
+        \sum_{x \in X}  p(x) \E{Y}{h(X,Y) \mid X = x}
+    \]
+    Finally, we can observe that this term is the expected value over $X$ of the conditional mean.
+    \[
+        \E{X}{\E{Y}{h(X,Y) \mid X = x} }
+    \]
+\end{proof}
 
 
 

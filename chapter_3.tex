@@ -42,10 +42,33 @@ Suppose we have $Y \in \mathbb{R}$ (that is our parameter of interest) and data 
     \]
 
 \end{exercise}
+\begin{theorem}
+    Assuming a general regression problem, i.e. $Y_0 = r(X_0) + \mathcal{E}$, the error is conditionally zero mean:
+    \[
+        \E{}{\mathcal{E} \mid X} = 0
+    \]
+\end{theorem}
 
-\begin{note}{Question}
-    Why is the error term conditionally zero mean given $X$?
-\end{note}
+\begin{proof}
+    The error is defined as following:
+    \[
+        \mathcal{E} = Y_0 - r(X_0)
+    \]
+    We can compute the conditional expectation of the error given $X$:
+    \[
+        \E{}{\mathcal{E} \mid X_0} = \E{}{Y_0 - r(X_0) \mid X_0} = \E{}{Y_0 \mid X_0} - r(X_0)
+    \]
+    The first term is the conditional expectation of $Y_0$ given $X_0$, which is equal to $r(X_0)$ by definition of regression function. So we get the following:
+    \[
+        \E{}{\mathcal{E} \mid X_0} = r(X_0) - r(X_0) = 0
+    \]
+\end{proof}
+
+Note that if we assumed the shape of optimal function, like we did in the linear regression case, we need to make the assumption that the error is conditionally zero mean. If this assumption wasn't true, it would mean that we made a wrong assumption on the shape of the optimal function.
+\[
+    \E{}{\mathcal{E} \mid X_0} = r(X_0) - \beta^T X_0 \neq 0 \implies r(X_0) \neq \beta^T X_0
+\]
+
 \begin{exercise}
     Find the relationship between $\beta$ and $X$ and $Y$. In particular, we want to find an expression for $\beta$ that depends on some moments of $X,Y$ and $XY$.
 
@@ -557,7 +580,8 @@ The inaccuracy in the coefficient estimates is related to the reducible error.
 
 \newpage
 \section{Supervised Non Parametric Regression}
-In this lecture we will consider a \textbf{supervised} and \textbf{non-parametric} or \textbf{distribution-free} setting, meaning that we don't know what are the models that define the data.
+
+We are now going to consider the \textbf{non-parametric} or \textbf{distribution-free} setting, meaning that we don't know what are the models that define the data.
 
 The training set is defined as a set of $n$ pairs made by the features $X_i$ and the labels $Y_i$:
 \[
@@ -565,16 +589,19 @@ The training set is defined as a set of $n$ pairs made by the features $X_i$ and
 \]
 where $X_i \in \mathbb{R}$ and $Y_i \in \mathbb{R}$. The pairs $(X_i, Y_i)$ are \textit{i.i.d.} samples.
 
-
-\paragraph*{Supervised problem}
-Since we are focusing on \textit{supervised} non-parametric approaches, the function $\hat{r}(X_0)$ will depend on the training set, and we will call it \textbf{estimated regression function}:
+Let $X_0$ be a new observation, we want to predict the label $Y_0$ associated with $X_0$. Since we are focusing on \textit{supervised} non-parametric approaches, the \textit{suboptimal} estimator $\hat{r}(X_0)$ will depend on the training set, and we will call it \textbf{estimated regression function}:
 \[
     r_n(X_0) \triangleq r(X_0; T_n)
 \]
-
 Since $r_n(X_0)$ is a \textbf{family} of functions, for different realizations of the training set, we get a different function.
 % PLOT
-When deriving the error term, we were considering $\hat{r}(X_0)$ only as a deterministic function of $X_0$. Now if we take into account the training set, since it is a set of pairs of random variables, the expectation is not well defined.
+
+\subsection{Consistency}
+Suppose we want to compute the error term:
+\[
+    \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)}
+\]
+But we cannot compute the error term because we it depends also on the training set $T_n$, which is another random variable.
 
 In order to solve this problem, we would need to condition the expectation on the training set, by computing the error for a fixed realization of $T_n$:
 \[
@@ -590,97 +617,101 @@ Under the assumption that $(X_0, Y_0)$ is independent on the training set $T_n$,
 The first expression is a \textbf{random error term}, because the expression depends on the random variable $T_n$, while the second expression is a \textbf{deterministic error term}, because we compute the expectation with respect to all the possible realizations of the training set.
 
 % rivedi questa parte
-In practical terms, if I had to implement these two expressions in MATLAB, for the first expression I would need compute it on a single training set, while for the second expression I would need to average over all the possible realizations of the training sets.
+In practical terms, if I had to implement these two expressions in MATLAB, for the first expression I would need compute it for each single training set, while for the second expression I would need to average over all the possible realizations of the training sets.
 
-Consistency means that the estimation error $\E{}{(r_n(X_0) - Y_0)^2}$ will converge to the MMSE as $n$ goes to infinity, meaning that the penalty term will go to zero. We can distinguish between two types of consistency:
-\begin{itemize}
-    \item \textbf{weak consistency}
-    \item \textbf{strong consistency}
-\end{itemize}
+\begin{definition}
+    The estimator $r_n(X_0)$ is said to be \textbf{consistent} if the
+    estimation error $\E{}{(r_n(X_0) - Y_0)^2}$ will converge to the MMSE as $n$ goes to infinity, meaning that the penalty term will go to zero.
+\end{definition}
+\begin{definition}
+    The estimator $r_n(X_0)$ is said to be \textbf{weakly consistent} if:
+    \[
+        \lim_{n \to +\infty} \E{}{(r_n(X_0) - r(X_0))^2} = 0
+    \]
+\end{definition}
 
-\paragraph*{Asymptotic methods}
+\begin{definition}
+    The estimator $r_n(X_0)$ is said to be \textbf{strongly consistent} if:
+    \[
+        \lim_{n \to +\infty} \E{}{(r_n(X_0) - r(X_0))^2 \mid T_n} = 0
+    \]
+\end{definition}
+\subsection{Asymptotic methods}
 From the Law of Large Numbers, we know that we can estimate the expected value of a distribution by using the arithmetic mean and we also know that the arithmetic mean is only an approximation of the true mean, which converges to the true mean only with $n \to \infty$.
 
-Even if we know that the arithmetic mean is an approximation, we still use it because it is a universal method, meaning that it does not depend on the specific problem. We can apply the same logic to the regression problem.
+Even though we know that the arithmetic mean is an approximation, we still use it because it is a universal method, meaning that it does not depend on the specific problem. We can apply the same logic to the regression problem.
 
-An asymptotic method should guarantee that if we collected infinite information, we would get the optimal regression function. So, ideally, we want that when $n$ gets large, the penalty term goes to zero.
-
-\subsection*{Non-parametric regression}
-Let's consider a general regression problem:
-\[
-    Y_0 = r(X_0) + \mathcal{E}
-\]
-Where we didn't make any assumptions on our model, but we simply defined our error as:
-\[
-    \mathcal{E} = Y_0 - r(X_0)
-\]
-We can see that here it always holds that $\E{}{\mathcal{E} | X } = 0$. But this happens only because $r(X_0)$ is the optimal regression function by definition.
-
-To make a comparison, when we consider linear regression, we are trying to solve the following problem:
-\[
-    Y_0 = \beta^T X_0 + \mathcal{E}
-\]
-and we have \textbf{to make the assumption that} $\E{}{\mathcal{E} | X } = 0$ because we are making an assumption on the \textit{shape} of the optimal function.
+An asymptotic method should guarantee that if we collected infinite information, we would get the optimal regression function. Ideally, we want that when $n$ gets large, the penalty term goes to zero.
 
 % plot
-Another remark: when considering a regression problem, we are trying to find $Y_0$ given $X_0$, that can vary in a continuous set. When we take one sample from our dataset:
-\[
-    Y_i = r(X_i) + \mathcal{E}_i
-\]
-this is going to be a single point on the plot.
+%Another remark: when considering a regression problem, we are trying to find $Y_0$ given $X_0$, that can vary in a continuous set. When we take one sample from our dataset:
+%\[
+%    Y_i = r(X_i) + \mathcal{E}_i
+%\]
+%this is going to be a single point on the plot.
 
-
-\paragraph*{Exercise} Find a method that allow us to approximate the optimal regression function:
+\paragraph*{Estimation of a conditional probability} Find a method that allow us to approximate the optimal regression function:
 \[
     r_n(X_0) \approx r(X_0) = \E{}{Y_0 \mid X_0}
 \]
-If we had no information on the data and we only wanted to find the mean of $Y_0$, we could use the arithmetic mean:
-\[
-    \E{}{Y_0} = \frac{1}{n} \sum Y_i
-\]
-What changes when we take into account an approximation? Given our training samples:
-\begin{align*}
-     & \{X_i\} = 0,1,0,1,0,1 \dots                  \\
-     & \{Y_i\} = y_1, y_2, y_3, y_4, y_5, y_6 \dots
-\end{align*}
-In order to estimate the mean of the labels given $X = 0$, we would compute the arithmetic mean only over the samples were the data is zero:
-\[
-    \E{}{Y \mid X = 0 } \approx \frac{y_1 + y_3 + y_5 + y_7}{4}
-\]
-And to find the conditional mean, we would repeat the same thing for every possible $X_i$ in our training set.
-
-Then our method would be the following: we select all the $Y_i$ where the $X_i$ that are equals, compute the conditional mean  and move the value of $X_i$. But this approach has a critical problem, which is that we won't ever find two same values of $X_i$ in the training set because the probability of draw the exact $X_i$ is always zero.
-
-The solution will involve taking into account \textit{points that are close to each other}.
-We continue the discussion about the supervised, non-parametric case, in which we have our training set $T_n$. Now we observe the feature $x_0$ and we want to predict its label $y_0$. Note that we likely don't already have a label $y_0$ for our point $x_0$, because we are assuming that $X_i$ is a continuous random variable. We could also assume that $X_i$ is a discrete variable but it is better to consider the general case.
-
-Since our assumption that $X_i$ is a continuous random variable, we know that the event $X_i = x_0$ is not an impossible event but it is highly unlikely because:
-\[
-    \Pr{X_i = x_0} = 0
-\]
-\textbf{Note} that although the probability is zero, the event is not impossible, which means that we can observe $x_0$. Let's consider the definition of probability by applying a strong law of large numbers:
-\[
-    \Pr{X_i = x_0} = \lim_{n \to +\infty} \frac{\#\{X_i = x_0\}}{n} = 0
-\]
-We can see that the probability of the event $X_i = x_0$ is zero in two cases: the first is that the number of occurences of the event is actually zero and the second case is that the number of the events grows \textbf{sublinearly} or slower than the number of samples.
-
-Note that the previous equation is valid for any realization of the random variable, which means that we will have \textit{almost surely} the same limit for each realization.
-
-From what we said, it is reasonable to assume that $x_0 \notin T_n$.
-
-Our goal is to approximate the following conditional probability:
+In other terms, our goal is to approximate the following conditional probability:
 \[
     \E{}{Y_0 \mid X_0 = x_0}
 \]
 From the definition of conditional probability for discrete variables we know that in order to compute this conditional probability we need to take all of the values equal to $x_0$ and average the labels of these points. For continuous variables, this definition does not hold because it is highly unlikely to find a value equal to $x_0$.
 
-The solution, at least in the approach that we will follow, will consist in a relaxation of the condition $X_0 = x_0$. In particular, we will take the values that lie in a \textbf{neighbourhood} of $x_0$, of size $h$, that we will call $I_h(x_0)$. We can write it formally using an \textit{indicator function}:
+Let us explain this concept with an example. Suppose we had no information on the data and we only wanted to find the mean of $Y_0$. We could use the arithmetic mean, thanks to the Law of Large Numbers:
 \[
-    r_n^{(NK)}(x_0) = \frac{\sum_{i=1}^n Y_i \quad \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\} }{\sum_{i=1}^n \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\}}
+    \E{}{Y_0} = \frac{1}{n} \sum Y_i
 \]
-Note that we used the \textit{euclidean norm} because we are referring to a generic number of dimension $d$. This estimator is called \textbf{naive kernel estimator}. The main problem of this approach is that we don't know how many points will fall into the neighbourhood.
+Given our training samples:
+\begin{align*}
+     & \{X_i\} = 0,1,0,1,0,1 \dots                  \\
+     & \{Y_i\} = y_1, y_2, y_3, y_4, y_5, y_6 \dots
+\end{align*}
+when we take into account the $X_i$, we are only considering the labels that are associated to the $X_i$ that are equal to $x_0$.
 
-If we wanted a fixed number of points in the neighbourhood, we would need to use another estimator, called the \textbf{nearest neighbour estimator}. With this estimator, we fix $k$, that is the number of points that we want in the neighbourhood and we take the $k$ closest neighbours of $x_0$ as points that constituites the neighbourhood.
+For example, if we wanted to estimate the mean of the labels given $X = 0$, we would compute the arithmetic mean only over the samples were the data is zero:
+\[
+    \E{}{Y \mid X = 0 } \approx \frac{y_1 + y_3 + y_5 + y_7}{4}
+\]
+And to find the conditional mean, we would repeat the same thing for every possible $x_i$ in our training set.
+
+In general, we can approximate the conditional probability by using the following estimator:
+\[
+    \E{}{Y \mid X = x} \approx \frac{\sum_{i=1}^n Y_i \cdot \mathbb{I}\{Y_i = r(x)\} }{\sum_{i=1}^n  \mathbb{I}\{Y_i = r(x)\}}
+\]
+
+This approach works correctly when we have a discrete random variable, because we can find the exact value of $X_i$ in the training set. However, since we assumed that $X_i$ is a continuous random variable, we know that the event $X_i = x_0$ is not an impossible event but it is highly unlikely because:\footnote{Although the probability is zero, the event is not impossible, which means that we can observe $x_0$.}
+\[
+    \Pr{X_i = x_0} = 0
+\]
+Because it is reasonable to assume that $x_0 \notin T_n$. This means that we cannot compute the conditional probability in the same way as we did for the discrete case.
+
+\begin{proof}
+    Let's consider the definition of probability by applying a strong law of large numbers:
+    \[
+        \Pr{X_i = x_0} = \lim_{n \to +\infty} \frac{\#\{X_i = x_0\}}{n} = 0
+    \]
+    We can see that the probability of the event $X_i = x_0$ is zero in two cases: the first is that the number of occurences of the event is actually zero and the second case is that the number of the occurrences of the event grows \textbf{sublinearly} or slower than the number of samples.
+
+    Note that the previous equation is valid for any realization of the random variable, which means that we will have \textit{almost surely} the same limit for each realization.
+
+\end{proof}
+\subsection{Naive-Kernel Estimator}
+The solution, at least in the approach that we will follow, will consist in a relaxation of the condition $X_0 = x_0$. In particular, we will take the values that lie in a \textbf{neighbourhood} of $x_0$.
+\begin{definition}
+    The \textbf{naive kernel estimator} is defined as following:
+    \[
+        r_n^{(NK)}(x_0) = \frac{\sum_{i=1}^n Y_i \quad \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\} }{\sum_{i=1}^n \mathbb{I}\{\lVert X_i - x_0 \rVert \leq h\}}
+    \]
+    where $h$ is the size of the neighbourhood $I_h(x_0)$, and $\mathbb{I}(\cdot)$ is the \textbf{indicator function}.
+\end{definition}
+
+Note that we used the \textit{euclidean norm} because we are referring to a generic number of dimension $d$. The main problem of this approach is that we don't know how many points will fall into the neighbourhood.
+
+\subsection{Nearest-Neighbour Estimator}
+If we wanted a fixed number of points in the neighbourhood, we would need to use another estimator, called the \textbf{nearest neighbour estimator}.
 
 To formally define this estimator, we need to introduce the \textit{sorted list notation}:
 \[
@@ -691,52 +722,173 @@ Where $X_{(1)}(x_0)$ is the closest sample to $x_0$, $X_{(2)}(x_0)$ is the secon
 \[
     \binom{X_{(1)}(x_0)}{Y_{(1)}(x_0)}, \dots, \binom{X_{(n)}(x_0)}{Y_{(n)}(x_0)}
 \]
-Note that $Y_{(n)}(x_0)$  is not the $n$-th closest label, but the label associated to the $n$-th closest sample to $x_0$. Now we can define the nearest neighbour estimator:
-\[
-    r_n^{(NN)}(x_0) = \frac{1}{k} \sum_{i=1}^{k} Y_(i) (x_0)
-\]
+Note that $Y_{(n)}(x_0)$  is not the $n$-th closest label, but the label associated to the $n$-th closest sample to $x_0$.
 
-For a good approximation of the conditional probability we need two things: many samples in the neighbourhood of $x_0$ and we need that the neighbourhood is small. The first condition is a consequence of the \textbf{LLN}.
+\begin{definition}
+    The \textbf{nearest neighbour estimator} is defined as following:
+    \[
+        r_n^{(NN)}(x_0) = \frac{1}{k} \sum_{i=1}^{k} Y_{(i)} (x_0)
+    \]
+    where $k$ is the number of points in the neighbourhood of $x_0$.
+\end{definition}
 
-When the number of sample grows, the number of points in the neighbourhood should grow too. We can justify this reasoning in this way:
+\subsection{Consistency of the estimators}
+\subsection{Conditions for consistency}
+For a good approximation of the conditional probability we need two things: many samples in the neighbourhood of $x_0$ and we need that the neighbourhood is small.
+%%% RILEGGERE
+The first condition states that when the number of samples grows, the number of points in the neighbourhood should grow too, this is a consequence of the \textbf{LLN}.
 \[
-    \frac{\#\{X_i \in I_h(x_0)\}}{n} \stackrel{n \to +\infty}{\approx} \Pr{X_i \in I_n(X_0)} = p > 0
+    \frac{\#\{X_i \in I_h(x_0)\}}{n} \stackrel{n \to +\infty}{\approx} \Pr{X_i \in I_h(x_0)} = p > 0
 \]
 When the number of samples grows, we can approximate the number of points that lie in the neighbourhood over $n$ as the probability that we will find a point in the interval. Since this probability is a positive number $p$, it means that the number of points grows linearly with the number of samples.
 
-The second condition states that the neighbourhood should be enough small, this is also called \textbf{principle of locality}. This is the reason why these methods are also called \textbf{local methods}.
+The second condition is called \textbf{principle of locality}\footnote{This is the reason why these methods are also called \textbf{local methods}.} and it states that the neighbourhood should be small enough. In the case of the naive kernel estimator, the condition to guarantee is that $h \to 0$ when $n \to +\infty$.
 
+\subsubsection{Consistency of the naive-kernel estimator}
 There seem to be an apparent contradiction, which is that if we reduce the size of the neighbourhood $h \to 0$, then the number of points in neighbourhood reduces to, thus violating the first condition. We may think that we can consider $h$ as a very small fixed number. In this case we are not converging to the real expectation value so we lose the locality princple.
 
-The only way to guarantee both conditions is to scale the size of the neighbourhood $h$ along with increasing the number of samples. But this has to happen under certain conditions that we will now introduce. Fristly, we try to approximate the probability that a point lies in $I_h(x_0)$:
+The only way to guarantee both conditions is to scale the size of the neighbourhood $h$ along with increasing the number of samples. But this has to happen under certain conditions that we will now introduce.
+
+Fristly, we try to approximate the probability that a point lies in $I_h(x_0)$:
 \[
     \Pr{X_i \in I_h(X_0)} \approx f_X(x_0) 2 h_n
 \]
-because we can assume hat if $h$ is very small, then the area under curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the pdf of $x_0$.
+because we can assume that if $h$ is very small, then the area under curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the pdf of $x_0$.
 
 We also know that we can approximate the probability by the definition given by the frequentist approach:
 \[
-    \Pr{X_i \in I_n(X_0)} \approx \frac{\#{X_i \in I_h(x_0)}}{n} \approx f_X(x_0) 2 h_n
+    \Pr{X_i \in I_n(X_0)} \approx \frac{\#\{X_i \in I_h(x_0)\}}{n} \approx f_X(x_0) 2 h_n
 \]
 From this, we can derive that:
 \[
-    \text{no. of points } \propto h_n n
+    \#\{X_i \in I_h(x_0)\} \approx \underset{cost}{f_X(x_0) 2} h_n n \iff \text{no. of points } \propto h_n n
 \]
-From this relation, in order to guarantee the the principle of locality we want that for $n \to +\infty$, $h_n \to 0$, while to guarantee LLN we need that $h_n n \to +\infty$, which are two reasonable requirements.
+From this relation, in order to guarantee the the principle of \textit{locality} we want that for $n \to +\infty$, $h_n \to 0$, while to guarantee \textit{LLN} we need that $h_n n \to +\infty$, which are two reasonable requirements which do not conflict.
 
-If $h_n$ scales with law $\frac{1}{n^p}$ with $p>1$, then we won't converge, while if $h_n$ scales with law $\frac{1}{\sqrt{n}}$ then we will converge.
+\begin{exercise}
+    Assume that $h_n$ scales with law $\frac{1}{n^p}$ with $p>1$. Let us verify the \textit{locality} condition:
+    \[
+        \lim_{n \to +\infty} h_n = \lim_{n \to +\infty} \frac{1}{n^p} = 0
+    \]
+    Let us verify the \textit{LLN} condition:
+    \[
+        \lim_{n \to +\infty} h_n n = \lim_{n \to +\infty} \frac{n}{n^p} = 0 \neq +\infty
+    \]
+    In this case the naive-kernel estimator is not consistent because we are not satisfying the LLN condition.
+\end{exercise}
 
-We can conclude that for this estimator, $h_n$ should scale sublinearly while $n$ grows linearly.
+\begin{exercise}
+    Assume $h_n$ scales with law $\frac{1}{\sqrt{n}}$. Let us verify the \textit{locality} condition:
+    \[
+        \lim_{n \to +\infty} h_n = \frac{1}{\sqrt{n}} = 0
+    \]
+    Let us verify the \textit{LLN} condition:
+    \[
+        \lim_{n \to +\infty} h_n n = \lim_{n \to +\infty} \frac{n}{\sqrt{n}} = +\infty
+    \]
+\end{exercise}
 
-\textbf{Note} that if we have $d$ dimensions, since we need to compute the volume of the hypercube that approximates the area under the curve, the number of points given by:
+We can conclude that for the naive-kernel estimator, $h_n$ should scale \textbf{sublinearly}.
+
+\paragraph*{Multidimensional case}
+If we had $d$ dimensions, since we need to compute the volume of the hypercube that approximates the area under the curve, the number of points would be given by:
 \[
-    \text{no. of points } \propto f_x(x_0) 2 h^d_n
+    \text{no. of points } \propto f_x(x_0) 2 h^d_n n
 \]
-This means that if we increase $d$, $n$ should grow exponentially to match the growth rate of $h$, and this is also known as the \textit{curse of dimensionality}.
+This means that if we increase $d$, $n$ should grow \textbf{exponentially} to match the growth rate of $h$, and this is also known as the \textit{curse of dimensionality}.
 
-As for the K-NN estimator, it can be proved that it is \textbf{weakly consistent}.
+\subsubsection{Consistency of the nearest-neighbour estimator}
+For this estimator, the number of points is given by the parameter $k_n$, so the conditions are reversed with respect to the naive estimator.
 
-For this estimator, the number of points is given by the parameter $k_n$, so the conditions are reversed with respect to the naive estimator. For this estimator, we need to guarantee that $k_n \to +\infty$ in order to satisfy the LLN requirement and $\frac{k_n}{n} \to 0$ in order to satisfy the locality requirement.
+To guarantee the \textit{LLN} condition, we need that $k_n \to +\infty$, while to guarantee the \textit{locality} condition, we need that $k_n \to 0$.
+
+It can be proved that the nearest neighbour estimator is \textbf{weakly consistent}.
 
 \section{Exercise}
+Now we want to implement the theory on non-parametric regression, using the estimators we studied.
 
+Assume we have a random variable $Y$ and a random vector $X \in \mathbb{R}^d$, and we want to estimate the regression function:
+\[
+    Y = \sin(X) + \mathcal{E}
+\]
+where $\mathcal{E} \sim N(0,1)$ and $X \sim U(0,a)$.
+
+Let's implement a function that computes the optimal regression function, naive kernel estimator and the nearest neighbour estimator.
+
+Let us now examine the plots.
+
+By selecting $h = 10$ the naive kernel estimator curve has degenerated into a straight line, because the interval is too large with respect to the number of samples, so the estimator just took all of the points and made the average of all the point, that is about zero because the sine is a periodic function. We actually converged to the expectation of $Y$ that is zero.
+
+On the other hand by selecting $k=10$, the nearest neighbour estimator has a shape similar to the one of the sine function.
+
+By selecting $k = 5$ and $h=0.5$, the \textit{naive estimator} starts to take some shape but it is not very similar to the optimal regression function
+% i put 10 and 0.1 much better
+
+By changing values, we observed that if $h$ is too small then we will not statisfiy the law of large numbers, and the effect is that...
+and if $k$ is too large we lose locality, and the effect is that...
+
+If H is too small i will lose law of large number => 0.01
+If K is too larg i will use locality => 50
+
+K = 50 => blue is flattered
+H = 0.01 => each point is just the sample, I am enhancing the jumps
+-> small H is similar to Knn = 1
+
+if i put K = 100 -> flat line, so i recover large
+
+small k => no LLN
+any local avg is not avg but a sample
+
+large K takes all of them but it coverges to the exeception of Y which is close of zero bc we have sin(X)
+
+0.1 and 10
+
+are we statisfied with this learned regression function
+
+we examine what happens with more samples and see if we increase we do better with other number of samples.
+
+1000 of samples
+disappointed => blue curve is not nice
+
+Knn =>
+if k remains fixed we lose LLN
+we are local but the oscillations are great
+we are not growing in term of LLN
+k must increase with N
+
+recovering LLN
+
+but there are flat => boundary effect because there are not points on the left
+
+increasing K
+increasing K
+
+we can acutally converging to the regression function
+
+
+write this code here and add the analysis of the error
+compute the error between these regression function looking at definiction
+
+montecarlo simulation
+either with a fixed training set
+or
+generate a training set each time
+
+for different size of the training set
+
+we need one law that relates k to n or h to n
+a
+$knn / n \to 0$
+$kn \to \infty$
+$1/sqrt(N)$
+
+check whether the error is going to zero
+
+check this behaviour of the plot + run simluation
+there are not theoretical values
+
+
+We would expect that the error of the optimal regression function tends to the MMSE, which can be computed as following:
+\[
+    \text{MMSE} = \E{}{(r(X_0) - Y_0)^2} = \E{}{(\sin(X_0) - \sin(X_0) - \mathcal{E})^2}  = \E{}{\mathcal{E}^2} = 1
+\]
