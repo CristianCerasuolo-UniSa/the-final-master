@@ -3,42 +3,117 @@
 \subsection{Data Analysis}
 Data Analysis is the process of extracting information from data. Although data and information are often used interchangeably, they are not the same. Data is something that should cointain information, but it is not information itself. In order to extract information from data, we need to build a learning system.
 
-An important thing to know is that when the learning system is \textit{good}, then by increasing the amount of data we have, the available information cannot decrease. In practice, most of the times we do not have a good system, so it can happen that the data fed to the system is misleading and the information we get from the analysis decreases.
+An important thing to know is that when the learning system is \textit{good}, then by increasing the amount of data we have, the available information cannot decrease. In practice, most of the times we do not have a good system (due to analytical, computational, or time skills not available), so it can happen that the data fed to the system is misleading and the information we get from the analysis decreases. A \textit{non optimal} system could be attacked using fake data in order to decrase information and make the system less reliable; the \textit{optimal} system is able to discard that data.
 
 The two main families of problems in data analysis are \textit{estimation} and \textit{classification}. The main difference is that in the estimation problem,
-we have a set of data and we want to estimate a real value, while in the classi-
-fication problem the output is contained in a finite set.
+we have a set of data and we want to estimate a real value, while in the classification problem the output is contained in a finite set. This difference is projected onto the output response variable $Y$.
 
-The input of the learning system can be anything (a vector, a matrix, a graph, a sequence,
-etc.), but the output is always a real number or a finite set of values. In general,
-we do not care about the dimension of the output, because we can always repeat
-the problem as many times as the dimension of the output.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/chapter_2/data2information.png}
+    \caption{The general process of extracting information from data.}
+    \label{fig:data2information}
+\end{figure}
 
-Another thing to make clear is that in statistical learning, we do not have a temporal correlation between the variables. When we say that two variables depend on each other, we just mean that they are correlated, without implying the causality.
+The input of the learning system can be anything (a vector, a matrix, a graph, a sequence, etc.), but the output is always a real number or a finite set of values. In general,
+we do not care about the dimension of the output, because we can always repeat the problem as many times as the dimension of the output.
 
 % qualcosa sul fatto che esiste model based analysis e supervised parametric e non parametric
 
+Data analysis problems don't necessary require a \textit{training phase}. We can have two scenarios:
+\begin{enumerate}
+    \item \textbf{Model-Based}, the model is given to us.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modelbased.png}
+            \caption{The model based process of extracting information from data.}
+            \label{fig:modelbased}
+        \end{figure}
+
+        Figure \ref{fig:modelbased} show the scenario. The truth $Y$ influences the data $X$, hidden in it.
+
+        \callout{Note}{Another thing to make clear is that in statistical learning, we do not have a temporal correlation between the variables. When we say that two variables depend on each other, we just mean that they are correlated, without implying the causality.}
+
+    \item \textbf{Model Learning}, we have to learn a statistical characterization of the couple $(X,Y)$. 
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modellearning.png}
+            \caption{The model learning process of extracting information from data.}
+            \label{fig:modellearning}
+        \end{figure}
+
+        This scenario could be seen as a \textit{supervised learning} problem when we starts from a set of examples $\mathcal{D}$ to learn the model.
+        \[
+            \mathcal{D} = \left\{ x_i, y_i \right\}_{i=1}^{N}
+        \]
+        Figure \ref{fig:modellearning} explain this scenario. 
+
+
+\end{enumerate}
+
 \section{Bayes Estimation}
-Assume we have a random variable $Y$ and we want to approximate it with a single deterministic value. To do that, we need to find the number that, on average, is the closest to the values of the random variable. In other words, we want to find the number $z^\ast$ that minimizes the expected value of the squared \textit{distance} between $Y$ and $z$:
+\subsection{Random variable approximation}
+Assume we have a random variable $Y$ and we want to approximate it with a single deterministic value. To do that, we need to find the number that, on average, is the closest to the values of the random variable. In other words, we want to find the number $z^\ast$ that minimizes the expected value of the \textit{distance} between $Y$ and $z$:
 \[
     z^\ast \colon \arg \min_{z \in \mathbb{R}} \E{}{(Y-z)^2}
 \]
-The quantity we want to minimize is called \textit{mean squared error} (MSE) and in this case is a function of the value $z$. We can find the minimum of this function by computing its derivative and setting it to zero:
+\callout{Why the squared difference?}{There are multiple reasons. The first one is that in this way the error is always positive and has a unique minimum in 0. The second reason is that the square term is the first even power and is differentiable everywhere.}
+The quantity we want to minimize is called \textit{mean squared error} (MSE) and in this case is a function of the value $z$. 
+We can find the minimum of this function by computing its derivative and setting it to zero:
 \[
-    f^{\prime} (z) = 0 \Leftrightarrow \E{}{\frac{d}{dz} (Y-z)^2} =  \E{}{2(Y-z)} = 0 \iff z^{\ast}  = \E{}{Y}
+    f(z) = \E{}{(Y-z)^2}
 \]
-Now I want to find a function of the data $g(X)$ that is the best approximation of $Y$. We can still minimize the MSE:
+By leveraging the linearity of the expectation, we can write:
+\[
+    f^{\prime} (z) = 0 \Leftrightarrow \E{}{\frac{d}{dz} (Y-z)^2} =  \E{}{-2(Y-z)} = -2\E{}{Y} - 2z = 0 \iff z^{\ast}  = \E{}{Y}
+\]
+Another typical approach to solve the problem without using the derivative is by introducing $\mu$ inside the function:
+\notag\begin{gather}
+    f(z) = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = \\
+    = \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2 = \\
+    = \var{Y} + (z - \mu)^2
+\end{gather}
+% \[
+%     f(z) = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = 
+% \]
+% \[
+%     = \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2
+%     = \var{Y} + (z - \mu)^2
+% \]
+The obtained function is composed by a $z$-dependent term that is the \textbf{reducible} part and a constant term as \textbf{irreducible} part. This is a very common pattern. 
+So, the minimum of the function is equal to $\var{Y}$ and is reached when the second term is zero, that is, as we expect:
+\[
+    z^{\ast} = \mu
+\]
+
+\subsection{MMSE}
+Suppose we want to estimate the response $Y$ using the data $X\in\R^d$.
+For that purpose we want to find a function of the data $g(X)$ that is the best approximation of $Y$ as represented in figure \ref{fig:mmseestimation}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/chapter_2/mmse.png}
+    \caption{The estimation process using $g(X)$.}
+    \label{fig:mmseestimation}
+\end{figure}
+
+We can still minimize the MSE to obtain the optimal function $g^\ast(X)$:
 \[
     g^\ast(X) = \arg\min_{g \in\mathcal{G}} \E{}{(Y-g(X))^2}
 \]
-This function is a function of both $Y$ and $X$, so the expectation is not well defined. To solve this problem, we would need to fix $X$, so that $g(X)$ is constant. This can be done by applying the \textbf{tower property}:
+The MSE function is a function of both $Y$ and $X$, so the expectation is not well defined. To solve this problem, we would need to first solve fixing $X$, so that $g(X)$ is constant, then linking the conditioned result to the original problem. This can be done by applying the \textbf{tower property}:
 \[
     g^\ast(X) = \arg\min_{g \in\mathcal{G}} \E{X}{\E{Y}{(Y-g(X))^2 \mid X}}
 \]
 
-The inner expectation is a function of $Y$ only, so we can apply the same reasoning as before and find that the function that minizes the inner expectation is the mean of $Y$: $\E{Y}{Y}$. So we have:
+The inner expectation is a function of $Y$ only since $g(X)$ is now constant. By minimizing the inner expectation we find the value of the function $g$ assumed for a specific value of $X$. By doing it for each value of $X$ we could construct $g(X)$.
+In reality, if we do minimization for each value of $X$, we are doing something stronger than the minimization of the MSE, because we are minimizing the MSE for each value of $X$.
+For this reason, we can also avoid to compute the outer expectation and we can write:
+% The inner expectation is a function of $Y$ only, so we can apply the same reasoning as before and find that the function that minimizes the inner expectation is the mean of $Y$: $\E{Y}{Y}$. So we have:
 \[
-    g^\ast(X) = \E{Y}{Y \mid X = x} \triangleq = \hat{Y}_{MMSE}
+    g^\ast(X) = \E{Y}{Y \mid X = x} \triangleq \hat{Y}_{MMSE}
 \]
 which is the conditional mean of $Y$ given $X$ and it is also called \textbf{posterior mean} because it is the mean of the posterior distribution $f(y|x)$.
 Since it is the minimum of the MSE, it is also called \textbf{minimum mean squared error} (MMSE) estimator.

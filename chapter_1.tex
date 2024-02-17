@@ -1,25 +1,55 @@
 \chapter{Fundamentals}
+
 \section{Linear Algebra}
-\textbf{Matrix dot product}: Assume we have $A \in \mathbb{R}^{m \times n}$, $B \in \mathbb{R}^{n \times p}$, then $C = A B \in \mathbb{R}^{m \times p}$ is defined as:
+
+\paragraph{Matrix dot product}
+Assume we have $A \in \mathbb{R}^{m \times n}$, $B \in \mathbb{R}^{n \times p}$, then $C = A B \in \mathbb{R}^{m \times p}$ is defined as:
 \[
     C_{ij} = \sum_{k = 1}^{n} A_{ik} B_{kj}
 \]
 
-\textbf{Orthogonality}, we say that the matrix $U$ is \textbf{orthogonal} if $U^T U = I$.
+\subparagraph{Special cases}
+Assume that $A \in \mathbb{R}^{1 \times n}$ and $B \in \mathbb{R}^{n \times 1}$. 
+Then $C = A B \in \mathbb{R}^{1 \times 1}$ so $C$ will be a scalar. On the other side, $D = B A \in \mathbb{R}^{n \times n}$ so $D$ will be a square matrix.
 
-\textbf{Similarity}, we say that two matrices $B$ and $C$ are \textbf{similar} if there exists a matrix $P$ such that $B = P^{-1} C P$. When two matrices are similar they have the same eigenvalues.
 
-\textbf{Eigen-decomposition}: From the \textbf{spectral theorem} we know that if $A$ is a real square symmetric matrix then it can be decomposed as $A = U \Lambda U^T$ where $U$ is a matrix obtained by stacking the eigenvectors of $A$ while $\Lambda$ is a diagonal matrix with the eigenvalues of $A$. In other words, if $A$ is a real square symmetric matrix then it is \textbf{similar} to the diagonal matrix $\Lambda$.
+\paragraph{Orthogonality}
+We say that the matrix $U$ is \textbf{orthogonal} if $U^T U = I$.
+Furthermore, if $U$ is also \textbf{square}, then $U^T = U^{-1}$.
+
+\paragraph{Similarity}
+We say that two matrices $B$ and $C$ are \textbf{similar} if there exists a matrix $P$ such that $B = P^{-1} C P$. When two matrices are similar they have the same eigenvalues.
+
+\paragraph{Eigen-decomposition}
+From the \textbf{spectral theorem} we know that if $A$ is a \textit{real square symmetric} matrix then it can be decomposed as $A = U \Lambda U^T$ where $U$ is a matrix obtained by stacking the eigenvectors of $A$ as columns, while $\Lambda$ is a diagonal matrix with the eigenvalues of $A$. In other words, if $A$ is a real square symmetric matrix then it is \textbf{similar} to the diagonal matrix $\Lambda$.
 
 In general, the relationship between the eigenvectors and the eigenvalues is the following: $A u^{(k)} = \lambda_k u^{(k)}$ where $u$ is an eigenvector and $\lambda$ is the corresponding eigenvalue.
 
-\textbf{Gradient rules}
+\paragraph{Gradient rules}
 \begin{enumerate}
     \item $\nabla_x a^t x = \nabla_x x^T a =  a$
     \item $\nabla_x x^T A x = A^t x + A x$
 \end{enumerate}
 
 \section{Law of Large Numbers}
+Let $X_1,X_2,...,X_n,...$ be a subsequence of independent and identically distributed random variables, and let $\mathbb E(X_i)=\mu$. Let, then, $\overline{X}_n$ be the subsequence defined by
+\[
+\overline{X}_n=\frac{1}{n}\sum_{i=1}^n X_i
+\]
+\begin{theorem}
+    The strong version of the theorem states that:
+    \[
+        \Pr{\lim_{n \to \infty} \overline{X}_n = \mu} = 1
+    \]
+    that is, the subsequence $\overline{X}_n$ tends to $\mu$ with probability 1.
+\end{theorem}
+
+\subsection{Practical interpretation}
+Suppose to have a single discrete random variable $Y\in\left\{-1,1\right\}$. If we do a large number of experiments and we compute the average of the results we get:
+\notag\begin{gather}
+	\overline{Y}_n=\frac{1}{n}\sum_{i=1}^n Y_i = \\
+	= (-1) \frac{\text{\# of -1s}}{n} + (+1)\frac{\text{\# of 1s}}{n}\approx (-1)\Pr{Y=-1} + (+1)\Pr{Y=1} = \E{}{Y}
+\end{gather}
 
 \section{Bayes's Rule}
 \begin{theorem}
@@ -43,7 +73,7 @@ In general, the relationship between the eigenvectors and the eigenvalues is the
 \end{proof}
 
 \section{Fundamental theorem of expectation}
-Assume if have a discrete random variable $Y$ and a function $h(Y)$ and I want to compute the expected value of $h(Y)$. By definition of expected value, by fixing $Z = h(Y)$, we have:
+Assume we have a discrete random variable $Y$ and a function $h(Y)$ and we want to compute the expected value of $h(Y)$. By definition of expected value, by fixing $Z = h(Y)$, we have:
 \[
     \E{}{Z} = \sum_{z \in Z} z p(z) = \sum_{y \in Y} h(y) p(z)
 \]
@@ -57,14 +87,14 @@ Suppose we have two discrete random variables $X$ and $Y$ and $h$ that is a func
 \begin{theorem}
     The \textbf{tower property} states that we can compute the expected value of $h(X,Y)$ by first computing the conditional expected value of $h(X,Y)$ given $X$ and then computing the expected value of the result over $X$.
     \[
-        \E{Y}{h(X,Y)} = \E{X}{\E{Y}{h(X,Y) \mid X}}
+        \E{}{h(X,Y)} = \E{X}{\E{Y}{h(X,Y) \mid X}}
     \]
 \end{theorem}
 
 \begin{proof}
-    By definition of mean of discrete random variables:
+    By definition of mean of discrete random variables and applying the fundamental theorem of expectation:
     \[
-        \E{Y}{h(X,Y)} = \sum_{x \in X} \sum_{y \in Y} h(x,y) p(x,y)
+        \E{}{h(X,Y)} = \sum_{x \in X} \sum_{y \in Y} h(x,y) p(x,y)
     \]
     By apply Bayes's rule, we can rewrite $p(x,y)$:
     \[
