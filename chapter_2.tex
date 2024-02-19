@@ -451,7 +451,7 @@ We can also observe that $f(q)$ is a convex function with a unique minimum that 
     \[
         X_i = Y_i + W_i \qquad i = 1, \dots, n
     \]
-    where variables $W_i$ are \textit{i.i.d} and also independent with respect to $Y$ and distributed according to $W \sim N(0, \sigma_w^2)$.
+    where variables $W_i$ are \textit{i.i.d} and also independent with respect to $Y$ and distributed according to $W_i \sim N(0, \sigma_w^2)$.
 
     Compute the \textit{minimum mean square error estimator}.
 \end{exercise}
@@ -474,7 +474,7 @@ and consequently
 \[
     \ell(x|y) = \prod_{i = 1}^{N} \ell(x_i, y)
 \]
-While we can say that given $Y=y$ then $X_i$ is distributed according to $W_i$ that is shifted by an amount of $y$, because $X_i = Y_i + W_i$ and $f(w|y) = f(w)$, we cannot compute $f(y|x)$ observing that $Y_i = X_i - W_i$ because $X_i$ and $W_i$ are not independent on each other but they are dependent because $X_i = Y_i + W_i$. Thus we need to apply Bayes' Theorem to find out $\ell(y|x)$.
+While we can say that given $Y=y$ then $X_i$ is distributed according to $W_i$ that is shifted by an amount of $y$, because $X_i = Y_i + W_i$ and $f(w|y) = f(w)$, we cannot compute $f(y|x)$ observing that $Y_i = X_i - W_i$ because $X_i$ and $W_i$ are not independent on each other but they are dependent because $X_i = Y_i + W_i$. Thus we need to apply Bayes' Theorem to find out $f(y|x)$% TODO: check, prima c'era scritto -> $\ell(y|x)$.
 
 Observe that since we are computing $x$ \textit{given} $y$, then we're actually trying to understand the \textbf{generative mechanism} that produces the data $x$ given the true value $y$. Suppose for example that we're sampling measurements $x$ of the temperature in a room. We're actually measuring the true value of the temperature and some noise $w$ added to it. We can try to estimate the generative mechanism to understand what is the distribution of temperature given the true value.
 
@@ -484,16 +484,18 @@ In order to compute $f(y|x)$ we can apply the Bayesian Theorem:
 \[
     f(y|x) = \frac{\pi(y) f(x|y)}{p(x)}
 \]
-Observe that since $f(y|x)$ is a probability density function with respect to $y$, the term $p(x)$ must be a constant with respect to $y$. We can express $p(x)$ as the joint or \textit{marginal} distribution of $x$ and $y$ because
+Observe that since $f(y|x)$ is a probability density function with respect to $y$, the term $p(x)$ must be a constant with respect to $y$. We can express $p(x)$ as the \textit{marginal} distribution of $x$ wrt the joint distribution of $x$ and $y$:
 \[
     p(x) = \int \pi(y^{\prime}) \ell(x|y^{\prime} ) dy
 \]
-Because if we apply to the previous expression the integral to both members, we obtain:
-\[
-    \int f(y|x) = \frac{\int \pi(y) \ell(x|y) dy}{p(x)} = 1 ???
-\]
+Observe that $p(x)$ is the only possible value that makes $f(y|x)$ a probability function since it acts as a \textbf{normalization factor}.
+We can note it by trying to obtain one of the most important property of the probability functions: %Because if we apply to the previous expression the integral to both members, we obtain:
+\begin{gather*}
+    \int f(y|x) \overset ! = 1 \\
+    \int f(y|x) = \frac{\int \pi(y) \ell(x|y) dy}{p(x)} = \frac{p(x)}{p(x)} = 1
+\end{gather*}
 
-So, given that $p(x)$ is a constant with respect to $y$, we arrive at the fundamental proposition that:
+So, having said that, given that $p(x)$ is a constant with respect to $y$, we arrive at the fundamental proposition that:
 \[
     f(y|x) \propto \pi(y) \ell(x|y)
 \]
@@ -501,12 +503,12 @@ It is propotional because I divide by $p(x)$ that is a factor that is completely
 
 Some remarks:
 \begin{itemize}
-    \item In this part of the course we're assuming that we already know the model, so $\pi(y)$ and $\ell(x|y)$ are known.
+    \item Until now we're assuming that we already know the model, so $\pi(y)$ and $\ell(x|y)$ are known.
     \item If our data follows the model, then no other algorithm (not even deep learning) can outperform the estimators derived by our models
     \item We do not create a generative mechanism but we "pretend" to know it.
 \end{itemize}
 
-To do a practical example, we can consider a weather forecasting system, with input data that is temperature, humidity and pressure and output data that is if tomorrow will be sunny or rainy. The \textit{posterior} function (likelihood function) tells us if given that is sunny or rainy what could be the probabile values of the sensor data. The \textit{prior} function tells us on average if it is rainy or sunny.
+To do a practical example, we can consider a weather forecasting system, with input data that is temperature, humidity and pressure and output data that is if tomorrow will be sunny or rainy. The \textit{posterior} function (likelihood function) tells us if given that is sunny or rainy what could be the probable values of the sensor data. The \textit{prior} function tells us on average if it is rainy or sunny.
 
 Now we're going to calculate $f(y|x)$. We've said that apart from a constant $p(x)$, that is constant with respect to $y$ but a function of $x$, our \textit{posterior} function is:
 \[
@@ -526,9 +528,9 @@ So we can write:
 \]
 We can ignore the constants:
 \[
-    f(y|x) \propto e^{-\frac{y^2}{2\sigma^2_y} - \frac{1}{2\sigma_w^2} \sum_{i=1}^{N} x_i^2 - \frac{N}{2} \frac{y^2}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
+    f(y|x) \propto e^{-\frac{y^2}{2\sigma^2_y} - \frac{1}{2\sigma_w^2} \sum_{i=1}^{N} x_i^2 - y^2 \frac{N}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
 \]
-Since the second term of the exponential is costant with respect to $y$ and it can be written as a product, it can be ignored because we're considering the fact that is proportional. After ignoring the constant, we can observe that in the following expression the first term depends on the \textit{prior} function while the second term depends on the \textit{posterior} function.
+Since the second term of the exponential is costant with respect to $y$ and the exponential can be written as a product of exponentials, it can be ignored because for what we said before we're considering the fact that is proportional. After ignoring the constant, we can observe that in the following expression the first term depends on the \textit{prior} function while the second term depends on the \textit{posterior} function.
 \[
     f(y|x) \propto e^{-\frac{y^2}{2\sigma^2_y} - \frac{N}{2} \frac{y^2}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
 \]
@@ -538,24 +540,47 @@ We can factor the terms that depend on $y^2$:
 \]
 and then by defining:
 \[
-    \frac{1}{\sigma^2} = \frac{1}{\sigma_y^2} + \frac{1}{\frac{\sigma^2_w}{N}}
+    \frac{1}{\sigma^2} = \frac{1}{\sigma_y^2} + \frac{1}{\frac{\sigma^2_w}{N}} =  \frac{\sigma^2_w+N\sigma^2_y}{\sigma^2_y\sigma^2_w}
 \]
 We get:
 \[
-    f(y|x) \propto e^{-\frac{1}{2\sigma^2} y^2 + \frac{\sum x_i}{\sigma_w^2} y}
+    f(y|x) \propto e^{-\frac{1}{2\sigma^2} y^2 + \frac{y}{\sigma_w^2} \sum_{i=1}^N x_i}
 \]
-Now we try to complete the square by adding and subtracting a function $g(x)$:
-\[
-    f(y|x) \propto e^{\frac{-(y-\mu)^2}{2\sigma^2}}
-\]
-where:
+Ideally, since we started from a product of gaussians, we would like to obtain a gaussian. We can do that by noting that the exponent of the exponential is a partial square of a binomial.
+So, first we try to complete the square by adding and subtracting a function $g(x)$ and then we can ignore by proportionality the remaing term that is not included in the square:
+\begin{gather*}
+    f(y|x) \propto e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \right) } \\
+    = e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)-g(x)}\right) } \\
+    \propto e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)}\right) } \\
+    = e^{-\frac{1}{2\sigma^2} \left(y^2 - 2\frac{\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i - g(x)2\sigma^2\right)}
+\end{gather*}
+By making the position:
 \[
     \mu = \frac{\sigma^2}{\sigma_w^2}\sum_{i=1}^{N} x_i
 \]
-So we obtained that the posterior mean is $\mu$:
+we get:
+\begin{gather*}
+    f(y|x) \propto e^{\frac{-(y-\mu)^2}{2\sigma^2}} \\
+    f(y|x) \sim \mathcal N \left(\frac{\sigma^2}{\sigma_w^2}\sum_{i=1}^{N} x_i,  \frac{\sigma^2_y\sigma^2_w}{\sigma^2_w+N\sigma^2_y}\right)
+\end{gather*}
+
+So, by definition, we obtained that the posterior mean is $\mu$:
 \[
-    \hat{Y} = \mathbb{E}\left[ Y | X\right] = \frac{\sigma_y^2}{N\sigma_y^2 + \sigma_w^2} \sum_{i=1}^{N} x_i
+    \hat{Y} = \mathbb{E}\left[ Y | X\right] = \frac{\sigma_y^2}{N\sigma_y^2 + \sigma_w^2} \sum_{i=1}^{N} x_i = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X 
 \]
 
+\subparagraph*{Further considerations}
+Let's analyze the obtained estimator with some limit cases.
 
+First, consider the case when the variance of the prior function goes to infinity. In this case, the estimator becomes:
+\[
+    \lim_{\sigma^2_y\to\infty} \hat Y = \bar X   \lim_{\sigma^2_y\to\infty} \frac 1{1+\frac{\sigma^2_w}{N\sigma^2_y}} = \bar X
+\]
+This limit case means that the information that we obtain from the prior function is null since we're saying that $Y$ could assume every value in its domain independently on the mean. So there will not be a common point on which the data point $x_i$ will gather on.
+We degenered to the maximum likelihood case, where we don't have any prior information.
 
+Now consider the case when the variance of the prior function goes to zero. In this case, the estimator becomes:
+\[
+    \lim_{\sigma^2_y\to0} \hat Y = \bar X \lim_{\sigma^2_y\to 0}\frac{1}{1+\frac{\sigma^2_w}{N\sigma^2_y}} = 0
+\]
+Simply, if the variance of the prior function goes to zero, it means that the value of $Y$ tends to be the same at every time and there are no noise or randomicity on it. So, the estimator will be the mean of the prior function that we said to be zero. % TODO: check di questo periodo
