@@ -569,7 +569,7 @@ So, by definition, we obtained that the posterior mean is $\mu$:
     \hat{Y} = \mathbb{E}\left[ Y | X\right] = \frac{\sigma_y^2}{N\sigma_y^2 + \sigma_w^2} \sum_{i=1}^{N} x_i = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X 
 \]
 
-\subparagraph*{Further considerations}
+\paragraph*{Further considerations}
 Let's analyze the obtained estimator with some limit cases.
 
 First, consider the case when the variance of the prior function goes to infinity. In this case, the estimator becomes:
@@ -584,3 +584,81 @@ Now consider the case when the variance of the prior function goes to zero. In t
     \lim_{\sigma^2_y\to0} \hat Y = \bar X \lim_{\sigma^2_y\to 0}\frac{1}{1+\frac{\sigma^2_w}{N\sigma^2_y}} = 0
 \]
 Simply, if the variance of the prior function goes to zero, it means that the value of $Y$ tends to be the same at every time and there are no noise or randomicity on it. So, the estimator will be the mean of the prior function that we said to be zero. % TODO: check di questo periodo
+
+\begin{exercise}
+    For the estimator obtained in the previous exercise compute the theoretical error.
+\end{exercise}
+
+We want to compute the error made by the estimator $\hat{Y}$, using the MSE as risk function:
+\[
+    \E{}{(Y-\hat Y)^2}
+\]
+We can use tower property to compute the error:
+\[
+    \E{}{(Y-\hat Y)^2} = \E{Y}{\E{}{(Y-\hat Y)^2\mid Y}}
+\]
+Recall our estimator $\hat Y$:
+\[
+    \hat Y = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X = a\bar X 
+\]
+We start by solving the inner expectation:
+\begin{gather*}
+    \E{}{(y-\hat Y)^2\mid Y = y} = \E{}{(y-a\bar X)^2\mid Y = y} = \\
+    = \E{}{\left(y-a\left(y+\frac 1N \sum_{i=1}^NW_i\right)\right)^2\mid Y = y} \\
+    = \E{}{\left(y-ay+\frac aN\sum_{i=1}^NW_i\right)^2} = \E{}{\left(y(1-a)+\frac aN\sum_{i=1}^NW_i\right)} = \\
+    = \E{}{y^2(1-a)^2+\frac{a^2}{N^2}\left(\sum_{i=1}^NW_i\right)^2+2y(1-a)\frac aN\sum_{i=1}^NW_i} = \\
+    = y^2(1-a)^2+\frac{a^2}{N^2}\underbrace{\E{}{\left(\sum_{i=1}^NW_i\right)^2}}_{N\sigma^2_w}+2y(1-a)\frac aN\E{}{\sum_{i=1}^NW_i} = \\
+    = y^2(1-a)^2+\frac{a^2\sigma^2_w}{N}
+\end{gather*}
+
+Now we can compute the outer expectation:
+\begin{gather*}
+    \E{Y}{Y^2(1-a)^2+\frac{a^2\sigma^2_w}N} = (1-a)^2\E{Y}{Y^2}+\frac{a^2\sigma^2_w}N = \\
+    = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N
+\end{gather*}
+
+Finally, we can compute the error:
+\[
+    \E{}{(Y-\hat Y)^2} = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N = \frac{\sigma^2_y\sigma^2_w}{\sigma^2_w + N\sigma^2_y}
+\]
+
+We can simply note that the obtained error is equal to the variance of the posterior function  $f(y|x)$.
+This result doesn't depend on the unbiasedness of the estimator since that property is not valid in this case and, in general, is not a crucial property in the Bayesian setting.
+The result can be demonstrated in a simple way by considering the following application of the tower property on the MSE:
+\[
+    \E{}{(Y-\hat Y)^2} = \E{X}{\E{Y|X}{(Y-\hat Y)^2}}
+\]
+Calculating the inner expectation we are using the distribution $f_{Y|X}(y|x)$, that is the posterior distribution of $Y$ given $X$. So, the error is the variance of the posterior distribution of $Y$ given $X$.
+\[
+    \E{Y|X}{(Y-\hat Y)^2} = \var{Y|X}=\sigma^2
+\]
+Furthermore, in this particular case, we can note that $\sigma^2$ is not dependent on $x$, so the error is the same for every value of $x$ and it is unuseful to compute the outer expectation.
+
+So, the general behavior is that the error can be ever seen as the expectation over $x$ of the variance of the posterior distribution of $Y$ given $X$, $\var{Y|X}$.
+
+\paragraph*{On the unbiasedness of the estimator}
+First of all, we have to explain the meaning of unbiasedness in the current setting. 
+Since the Bayesian setting try to estimate the value of a random variable $Y$, asking for unbiasedness would be equal to ask that:
+\[
+    \E{}{\hat Y} = Y
+\]
+But we know that, since the expected value of a random variable is a constant, the previous equation is ambiguos.
+Instead, what we can ask is that for a specific observation of $Y$, the estimator $\hat Y$ is unbiased. So, we can ask that:
+\[
+    \E{}{\hat Y|Y} = y
+\]
+An estimator that satisfies this property can be obtained in a straightforward way, for example as the average of the data point.
+What we can't (tipically) ask is that the following condition are simultaneously satisfied:
+\begin{enumerate}
+    \item Estimator is unbiased (following the previous definition)
+    \item Estimator is the best estimator (i.e. it has the lowest value of MSE)
+\end{enumerate}
+This can be seen on the estimator obtained in the previous exercise. 
+\begin{gather*}
+    \hat Y = a\bar X \\
+    \E{}{\hat Y|Y} = a\E{}{\bar X|Y} = ay
+\end{gather*}
+So, the estimator of the previous exercise is not unbiased, but it will return an estimate greator or lesser than the true value of $Y$ depending on the prior information.
+For example, the lowest is the variance of the prior function, the closest is the estimator to $y$ and viceversa.
+
+In practical cases, this condition of unbiased is not requested. In fact, the Bayesian setting is used when we have some prior information and we want to use it to obtain a better estimator. A different situation is the one of the maximum likelihood estimate where the unbiasedness is the only property that we can ask for the estimator.
