@@ -587,54 +587,55 @@ Simply, if the variance of the prior function goes to zero, it means that the va
 
 \begin{exercise}
     For the estimator obtained in the previous exercise compute the theoretical error.
+
+
+    We want to compute the error made by the estimator $\hat{Y}$, using the MSE as risk function:
+    \[
+        \E{}{(Y-\hat Y)^2}
+    \]
+    We can use tower property to compute the error:
+    \[
+        \E{}{(Y-\hat Y)^2} = \E{Y}{\E{}{(Y-\hat Y)^2\mid Y}}
+    \]
+    Recall our estimator $\hat Y$:
+    \[
+        \hat Y = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X = a\bar X 
+    \]
+    We start by solving the inner expectation:
+    \begin{gather*}
+        \E{}{(y-\hat Y)^2\mid Y = y} = \E{}{(y-a\bar X)^2\mid Y = y} = \\
+        = \E{}{\left(y-a\left(y+\frac 1N \sum_{i=1}^NW_i\right)\right)^2\mid Y = y} \\
+        = \E{}{\left(y-ay+\frac aN\sum_{i=1}^NW_i\right)^2} = \E{}{\left(y(1-a)+\frac aN\sum_{i=1}^NW_i\right)} = \\
+        = \E{}{y^2(1-a)^2+\frac{a^2}{N^2}\left(\sum_{i=1}^NW_i\right)^2+2y(1-a)\frac aN\sum_{i=1}^NW_i} = \\
+        = y^2(1-a)^2+\frac{a^2}{N^2}\underbrace{\E{}{\left(\sum_{i=1}^NW_i\right)^2}}_{N\sigma^2_w}+2y(1-a)\frac aN\E{}{\sum_{i=1}^NW_i} = \\
+        = y^2(1-a)^2+\frac{a^2\sigma^2_w}{N}
+    \end{gather*}
+
+    Now we can compute the outer expectation:
+    \begin{gather*}
+        \E{Y}{Y^2(1-a)^2+\frac{a^2\sigma^2_w}N} = (1-a)^2\E{Y}{Y^2}+\frac{a^2\sigma^2_w}N = \\
+        = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N
+    \end{gather*}
+
+    Finally, we can compute the error:
+    \[
+        \E{}{(Y-\hat Y)^2} = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N = \frac{\sigma^2_y\sigma^2_w}{\sigma^2_w + N\sigma^2_y}
+    \]
+
+    We can simply note that the obtained error is equal to the variance of the posterior function  $f(y|x)$.
+    This result doesn't depend on the unbiasedness of the estimator since that property is not valid in this case and, in general, is not a crucial property in the Bayesian setting.
+    The result can be demonstrated in a simple way by considering the following application of the tower property on the MSE:
+    \[
+        \E{}{(Y-\hat Y)^2} = \E{X}{\E{Y|X}{(Y-\hat Y)^2}}
+    \]
+    Calculating the inner expectation we are using the distribution $f_{Y|X}(y|x)$, that is the posterior distribution of $Y$ given $X$. So, the error is the variance of the posterior distribution of $Y$ given $X$.
+    \[
+        \E{Y|X}{(Y-\hat Y)^2} = \var{Y|X}=\sigma^2
+    \]
+    Furthermore, in this particular case, we can note that $\sigma^2$ is not dependent on $x$, so the error is the same for every value of $x$ and it is unuseful to compute the outer expectation.
+
+    So, the general behavior is that the error can be ever seen as the expectation over $x$ of the variance of the posterior distribution of $Y$ given $X$, $\var{Y|X}$.
 \end{exercise}
-
-We want to compute the error made by the estimator $\hat{Y}$, using the MSE as risk function:
-\[
-    \E{}{(Y-\hat Y)^2}
-\]
-We can use tower property to compute the error:
-\[
-    \E{}{(Y-\hat Y)^2} = \E{Y}{\E{}{(Y-\hat Y)^2\mid Y}}
-\]
-Recall our estimator $\hat Y$:
-\[
-    \hat Y = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X = a\bar X 
-\]
-We start by solving the inner expectation:
-\begin{gather*}
-    \E{}{(y-\hat Y)^2\mid Y = y} = \E{}{(y-a\bar X)^2\mid Y = y} = \\
-    = \E{}{\left(y-a\left(y+\frac 1N \sum_{i=1}^NW_i\right)\right)^2\mid Y = y} \\
-    = \E{}{\left(y-ay+\frac aN\sum_{i=1}^NW_i\right)^2} = \E{}{\left(y(1-a)+\frac aN\sum_{i=1}^NW_i\right)} = \\
-    = \E{}{y^2(1-a)^2+\frac{a^2}{N^2}\left(\sum_{i=1}^NW_i\right)^2+2y(1-a)\frac aN\sum_{i=1}^NW_i} = \\
-    = y^2(1-a)^2+\frac{a^2}{N^2}\underbrace{\E{}{\left(\sum_{i=1}^NW_i\right)^2}}_{N\sigma^2_w}+2y(1-a)\frac aN\E{}{\sum_{i=1}^NW_i} = \\
-    = y^2(1-a)^2+\frac{a^2\sigma^2_w}{N}
-\end{gather*}
-
-Now we can compute the outer expectation:
-\begin{gather*}
-    \E{Y}{Y^2(1-a)^2+\frac{a^2\sigma^2_w}N} = (1-a)^2\E{Y}{Y^2}+\frac{a^2\sigma^2_w}N = \\
-    = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N
-\end{gather*}
-
-Finally, we can compute the error:
-\[
-    \E{}{(Y-\hat Y)^2} = (1-a)^2\sigma^2_y+\frac{a^2\sigma^2_w}N = \frac{\sigma^2_y\sigma^2_w}{\sigma^2_w + N\sigma^2_y}
-\]
-
-We can simply note that the obtained error is equal to the variance of the posterior function  $f(y|x)$.
-This result doesn't depend on the unbiasedness of the estimator since that property is not valid in this case and, in general, is not a crucial property in the Bayesian setting.
-The result can be demonstrated in a simple way by considering the following application of the tower property on the MSE:
-\[
-    \E{}{(Y-\hat Y)^2} = \E{X}{\E{Y|X}{(Y-\hat Y)^2}}
-\]
-Calculating the inner expectation we are using the distribution $f_{Y|X}(y|x)$, that is the posterior distribution of $Y$ given $X$. So, the error is the variance of the posterior distribution of $Y$ given $X$.
-\[
-    \E{Y|X}{(Y-\hat Y)^2} = \var{Y|X}=\sigma^2
-\]
-Furthermore, in this particular case, we can note that $\sigma^2$ is not dependent on $x$, so the error is the same for every value of $x$ and it is unuseful to compute the outer expectation.
-
-So, the general behavior is that the error can be ever seen as the expectation over $x$ of the variance of the posterior distribution of $Y$ given $X$, $\var{Y|X}$.
 
 \paragraph*{On the unbiasedness of the estimator}
 First of all, we have to explain the meaning of unbiasedness in the current setting. 

@@ -31,38 +31,38 @@
 \contentsline {subsection}{\numberline {3.1.2}Benchmark performance}{33}{subsection.3.1.2}%
 \contentsline {section}{\numberline {3.2}Supervised Parametric Regression}{35}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Simple Linear Regression}{35}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Assesing the accuracy of the model}{36}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Multiple Linear Regression}{37}{subsection.3.2.3}%
-\contentsline {section}{\numberline {3.3}Supervised Non Parametric Regression}{42}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Consistency}{42}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Asymptotic methods}{43}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{44}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{45}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{45}{subsection.3.3.5}%
-\contentsline {subsection}{\numberline {3.3.6}Conditions for consistency}{45}{subsection.3.3.6}%
-\contentsline {subsubsection}{Consistency of the naive-kernel estimator}{46}{section*.32}%
-\contentsline {subsubsection}{Consistency of the nearest-neighbour estimator}{47}{section*.34}%
-\contentsline {section}{\numberline {3.4}Exercise}{47}{section.3.4}%
-\contentsline {chapter}{\numberline {4}Linear Methods for Regression}{49}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Resampling Methods}{49}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Model Selection}{55}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Shrinkage Methods}{59}{section.4.3}%
-\contentsline {chapter}{\numberline {5}Classification}{65}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Introduction}{65}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Model-Based Classification}{66}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Bayesian approach}{66}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Neyman-Pearson Criterion}{70}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Supervised Classification}{71}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Exercises}{74}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Exercise 1}{74}{subsection.5.4.1}%
-\contentsline {chapter}{\numberline {6}Optimization}{79}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Optimization in data analysis}{79}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Problem assumptions}{80}{section.6.2}%
-\contentsline {subsection}{\numberline {6.2.1}Lipschitz Continuity}{80}{subsection.6.2.1}%
-\contentsline {subsection}{\numberline {6.2.2}Convexity}{80}{subsection.6.2.2}%
-\contentsline {section}{\numberline {6.3}Gradient Descent}{83}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Gradient Descent Limitations}{83}{subsection.6.3.1}%
-\contentsline {section}{\numberline {6.4}Stochastic Gradient Descent}{84}{section.6.4}%
-\contentsline {chapter}{\numberline {7}Cluster Analysis}{87}{chapter.7}%
-\contentsline {section}{\numberline {7.1}PCA}{87}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Clustering}{90}{section.7.2}%
+\contentsline {subsection}{\numberline {3.2.2}Assesing the accuracy of the model}{37}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Multiple Linear Regression}{38}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Supervised Non Parametric Regression}{43}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Consistency}{43}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Asymptotic methods}{44}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{45}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{46}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{46}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}Conditions for consistency}{46}{subsection.3.3.6}%
+\contentsline {subsubsection}{Consistency of the naive-kernel estimator}{47}{section*.33}%
+\contentsline {subsubsection}{Consistency of the nearest-neighbour estimator}{48}{section*.35}%
+\contentsline {section}{\numberline {3.4}Exercise}{48}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Linear Methods for Regression}{51}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Resampling Methods}{51}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Model Selection}{57}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Shrinkage Methods}{61}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Classification}{67}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{67}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Model-Based Classification}{68}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Bayesian approach}{68}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Neyman-Pearson Criterion}{72}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Supervised Classification}{73}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Exercises}{76}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Exercise 1}{76}{subsection.5.4.1}%
+\contentsline {chapter}{\numberline {6}Optimization}{81}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Optimization in data analysis}{81}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Problem assumptions}{82}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Lipschitz Continuity}{82}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Convexity}{82}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Gradient Descent}{85}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Gradient Descent Limitations}{85}{subsection.6.3.1}%
+\contentsline {section}{\numberline {6.4}Stochastic Gradient Descent}{86}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Cluster Analysis}{89}{chapter.7}%
+\contentsline {section}{\numberline {7.1}PCA}{89}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Clustering}{92}{section.7.2}%

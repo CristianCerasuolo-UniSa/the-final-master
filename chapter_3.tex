@@ -78,13 +78,13 @@ Note that if we assumed the shape of optimal function, like we did in the linear
     \]
     where $Y \in \mathbb{R}$, $X \in \mathbb{R}^{(d+1) \times 1}$, $\beta \in \mathbb{R}^{(d+1) \times 1}$ and $\mathcal{E} \in \mathbb{R}$.
 
-    First we multiply on the left both members by $X$:
+    First, since tipically the vector relation $a^Tb$ is not invertible, we multiply on the left both members by $X$ in order to create a matricial relation:
     \[
         \underset{(d+1) \times 1}{XY} = \underset{(d+1)\times 1}{X X^T\beta} + \underset{(d+1)\times 1}{X\mathcal{E}}
     \]
-    Then we take expectation:
+    Then we take expectation, to remove the unknown error term, and we get the following relation:
     \[
-        \E{}{XY} = \E{}{X X^T} \beta + \E{}{X \varepsilon} \label{eq:1}
+        \E{}{XY} = \E{}{X X^T} \beta + \E{}{X \varepsilon} \label{eq:1} \tag{1}
     \]
     And we compute each term separately.
 
@@ -107,13 +107,17 @@ Note that if we assumed the shape of optimal function, like we did in the linear
     \]
     since in the inner expectation $X$ is a constant, it can be taken out of the expectation and since we assumed that the error term is zero mean given $X$, we find out that the whole expectation is zero.
 
-    We can rewrite the equation \ref*{eq:1} as:
+    We can rewrite the equation \ref*{eq:1} as: % TODO: reference to unknown equation (on pdf is not visible the number)
     \[
         R_{XY} =  R_X \beta
     \]
     And then solve for $\beta$:\footnote{By assuming that $R_x$ is invertible.}
     \[
         \beta = R_X^{-1} R_{XY}
+    \]
+    Finding a new expression for the optimal regression function:
+    \[
+        r(X) = X^T\beta = X^TR_X^{-1}R_{XY}
     \]
     In conclusion we found out that in a model-based linear regression problem $\beta$ cannot be arbitrary, because it is uniquely determined by the correlation matrices of $X$ and $XY$.
 \end{exercise}
@@ -169,11 +173,11 @@ And the corrisponding values of the response variable, $\tilde{Y}$:
 
     We can find the estimator by replacing the correlation matrices with their empirical counterparts:
     \[
-        \hat{\beta} = \left(\hat{R_X}\right)^{-1} \hat{R}_{xy}
+        \hat{\beta} = \left(\hat{R}_X\right)^{-1} \hat{R}_{XY}
     \]
     where the correlation matrices are defined as:
     \[
-        [\hat{R}_{X}]_{ij} = \frac{1}{n} \sum_{m=1}^{n} \tilde{X}_{im} \tilde{X}_{jm}
+        [\hat{R}_{X}]_{ij} = \frac{1}{n} \sum_{m=1}^{n} \tilde{X}_{im} \tilde{X}_{mj}
         \qquad
         [\hat{R}_{XY}]_i = \frac{1}{n} \sum_{m=1}^{n} \tilde{X}_{im} \tilde{Y}_{m}
     \]
@@ -194,15 +198,22 @@ And the corrisponding values of the response variable, $\tilde{Y}$:
         RSS = \frac{1}{n} \sum_{m=1}^{n} \left(\tilde{Y}_m - \beta^T \tilde{X}_m \right)^2 \xrightarrow{n \to +\infty} \E{}{(Y - \beta^T X)^2}
     \]
 \end{exercise}
-\begin{note}{Warning}
-    Sentire la registrazione da qui in poi.
-\end{note}
+%TODO: non ho capito miriam cosa voleva dire qui, riporto le note nei miei appunti e poi ne discutiamo
+% \begin{note}{Warning}
+%     Sentire la registrazione da qui in poi.
+% \end{note}
 
-The two things are connected only in this case.
+% The two things are connected only in this case.
 
-We took the optimal risk (that is the expectation) and we replaced it with the empirical risk. I am trying to do Bayes empirically. The difference is that we need a model. In MMSE we have a \textbf{general solution} that works for every model, in the \textbf{supervised approach} we need to impose or assume a model.
+% We took the optimal risk (that is the expectation) and we replaced it with the empirical risk. I am trying to do Bayes empirically. The difference is that we need a model. In MMSE we have a \textbf{general solution} that works for every model, in the \textbf{supervised approach} we need to impose or assume a model.
 
-Optimal Bayes is a benchmark performance. There is some optimal thing to do, we cannot do it. I impose one model and replace the \textit{optimal risk} with the \textit{empirical risk}.
+% Optimal Bayes is a benchmark performance. There is some optimal thing to do, we cannot do it. I impose one model and replace the \textit{optimal risk} with the \textit{empirical risk}.
+Let's analyze what happened. We fall in a supervised learning problem, where we imposed a shape for the model and we want to learn $\beta$ in order to predict $Y$. There are roughly two possible ways:
+\begin{enumerate}
+    \item Try to emulate the shape of the optimal $\beta$ by estimating the matrices (correlation and cross-correlation) and then compute the estimator $\hat{\beta}$.
+    \item Try to find the best $\beta$ that minimizes the empirical risk. Simply, we try to apply Bayes theory empirically.
+\end{enumerate}
+In this case, both approaches lead to the same result and are connected from the fact that both are linked to Bayes theory.
 
 \subsection{Benchmark performance}
 
