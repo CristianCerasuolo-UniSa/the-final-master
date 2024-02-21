@@ -36,13 +36,12 @@
 \contentsline {section}{\numberline {3.3}Supervised Non Parametric Regression}{43}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Consistency}{43}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Asymptotic methods}{44}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{45}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{46}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{46}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{46}{subsection.3.3.5}%
-\contentsline {subsection}{\numberline {3.3.6}Conditions for consistency}{46}{subsection.3.3.6}%
-\contentsline {subsubsection}{Consistency of the naive-kernel estimator}{47}{section*.33}%
-\contentsline {subsubsection}{Consistency of the nearest-neighbour estimator}{48}{section*.35}%
-\contentsline {section}{\numberline {3.4}Exercise}{48}{section.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{47}{subsection.3.3.5}%
+\contentsline {subsubsection}{Naive-kernel estimator}{47}{section*.33}%
+\contentsline {subsubsection}{Nearest-neighbour estimator}{48}{section*.35}%
+\contentsline {section}{\numberline {3.4}Exercise}{49}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Linear Methods for Regression}{51}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Resampling Methods}{51}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Model Selection}{57}{section.4.2}%

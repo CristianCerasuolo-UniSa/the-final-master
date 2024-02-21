@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.2.17)  19 FEB 2024 15:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.2.17)  21 FEB 2024 15:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1063,20 +1063,20 @@ Package mdframed Info: mdframed detected package amsthm
 
 ]
 Chapter 2.
-<./figures/chapter_2/data2information.png, id=368, 746.79pt x 91.34125pt>
+<./figures/chapter_2/data2information.png, id=363, 746.79pt x 91.34125pt>
 File: ./figures/chapter_2/data2information.png Graphic file (type png)
 <use ./figures/chapter_2/data2information.png>
 Package pdftex.def Info: ./figures/chapter_2/data2information.png  used on inpu
 t line 13.
 (pdftex.def)             Requested size: 241.49895pt x 29.53781pt.
 [9 <./figures/chapter_2/data2information.png>]
-<./figures/chapter_2/modelbased.png, id=376, 754.82pt x 207.77625pt>
+<./figures/chapter_2/modelbased.png, id=371, 754.82pt x 207.77625pt>
 File: ./figures/chapter_2/modelbased.png Graphic file (type png)
 <use ./figures/chapter_2/modelbased.png>
 Package pdftex.def Info: ./figures/chapter_2/modelbased.png  used on input line
  29.
 (pdftex.def)             Requested size: 241.49895pt x 66.47389pt.
-<./figures/chapter_2/modellearning.png, id=378, 775.89874pt x 388.45125pt>
+<./figures/chapter_2/modellearning.png, id=373, 775.89874pt x 388.45125pt>
 File: ./figures/chapter_2/modellearning.png Graphic file (type png)
 <use ./figures/chapter_2/modellearning.png>
 Package pdftex.def Info: ./figures/chapter_2/modellearning.png  used on input l
@@ -1087,13 +1087,13 @@ Underfull \vbox (badness 1755) has occurred while \output is active []
 
  [10 <./figures/chapter_2/modelbased.png> <./figures/chapter_2/modellearning.pn
 g>]
-<./figures/chapter_2/mmse.png, id=391, 825.0825pt x 122.4575pt>
+<./figures/chapter_2/mmse.png, id=386, 825.0825pt x 122.4575pt>
 File: ./figures/chapter_2/mmse.png Graphic file (type png)
 <use ./figures/chapter_2/mmse.png>
 Package pdftex.def Info: ./figures/chapter_2/mmse.png  used on input line 97.
 (pdftex.def)             Requested size: 241.49895pt x 35.84248pt.
  [11]
-<./figures/chapter_2/mlprocess.png, id=398, 571.13374pt x 209.78375pt>
+<./figures/chapter_2/mlprocess.png, id=393, 571.13374pt x 209.78375pt>
 File: ./figures/chapter_2/mlprocess.png Graphic file (type png)
 <use ./figures/chapter_2/mlprocess.png>
 Package pdftex.def Info: ./figures/chapter_2/mlprocess.png  used on input line 
@@ -1147,50 +1147,40 @@ Package mdframed Info: mdframed detected package amsthm
  changed the theorem header of amsthm
 (mdframed)              on input line 100.
  [31] [32]
-LaTeX Font Info:    Trying to load font information for T1+cmss on input line 2
-01.
-
-(/usr/local/texlive/2023/texmf-dist/tex/latex/base/t1cmss.fd
-File: t1cmss.fd 2022/07/10 v2.5l Standard LaTeX font definitions
-)
-Package mdframed Info: mdframed works in twoside mode on input line 221.
+Package mdframed Info: mdframed works in twoside mode on input line 228.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 221.
-Package mdframed Info: mdframed works in twoside mode on input line 230.
+(mdframed)              on input line 228.
+Package mdframed Info: mdframed works in twoside mode on input line 237.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 230.
+(mdframed)              on input line 237.
  [33]
-Overfull \hbox (21.00185pt too wide) detected at line 263
+Overfull \hbox (21.00185pt too wide) detected at line 276
 []
  []
 
 [34] [35] [36] [37] [38] [39] [40] [41] [42]
-Package mdframed Info: mdframed works in twoside mode on input line 626.
+Package mdframed Info: mdframed works in twoside mode on input line 639.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 626.
-Package mdframed Info: mdframed works in twoside mode on input line 630.
+(mdframed)              on input line 639.
+Package mdframed Info: mdframed works in twoside mode on input line 643.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 630.
+(mdframed)              on input line 643.
  [43]
-Package mdframed Info: mdframed works in twoside mode on input line 637.
+Package mdframed Info: mdframed works in twoside mode on input line 650.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 637.
- [44]
-Package mdframed Info: mdframed works in twoside mode on input line 707.
+(mdframed)              on input line 650.
+ [44] [45]
+Package mdframed Info: mdframed works in twoside mode on input line 730.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 707.
+(mdframed)              on input line 730.
 
-Overfull \vbox (1.31714pt too high) has occurred while \output is active []
-
-
-[45]
-Overfull \hbox (9.2358pt too wide) detected at line 723
+Overfull \hbox (9.2358pt too wide) detected at line 746
 \OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )\OML/
 cmm/m/it/10 ; [] ; X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )[]\
 OMS/cmsy/m/n/10 k\OML/cmm/m/it/10 X[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OT1/
@@ -1201,21 +1191,21 @@ cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 k ^^T [] k\OML/cmm/m/it/10
  \OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 k
  []
 
-Package mdframed Info: mdframed works in twoside mode on input line 731.
+Package mdframed Info: mdframed works in twoside mode on input line 754.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 731.
-[46] [47] [48]) (./chapter_4.tex [49] [50
+(mdframed)              on input line 754.
+[46] [47] [48] [49]) (./chapter_4.tex [50]
+Chapter 4.
+[51
 
 ]
-Chapter 4.
-[51]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
 7.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
-<./figures/lec_15_validation_set.png, id=652, 862.22125pt x 332.24126pt>
+<./figures/lec_15_validation_set.png, id=648, 862.22125pt x 332.24126pt>
 File: ./figures/lec_15_validation_set.png Graphic file (type png)
 <use ./figures/lec_15_validation_set.png>
 Package pdftex.def Info: ./figures/lec_15_validation_set.png  used on input lin
@@ -1230,14 +1220,14 @@ cmr/m/n/10 .
  []
 
 [52 <./figures/lec_15_validation_set.png>]
-<./figures/lec_15_k_fold_cv.png, id=662, 815.045pt x 349.305pt>
+<./figures/lec_15_k_fold_cv.png, id=658, 815.045pt x 349.305pt>
 File: ./figures/lec_15_k_fold_cv.png Graphic file (type png)
 <use ./figures/lec_15_k_fold_cv.png>
 Package pdftex.def Info: ./figures/lec_15_k_fold_cv.png  used on input line 77.
 
 (pdftex.def)             Requested size: 276.00105pt x 118.28775pt.
  [53]
-<./figures/lec_15_investment_simulations.png, id=671, 510.90875pt x 466.74374pt
+<./figures/lec_15_investment_simulations.png, id=667, 510.90875pt x 466.74374pt
 >
 File: ./figures/lec_15_investment_simulations.png Graphic file (type png)
 <use ./figures/lec_15_investment_simulations.png>
@@ -1245,14 +1235,14 @@ Package pdftex.def Info: ./figures/lec_15_investment_simulations.png  used on i
 nput line 111.
 (pdftex.def)             Requested size: 276.00105pt x 252.13757pt.
  [54 <./figures/lec_15_k_fold_cv.png>]
-<./figures/lec_15_bootstrap.png, id=681, 693.59125pt x 621.32124pt>
+<./figures/lec_15_bootstrap.png, id=677, 693.59125pt x 621.32124pt>
 File: ./figures/lec_15_bootstrap.png Graphic file (type png)
 <use ./figures/lec_15_bootstrap.png>
 Package pdftex.def Info: ./figures/lec_15_bootstrap.png  used on input line 131
 .
 (pdftex.def)             Requested size: 276.00105pt x 247.24422pt.
  [55 <./figures/lec_15_investment_simulations.png>]
-<./figures/lec_15_bootstrap_2.png, id=690, 788.9475pt x 325.215pt>
+<./figures/lec_15_bootstrap_2.png, id=686, 788.9475pt x 325.215pt>
 File: ./figures/lec_15_bootstrap_2.png Graphic file (type png)
 <use ./figures/lec_15_bootstrap_2.png>
 Package pdftex.def Info: ./figures/lec_15_bootstrap_2.png  used on input line 1
@@ -1352,16 +1342,16 @@ Package mdframed Info: mdframed detected package amsthm
 Chapter 7.
 [89] [90] [91] [92] [93] [94] [95] [96]) [97] (./master.aux)
 Package rerunfilecheck Info: File `master.out' has not changed.
-(rerunfilecheck)             Checksum: EF618678DB187D0AC9E010BF6E45D21D;9618.
+(rerunfilecheck)             Checksum: 992F5460EFCEB76A6AE5F93D6ADE00CD;9420.
  ) 
 Here is how much of TeX's memory you used:
- 27236 strings out of 476025
- 520582 string characters out of 5790017
+ 27210 strings out of 476025
+ 519769 string characters out of 5790017
  1873388 words of memory out of 5000000
- 46820 multiletter control sequences out of 15000+600000
- 540098 words of font info for 98 fonts, out of 8000000 for 9000
+ 46797 multiletter control sequences out of 15000+600000
+ 539337 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 104i,18n,97p,823b,564s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 104i,18n,97p,823b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><
 /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
@@ -1395,13 +1385,12 @@ st/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2023/texmf-dist
 /fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2023/texmf-dist/f
 onts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2023/texmf-dist/fon
 ts/type1/public/cm-super/sfsl1000.pfb></usr/local/texlive/2023/texmf-dist/fonts
-/type1/public/cm-super/sfss1000.pfb></usr/local/texlive/2023/texmf-dist/fonts/t
-ype1/public/cm-super/sfti1000.pfb></usr/local/texlive/2023/texmf-dist/fonts/typ
-e1/public/cm-super/sftt1000.pfb>
-Output written on master.pdf (97 pages, 1508007 bytes).
+/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2023/texmf-dist/fonts/t
+ype1/public/cm-super/sftt1000.pfb>
+Output written on master.pdf (97 pages, 1502982 bytes).
 PDF statistics:
- 1179 PDF objects out of 1200 (max. 8388607)
- 977 compressed objects within 10 object streams
- 330 named destinations out of 1000 (max. 500000)
- 535 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1172 PDF objects out of 1200 (max. 8388607)
+ 972 compressed objects within 10 object streams
+ 331 named destinations out of 1000 (max. 500000)
+ 527 words of extra memory for PDF output out of 10000 (max. 10000000)
 
