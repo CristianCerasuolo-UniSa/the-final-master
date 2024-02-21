@@ -290,13 +290,16 @@ This result has been very useful to discover \textit{non-parametric approaches}.
 
 \section{Supervised Parametric Regression}
 \subsection{Simple Linear Regression}
-Let's consider a simple linear regression model:
+In order to introduce the concept of \textit{supervised parametric regression}, we will start with the simplest case, the \textit{simple linear regression} on which we assume a linear relationship between the response variable and the predictor variable with the following model:
+% Let's consider a simple linear regression model:
 \[
     Y = \beta_0 + \beta_1 X + \varepsilon
 \]
-where $\E{}{\varepsilon} = 0$. Assume we want to estimate the parameters $\beta_0$ and $\beta_1$ and find the estimated model:
+Where we make the \textbf{zero-mean error assumption}, so $\E{}{\varepsilon} = 0$. 
+
+Assume we want to estimate the parameters $\beta_0$ and $\beta_1$ and find the estimated model:
 \[
-    \hat{Y} = \hat{\beta_0} + \hat{\beta_1} X
+    \hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 X
 \]
 
 Suppose we have a training set $\mathcal{D}_{tr} = \{(x_i, y_i)\}_{i=1}^n$. We can write:
@@ -309,11 +312,12 @@ The Ordinary Least Squares method let us estimate the parameters $\hat{\beta}_0$
 \[
     \text{RSS}(\beta_0, \beta_1) = \sum_{i=1}^{n} e_i^2 = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \sum_{i=1}^{n} (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
 \]
+Where $e_i$ represents the difference between the observed value and the predicted value, also called \textit{residual}.
 
 Under the assumption that the error term $\underline{\varepsilon} = (\varepsilon_1, \dots, \varepsilon_n)^T$:
 \begin{itemize}
     \item $\E{}{\varepsilon_i} = 0, \forall i$
-    \item $\var{\underline{\varepsilon}} = \sigma^2 I_n$ (homoscedasticity)
+    \item $\var{\underline{\varepsilon}} = \sigma^2 I_n$ (\textbf{homoscedasticity})
 \end{itemize}
 
 The \textbf{least square estimates} of the parameters are:
@@ -323,12 +327,9 @@ The \textbf{least square estimates} of the parameters are:
 
 If the error terms are independent and identically distributed as normals $\varepsilon_i \sim N(0, \sigma^2)$, then the \textit{least squares estimates} are equal to the ones we obtain by \textit{maximum likelihood estimation}.
 
-\paragraph*{Maximum Likelihood Estimation for linear regression}
+\paragraph*{Estimating parameters in simple linear regression}
 
-
-
-
-Now we want to find the maximum likelihood estimates for the parameters $\hat{\beta}_0$ and $\hat{\beta}_1$. In order to solve the maximization problem, we need to compute the gradient with respect to the parameters $\underline{\beta}$ and set it to zero:
+Now we want to find the least squares estimates for the parameters $\hat{\beta}_0$ and $\hat{\beta}_1$. In order to solve the minimization problem, we need to compute the gradient with respect to the parameters $\underline{\beta}$ and set it to zero:
 \[
     \nabla_{\underline{\beta}} RSS(\beta_0, \beta_1) = 0
 \]
@@ -339,6 +340,8 @@ Now we want to find the maximum likelihood estimates for the parameters $\hat{\b
         \frac{\partial RSS}{\partial \beta_1} =   -2 \sum_{i=1}^{n} x_i (y_i - \beta_0 - \beta_1 x_i) = 0
     \end{cases}
 \]
+
+%TODO: Fare il controllo su punto di minimo con derivata seconda
 \[
     \begin{cases}
         n\beta_0 + \beta_1 \sum_{i=1}^n x_i = \sum_{i=1}^{n} y_i \\
@@ -368,14 +371,45 @@ The least squares estimates are the following:
     \end{cases}
 \]
 
-The \textbf{Gauss-Markov} theorem states that the least squares estimates are the \textbf{best linear unbiased estimates} (BLUE) of the parameters $\beta_0$ and $\beta_1$.
+\callout{Note}{Some books indicates the previous with $B_0$ and $B_1$ because they have the meaning of \textit{estimators}. For notation simplicity, we will use $\hat{\beta}_0$ and $\hat{\beta}_1$.}
+The \textbf{Gauss-Markov} theorem states that, in a model where the errors are zero-mean, incorrelated and homoschedastic, the least squares estimates are the \textbf{best linear unbiased estimates} (BLUE) of the parameters $\beta_0$ and $\beta_1$.
 
-This means that the least squares estimates are unbiased and have the \textit{same} smallest variance:
+%NOTA: non mi trovo con quello che ha scritto Miriam, quello indicato è l'RSE ed è la stima della dev std di epsilon non di beta. INoltre i beta non hanno la stessa varianza
+% This means that the least squares estimates are unbiased and have the \textit{same} smallest variance:
+% \[
+%     \sigma^2 = \text{RSE}^2 = \frac{\text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{n-2}
+% \]
 \[
-    \sigma^2 = \text{RSE}^2 = \frac{\text{RSS}(\hat{\beta}_0, \hat{\beta}_1)}{n-2}
+    \E{}{\hat{\beta}_0} = \beta_0
+    \qquad
+    \E{}{\hat{\beta}_1} = \beta_1
 \]
 
-By assuming that the errors $\varepsilon_i$ are normally distributed, we can compute the confidence intervals for the parameters $\beta_0$ and $\beta_1$:
+The \textbf{variance} of the estimates made using OLS is given by:
+\[
+    \text{SE}(\hat{\beta}_0)^2 = \sigma^2\left[\frac 1n + \frac{\bar x^2}{\sum_{i=1}^n(x_i-\bar x)^2}\right] 
+    \qquad
+    \text{SE}(\hat{\beta}_1)^2 = \frac{\sigma^2}{\sum_{i=1}^n(x_i-\bar x)^2}
+\]
+
+where $\sigma^2$ is the variance of the error term $\varepsilon$ and it is unknown. We can estimate it using the \textbf{residual standard error} under the homoschedasticity assumption:
+\[
+    \text{RSE} = \sqrt{\frac{1}{n-2} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} = \sqrt{\frac{1}{n-2} \text{RSS}}
+\]
+
+At the denominator of the RSE there is, in general case, $n-p-1$ where $p$ is the number of predictors. In the simple linear regression case, $p=1$ and the denominator is $n-2$. It is also known as the \textbf{degrees of freedom} of the model.
+
+\subparagraph*{Confidence intervals}
+The \textbf{confidence intervals} tells us the interval on which, after repeating an estimation experiment many times, we would expect the true value of the parameter to fall given a certaing \textbf{confidence level} or \textbf{error level}.
+\callout{Note}{The \textit{error level} is mandatory since, otherwise, the intervall should be from $-\infty$ to $+\infty$.}
+The assumptions to make about the errors $\varepsilon_i$ are the following:
+\begin{itemize}
+    \item \textbf{Homoschedasticity}: the errors $\varepsilon_i$ have the same variance
+    \item \textbf{Independence}: the errors $\varepsilon_i$ are independent
+    \item \textbf{Normality}: the errors $\varepsilon_i$ are normally distributed.\footnote{This assumption is not necessary to compute the least squares estimates, but it is necessary to compute the confidence intervals.}
+\end{itemize}
+% By assuming that the errors $\varepsilon_i$ are normally distributed, we can compute the confidence intervals for the parameters $\beta_0$ and $\beta_1$:
+It's useful to compute that intervals for $\beta_0$ and $\beta_1$. 
 Let's call $B_0$ and $B_1$ the random variables that represent the estimates of $\beta_0$ and $\beta_1$ respectively. Since we know the distribution of the errors $\varepsilon_i$, we can compute the distribution of $B_0$ and $B_1$:
 \[
     B_0 \sim N(\beta_0, SE^2(B_0))
@@ -386,12 +420,67 @@ Let's call $B_0$ and $B_1$ the random variables that represent the estimates of 
 
 The following quantity:
 \[
-    \frac{B_1 - \beta_1}{SE(B_1)} \sim t_{n-1}
+    \frac{B_1 - \beta_1}{SE(B_1)} \sim t_{n-2}
 \]
-is called \textbf{t-statistic} and it is used to compute the confidence interval for $\beta_1$. It is distributed a (Student) $t$-distribution with $n-2$ degrees of freedom.
+is called \textbf{t-statistic} and it is used to compute the confidence interval for $\beta_1$. Since it is the ratio between a standard normal distribution and the square root of the ratio between a chi-square distribution and a number of degree of freedom, It is distributed as a (Student) $t$-distribution with $n-2$ degrees of freedom. %TODO: si potrebbe spiegare molto meglio. Se vogliamo allungare possimao farlo
+%TODO: si potrebbe aggiungere immagine
 
+By fixing an error level $\alpha$, we can define the inverval by knowing that:
+\[
+    \Pr{-t_{1-\alpha/2, n-2} \leq \frac{B- \beta}{SE(B)} \leq t_{1-\alpha/2, n-2}} = 1 - \alpha
+\]
+where we have not specificied the subscript for generality.
+
+Since we want to know the interval where we can find $\beta$, we can write:
+\[
+    \Pr[B+SE(B)\cdot t_{1-\alpha/2, n-2} \leq \beta \leq B+SE(B)\cdot t_{1-\alpha/2, n-2}] = 1 - \alpha
+\]
+Evalutaing the estimator $B$ we obtain $\hat \beta$ and we can compute the interval:
+\[
+    L = \hat \beta - SE(\hat \beta) \cdot t_{1-\alpha/2, n-2}
+    \qquad
+    U = \hat \beta + SE(\hat \beta) \cdot t_{1-\alpha/2, n-2}
+\]
+The true value of $\beta$ is expected to fall in the interval $[L, U]$ with a confidence level of $1-\alpha$.
+
+\subsection{Hypothesis testing}
+In the simple linear regression case, we would like to know if the predictor $X$ has a significant effect on the response $Y$. In order to do that, we can perform a \textbf{hypothesis test} on the parameter $\beta_1$.
+If that coefficient is not significantly different from zero, then the predictor $X$ has no effect on the response $Y$.
+
+The hypotesis test is made by the \textit{null hypothesis} $H_0$ and the \textit{alternative hypothesis} $H_1$:
+\[\begin{cases}
+    H_0: \beta_1 = \beta^\ast_1 \text{ There is no relationship}\\
+    H_1: \beta_1 \neq \beta^\ast_1 \text{ There is a relationship}
+\end{cases}\]
+This kind of test is said to be \textbf{bilateral} since, if the null hypothesis is rejected, we can say that there is a relationship between $X$ and $Y$, but we cannot say if it is positive or negative.
+As we've done for the confidence intervals, we have to accept an error level $\alpha$.
+
+In order to perform the test we need a \textbf{test statistic}.
+Let's suppose that we want to test if $\beta_1$ is equal to a certain value $\beta_1^\ast$ (in our case $\beta_1^\ast = 0$). We can define the following test statistic:
+\[
+    t = \frac{B_1 - \beta_1^\ast}{SE(B_1)}
+\]
+We can note that, if the null hypothesis is true, the test statistic is distributed as a $t$-distribution with $n-2$ degrees of freedom. 
+We can use this information to decide if we can reject the null hypothesis or not. If the evaluated test statistic is far from zero, probably the true value of $\beta_1$ is different from zero and we can reject the null hypothesis. If the test statistic is close to zero, we cannot reject the null hypothesis.
+
+To be able to choose between the hypothesis we need to impose a threshold. For this reason we introduced $\alpha$, also called \textbf{I type risk}:
+\[
+    \Pr{\text{Reject } H_0 \mid H_0 \text{ is true}} = \alpha
+\]
+%TODO: inserire un'immagine
+$\alpha$ is the area under the tails of the $t$-distribution when the null hypothesis is true, this area is called \textbf{critical region}.
+
+Since the decision we make can have a very different meaning if the distance from 0 is greater or smaller, we introduce a value that measure the strongness of the evidence against the null hypothesis. This value is called \textbf{p-value} and it is the probability of observing a value of the test statistic greater than the one observed, assuming that the null hypothesis is true. The more the p-value is small, the more the evidence against the null hypothesis is strong. Formally:
+\[
+    p = \Pr{|t| \geq |t'|    \mid H_0 \text{ is true}}
+\]
+We can sintetize the decision rule as following:
+\begin{itemize}
+    \item If $p \leq \alpha$ we reject the null hypothesis
+    \item If $p > \alpha$ we cannot reject the null hypothesis
+\end{itemize}
 %─────────────────────── THIS SLIDE ──────────────────
-\subsection{Assesing the accuracy of the model}
+\subsection{Assessing the accuracy of the model}
 In order to understand if the inffered model is good enough, we should use an error metric. If we're working with a continuous target variable, we can use the \textit{RSE} or \textbf{residual standard error}. The residual standard error measures how much of the variability is not explained by our model.
 
 However, the residual standard error has the limitation that it depends on scale by the order of $Y$. If $Y$ is a large number, then the \textit{RSE} will also be a large number.
@@ -423,7 +512,7 @@ Where $r$ is the Pearson's correlation index between $X$ and $Y$:
 The correlation index is a measure of the linear relationship between $X$ and $Y$. The $R^2$ statistic extends the concept of correlation between multiple predictors and the response.
 
 \subsection{Multiple Linear Regression}
-Suppose we have an input vector $X^T = (X_1, \dots, X_p)$ and we want to predict an output $Y$. The linear regression model has the form:
+Suppose we have an input vector $X^T = (X_1, \dots, X_p)$ and we want to predict an output $Y$. The linear regression model that we can assume in this setting has the shape:
 \[
     Y = f(X) + \varepsilon = \beta_0 + \sum_{j=1}^{p} \beta_j X_j + \varepsilon
 \]
@@ -440,40 +529,61 @@ Note that despite being called \textbf{linear regression}, $X_j$ can come from d
 
 
 \subsubsection*{Least squares estimates}
-Suppose we have an input vector $X^T = (X_1, \dots, X_p)$ and we want to predict an output $Y$. We need a regresison model, for example:
+As we said, given the input vector $X^T = (X_1, \dots, X_p)$, if we want to predict an output $Y$, we need a regression model, for example:
 \[
     Y = f(X) + \varepsilon
 \]
-Under the linear assumption, we have:
+That model, under a linear assumption, become:
 \[
     Y = \beta_0 + \sum_{j=1}^{p} \beta_j X_j + \varepsilon
 \]
-Where $\underline{X} = (X_1, \dots, X_P)^T$ is the input vector and $\underline{\beta}$ is the parameter vector that we want to estimate.
+Assuming a zero-mean error, we can make prediction using the following model:
+\[
+    \hat{Y} = \hat{\beta}_0 + \sum_{j=1}^{p} \hat{\beta}_j X_j
+\]
+To apply the OLS approach, it's convenient to reason in a matrix form. 
+\begin{gather*}
+    \underline{X} = (X_1, \dots, X_p)\text{ input vector} \\
+    \underline{\hat\beta} = (\hat\beta_0, \hat\beta_1, \dots, \hat\beta_p)^T\text{ parameter estimates vector} \\
+\end{gather*}
+
 Given the training data $\mathcal{D}_{tr} = \{ (x_i, y_i) \}_{i=1}^n$
-we pick $\underline{\beta} = \left(\beta_0, \beta_1, \dots, \beta_p\right)^T$ to minimize the residual sum of squares.
+we pick $\underline{\hat\beta}$ as the vector that minimize the residual sum of squares.
 \[
-    \text{RSS}(\beta) = \sum_{i=1}^{n} (y_i - f(x_i))^2 = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2
+    \text{RSS}(\underline \beta) = \sum_{i=1}^{n} (y_i - f(x_i))^2 = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2
 \]
-Since we can write our linear regression model in matrix form:
+We can write our linear regression model in matrix form:
 \[
-    \vec{Y} = \begin{bmatrix}
-        y_1 \\ \dots \\ y_n
-    \end{bmatrix}
-    = \begin{bmatrix}
-        1 x_{11} x_{12} \dots x_{1p} \\
-        1 \dots                      \\
-        \vdots                       \\
-        1 x_{n1} x_{n2} \dots x_{np} \\
-    \end{bmatrix}
+    \underline Y = 
+    \overset{[n\times 1]}{
+        \begin{pmatrix}
+            y_1 \\ \vdots \\ y_n 
+        \end{pmatrix}
+        } =
+    \overset{[n\times(p+1)]}{
+        \begin{pmatrix}
+            1 & x_{11} & x_{12} & \dots & x_{1p} \\
+            1 & x_{21} & x_{22} & \dots & x_{2p} \\ \vdots \\ 1 & x_{n1} & x_{n2} & \dots & x_{np}
+        \end{pmatrix}
+        }
+    \overset{[(p+1)\times 1]}{
+            \begin{pmatrix}
+                \beta_0 \\ \beta_1 \\ \vdots \\ \beta_p 
+            \end{pmatrix}
+            } +
+    \overset{[n\times 1]}{
+        \begin{pmatrix}
+            \epsilon_1\\
+            \vdots \\
+            \epsilon_n
+        \end{pmatrix}}= \underline{\underline{X}} \underline \beta + \underline \epsilon
 \]
-\[
-    \vec{Y} \underline{\underline{X}} \vec{\beta} + \vec{\varepsilon}
-\]
+
 So the estimated response on the traning set will be:
 \[
     \hat{Y} = \underline{\underline{X}} \underline{\hat{\beta}}
 \]
-Now we can rewrite the formula of the \textit{RSS} in matrix form:
+Now we can rewrite also the formula of the \textit{RSS} in matrix form:
 \[
     \text{RSS}(\underline{\beta})  = \sum_{i=1}^{n} \left(y_i - (\underline{\underline{X}} \underline{\beta})_i\right)^2 = (\underline{Y} - \underline{\underline{X}} \underline{\beta})^T(\underline{Y} - \underline{\underline{X}} \underline{\beta})
 \]
@@ -482,67 +592,96 @@ Now we need to compute the gradient of the residual sum of squares with respect 
     \item $\nabla_x a^t x = \nabla_x x^T a =  a$
     \item $\nabla_x x^T A x = A^t x + A x$
 \end{enumerate}
-The gradient of the RSS will be:
+The gradient of the RSS will be (underline omitted for simplicity):
 \begin{align*}
     \nabla_\beta \text{RSS} (\beta) & = \nabla_\beta \left((Y- X\beta)^T (Y-X\beta) \right) =                                 \\
-                                    & = \nabla_\beta \left(Y^T Y - Y^T X\beta - \beta^T X^T Y + \beta^T X^T X \beta \right) = \\
+                                    & = \nabla_\beta \left(Y^T Y - \underbrace{Y^T X\beta}_{(1\times 1)} - \underbrace{\beta^T X^T Y}_{(1\times 1)} + \beta^T X^T X \beta \right) = \\
                                     & = \nabla_\beta\left(Y^T Y - 2 \beta^T X^T Y + \beta^T X^T X \beta\right) =              \\
-                                    & = -2 X^T Y + (X^T X)^T \beta + (X^T X)^T \beta =                                        \\
-                                    & = X^T Y + (X^T X)^T \beta = 0 \iff \hat{\beta} = (X^T X)^{-1} X^T Y
+                                    & = -2 X^T Y + \underbrace{(X^T X)^T \beta + (X^T X)^T \beta}_{\text{Second rule of gradient}} 
+                                    % =                                        \\
+                                    % & = X^T Y + (X^T X)^T \beta = 0 \iff \hat{\beta} = (X^T X)^{-1} X^T Y
 \end{align*}
+We can set the gradient to zero and solve for $\beta$:
+\begin{align*}
+    -2 X^T Y + 2(X^T X)^T \beta = 0 \implies \\
+    X^T Y - (X^T X)^T \beta = 0 \implies \\
+    (X^T X)^T \beta = X^T Y \implies \\
+    \beta = (X^T X)^{-1} X^T Y    
+\end{align*}
+
 
 The \textit{least squares estimation} of the parameters are
 \[
-    \hat{\beta} = (X^T X)^{-1} X^T Y
+    \hat{\underline\beta} = (\underline {\underline X}^T \underline{\underline X} )^{-1} \underline{\underline X}^T \underline Y
 \]
 
-Note that in this computation we also found that:
+Note that durning the computation we also found that:
 \[
-    X^T Y + (X^T X)^T \beta = X^T(Y-X\hat{\beta}) = 0 \Rightarrow e \perp X
+    X^T Y - (X^T X)^T \hat \beta = X^T\underbrace{(Y-X\hat{\beta})}_{\underline {e}} = 0 \Rightarrow e \perp X
 \]
+Namely, we found that the vector $\hat{\underline \beta}$ that minimizes RSS, is chosen in such a way that the residual vector $\underline e$ is \textbf{orthogonal} to the data matrix $\underline {\underline X}$ that represents the subspace on which our predictors move.
 
-To confirm that this solution is actually a point of minimum, we need to check the \textbf{hessian matrix}, defined as following:
+Finally, to confirm that this solution is actually a point of minimum, we need to check the \textbf{hessian matrix}, defined as following:
 \[
-    H_{RSS}^(\beta) = \frac{\partial^2 RSS(\beta)}{\partial \beta \partial \beta^T} = 2 X^T X
+    \underline {\underline H}_{RSS}^{(\underline\beta)} = \frac{\partial^2 RSS(\underline\beta)}{\partial \underline\beta \partial \underline\beta^T} = 2 \underline {\underline X}^T \underline {\underline X}
 \]
-Since this matrix is positively defined, then the estimator is always a point of minimum.
+It can be shown that $\underline {\underline H}_{RSS}^{(\underline\beta)} = 2 \underline {\underline X}^T \underline {\underline X}$ is an estimator of the \textbf{variance-covariance matrix} of the predictors (columns of $\underline {\underline X}$). By definition, this matrix is \textit{positive semidefinite}\footnote{A matrix $A$ is positive semidefinite if the eigenvalues $\lambda_i$ of the matrix $A$ are greater or equal to 0} and this means that the estimator is always a point of minimum.
 
-Now we can substitute the parameters into $\hat{Y}$
+Now we can substitute the parameters into $\hat{Y}$ to make predictions:
 \[
-    \underline{\hat{Y}} = \underline{\underline{X}} \underline{\hat{\beta}} =   \underbrace{\underline{\underline{X}} (X^T X)^{-1} X^T}_{H} Y = HY
+    \underline{\hat{Y}} = \underline{\underline{X}} \underline{\hat{\beta}} =   \underbrace{\underline{\underline{X}} (\underline {\underline X}^T \underline {\underline X})^{-1} \underline {\underline X}^T}_{\underline {\underline H}} \underline Y = \underline {\underline H}\underline Y
 \]
-We've found that $\hat{Y}$ depends directly on the original response and the constant of proportionality is a matrix $H$ called \textit{hat matrix}.
-
-
+We've found that $\hat{\underline Y}$ depends directly on the original response and the constant of proportionality is a matrix $\underline {\underline H}$ called \textit{hat matrix}.
+We can see $\underline {\underline H}$ as a matrix that projects $\underline Y$ on the data $\underline {\underline X}$, sometimes called \textbf{design matrix}, in order to compute $\hat{\underline Y}$.
 
 \paragraph*{A geometrical view of least squares}
-Let's consider least squares regression with two predictors. The outcome vector $y$ is orthogonally projected onto the hyperplane spanned by the input vectors $x_1$ and $x_2$. The projecttion $\hat{y}$ represents the vector of the least squares predictions.
+Let's consider least squares regression with two predictors. $\hat{\underline Y}$ is nothing but the projection of $\underline Y$ obtained through $\underline {\underline H}$ onto the space (plane, in this case) of the predictors. All that we cannot explain through the predictors is the component of $\underline Y$ orthogonal to this space.
+% The outcome vector $y$ is orthogonally projected onto the hyperplane spanned by the input vectors $x_1$ and $x_2$. The projecttion $\hat{y}$ represents the vector of the least squares predictions.
 
+%TODO inserire immagine altrimenti non si capsice
 \paragraph*{Variance of least squares estimator}
-Assuming input vector $x_i$ are non-random, and errors $\varepsilon_i$ are iid with $\E{}{\varepsilon_i} = 0$ and $\text{var}{\varepsilon_i} = \sigma^2$, then the \textbf{variance-covariance matrix} of $\vec{\hat{\beta}}$ is the following:
+Assuming that:
+\begin{itemize}
+    \item the input vector $x_i$ are non-random
+    \item the errors $\varepsilon_i$ are iid
+    \item homoschedasticity: $\E{}{\varepsilon_i} = 0$
+    \item zero-mean error: $\var{\varepsilon_i} = \sigma^2$
+\end{itemize}   
+The \textbf{variance-covariance matrix} of the least squares estimates can be computed as:
 \[
-    \text{var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2
+    \var{\hat{\underline\beta}} = \sigma^2 (\underline {\underline X}^T \underline {\underline X})^{-1}
 \]
-Also, as shown in the \textit{Gauss-Markow Theorem} $\vec{\hat{\beta}}$ is the best linear unbiased estimator of $\vec{\beta}$.
-If we don't have $\sigma^2$, we can compute and unbiased estimate of the variance parameter with the following:
+Again, from the \textit{Gauss-Markov} theorem, the least squares estimates are the \textbf{best linear unbiased estimates} (BLUE) of the parameters $\underline \beta$.
+
+If we don't known $\sigma^2$, we can compute an unbiased estimate of the variance parameter with the RSE:
 \[
     \hat{\sigma}^2 = \frac{1}{n-p-1} RSS = \frac{1}{n-p-1} \sum_{i=1}^{n} (y_i -\hat{y}_i)^2
 \]
 
 \subsection*{Analysis of the regression model}
-While discussing the following tests, we will assume that \textbf{the linear model is the correct population model and $\varepsilon_i \sim^{iid} N(0,\sigma^2)$}. Under these assumptions:
-\[
-    \hat{\beta} \sim N_{p+1}\left(\beta, (X^T X)^{-1} \sigma^2\right)
-\]
+In order to do some considerations about the model, we will assume:
+\begin{itemize}
+    \item the linear model is the correct population model
+    \item $\varepsilon_i \sim^{iid} N(0,\sigma^2)$
+\end{itemize}
 
+Once made that assumption we also get that $\hat{\underline\beta}$ is multivariate normal:
+\[
+    \hat{\underline\beta} \sim N(\underline\beta, \sigma^2 (\underline {\underline X}^T \underline {\underline X})^{-1})
+\]
+Another important aspect is that the estimator of the variance $\hat{\sigma}^2$ has its own distribution:  
 \[
     (n-p-1) \hat{\sigma}^2 \sim \sigma^2 \chi^2_{n-p-1}
 \]
-and $\hat{\beta}$ and $\hat{\sigma}^2$ are statistically independent.
+and $\hat{\underline\beta}$ and $\hat{\sigma}^2$ are statistically independent.
 
-In order to answer the question \textit{is a particular $X_j$ predictor important?} We could use the following hypotesis test:
+\paragraph*{Hypothesis testing}
+In order to answer the question \textit{is a particular $X_j$ predictor important?}.
+We could answers using the following hypotesis test:
 \[
-    H_0: \beta_j = 0 \qquad H_a:\beta_j \neq 0
+    \begin{cases}
+        H_0: \beta_j = 0\\ H_A:\beta_j \neq 0
+    \end{cases}
 \]
 To run this test, we calculate the $t$-statistic:
 \[
@@ -550,11 +689,8 @@ To run this test, we calculate the $t$-statistic:
 \]
 where $v_j$ is the $j$-th diagonal element of $(X^T X)^{-1}$
 
+% CONTINUARE DA QUIII
 
-Again, according to the Gauss-Markov theorem, the estimator $\underline{\hat{\beta}}$ is unbiased and has the smallest variance among all the linear unbiased estimators. The variance-covariance matrix of $\underline{\hat{\beta}}$ is the following:
-\[
-    \var{\hat{\beta}} = (X^T X)^{-1} \sigma^2
-\]
 
 \paragraph*{Variable Selection}
 The F-statistic is one of the techniques adopted to select the predictors that are associated with the response. The task of determining the predictors is called \textit{variable selection}.
@@ -827,6 +963,7 @@ If we had $d$ dimensions, since we need to compute the volume of the hypercube t
 \]
 This means that if we increase $d$, $n$ should grow \textbf{exponentially} to match the growth rate of $h$, and this is also known as the \textit{curse of dimensionality}.
 
+Under that condition, can be proved that the nearest neighbour estimator is \textbf{weakly consistent}.
 \subsubsection{Nearest-neighbour estimator}
 For this estimator, the number of points is given by the parameter $k_n$, so the conditions are reversed with respect to the naive estimator.
 
@@ -838,7 +975,7 @@ We can simply require that:
 \[
     \frac{k_n}{n} \to 0
 \]
-Under that condition, can be proved that the nearest neighbour estimator is \textbf{weakly consistent}.
+% Under that condition, can be proved that the nearest neighbour estimator is \textbf{weakly consistent}. %TODO: questa cosa matta l'ha affermata solo per naive kernel
 
 \section{Exercise}
 Now we want to implement the theory on non-parametric regression, using the estimators we studied.
