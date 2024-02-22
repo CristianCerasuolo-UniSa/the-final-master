@@ -70,11 +70,11 @@ By leveraging the linearity of the expectation, we can write:
     f^{\prime} (z) = 0 \Leftrightarrow \E{}{\frac{d}{dz} (Y-z)^2} =  \E{}{-2(Y-z)} = -2\E{}{Y} - 2z = 0 \iff z^{\ast}  = \E{}{Y}
 \]
 Another typical approach to solve the problem without using the derivative is by introducing $\mu$ inside the function:
-\notag\begin{gather}
-    f(z) = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = \\
-    = \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2 = \\
-    = \var{Y} + (z - \mu)^2
-\end{gather}
+\begin{align*}
+    f(z) &= \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = \\
+    &= \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2 = \\
+    &= \var{Y} + (z - \mu)^2
+\end{align*}
 % \[
 %     f(z) = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = 
 % \]
@@ -148,15 +148,16 @@ In order to find out an estimator, we apply the \textbf{maximum likelihood} stra
 Since the previous way can't be afforded, we need to use different paradigms and assumptions.
 The maximum likelihood strategy starts from the assumption that the estimator $g(X)$ is \textbf{unbiased} (condition of \textit{unbiasedness}).
 Thinking about, it's reasonable to assume that the expected value of the estimator of the parameter is equal to the parameter itself.
-
 \begin{definition}
-    The likelihood function is a function of the parameter $\theta$ that is defined as:
+    The likelihood function $\ell(x;\theta)$ is the joint probability mass or density function of the data and the parameters of the model.
+
+    When we consider a realization of the random variable $X$ that represents the data, the likelihood function is a function of the parameter $\theta$:
     \[
         \ell(x | \theta) = \mathbb{P}(X = x | \theta)
     \]
-    where $x$ is a realization of the random variable $X$.
+    which can be seen as the probability mass or density function of the data $X$ given the parameter $\theta$.
 \end{definition}
-% TODO: secondo me andrebbe fatto notare che, fissato theta, la likelihood function è la pmf/pdf di X
+
 \begin{theorem}
     In order to find the \textbf{maximum likelihood estimator}, we need to find the value of $\theta$ that maximizes the likelihood function.
     \[
@@ -170,21 +171,18 @@ Assume that we know the shape of the likelihood functon. In order to find a poin
     \frac{\partial^2 \ell(x;\theta)}{\partial \theta^2} \geq 0
 \end{align*}
 The equations have a closed form solution only if the likelihood function is derivable. If the likelihood function is not derivable, we need to use a gradient ascent algorithm. However, the latter is not garanteed to always work, because in order for the solution of the algorithm to converge to the point of true maximum we need jumps that are proportional to the derivative, decreasing the learning rate.
+
 Another simple strategy is to use a brute-force algorithm that tries all the possible values of $\theta$ and finds the one that maximizes the likelihood function. This is a bit more complex in continuous case since we have to discretize the space of $\theta$.
+
+In any case, it depends on the \textit{shape} of the likelihood function; for example there may be a \textit{subgradiant shape} or there may be a situation in which we have local maxima and minima.
 
 \paragraph*{High dimensional parameters}
 The \textit{maximum likelihood strategy} works also if the parameter is a vector. If $\vec{\theta} \in \mathbb{R}^m$ we will find that:
 \[
-    \hat{\vec{\theta}} = \arg\max_{\vec{\theta}}  \ell(x; \vec{\theta}) %TODO: check correzione fatta
+    \hat{\vec{\theta}} = \arg\max_{\vec{\theta}}  \ell(x; \vec{\theta})
 \]
 However, we should be careful while increasing the dimension of the parameter, because of \textit{curse of dimensionality problem}; we have an exponential dependence between the number of dimensions and the number of elements in the dataset.
-%TODO: check se vogliamo mantenere l'elenco successivo
-We may have various shapes of the likelihood function:
-\begin{itemize}
-    \item there may be a \textit{subgradiant shape}
-    \item there may be a situation in which we have local maxima and minima
-\end{itemize}
-In that case we may use a convex or concave optimization strategy\dots
+
 \paragraph*{Properties of the Maximum Likelihood Estimator}
 Maximum likelihood estimators are also called Minimum-Variance Unbiased (\textit{MVU}) estimators. This is because, given independent data, they are:
 \begin{enumerate}
@@ -465,13 +463,13 @@ To compute the posterior mean, we need to compute the posterior distribution of 
 
 We can infer that:
 \[
-    f(x_i|y) = \ell(x_i|y) = \frac{1}{\sqrt{2\pi \sigma^2_w}} e^{\frac{-(x-y)^2}{2\sigma_w^2}}
+    f(x_i|y) = \ell(x_i|y) = \frac{1}{\sqrt{2\pi \sigma^2_w}} \exp{\frac{-(x-y)^2}{2\sigma_w^2}}
 \]
 and consequently
 \[
     \ell(x|y) = \prod_{i = 1}^{N} \ell(x_i, y)
 \]
-While we can say that given $Y=y$ then $X_i$ is distributed according to $W_i$ that is shifted by an amount of $y$, because $X_i = Y_i + W_i$ and $f(w|y) = f(w)$, we cannot compute $f(y|x)$ observing that $Y_i = X_i - W_i$ because $X_i$ and $W_i$ are not independent on each other but they are dependent because $X_i = Y_i + W_i$. Thus we need to apply Bayes' Theorem to find out $f(y|x)$% TODO: check, prima c'era scritto -> $\ell(y|x)$.
+While we can say that given $Y=y$ then $X_i$ is distributed according to $W_i$ that is shifted by an amount of $y$, because $X_i = Y_i + W_i$ and $f(w|y) = f(w)$, we cannot compute $f(y|x)$ observing that $Y_i = X_i - W_i$ because $X_i$ and $W_i$ are not independent on each other but they are dependent because $X_i = Y_i + W_i$. Thus we need to apply Bayes' Theorem to find out $f(y|x)$.
 
 Observe that since we are computing $x$ \textit{given} $y$, then we're actually trying to understand the \textbf{generative mechanism} that produces the data $x$ given the true value $y$. Suppose for example that we're sampling measurements $x$ of the temperature in a room. We're actually measuring the true value of the temperature and some noise $w$ added to it. We can try to estimate the generative mechanism to understand what is the distribution of temperature given the true value.
 
@@ -513,27 +511,27 @@ Now we're going to calculate $f(y|x)$. We've said that apart from a constant $p(
 \]
 We know that:
 \[
-    \ell(x|y) =  \prod_{i = 1}^{N} \frac{1}{\sqrt{2\pi \sigma^2_w}} e^{\frac{-(x_i-y)^2}{2\sigma_w^2}}
+    \ell(x|y) =  \prod_{i = 1}^{N} \frac{1}{\sqrt{2\pi \sigma^2_w}} \exp{\frac{-(x_i-y)^2}{2\sigma_w^2}}
 \]
 and that
 \[
-    \pi(y) = \frac{1}{\sqrt{2\pi\sigma_y^2}} e^{-\frac{y^2}{2\sigma_y^2}}
+    \pi(y) = \frac{1}{\sqrt{2\pi\sigma_y^2}} \exp{-\frac{y^2}{2\sigma_y^2}}
 \]
 So we can write:
 \[
-    f(y|x) \propto \pi(y) \ell(x|y) = \frac{1}{\sqrt{2\pi\sigma_y^2}} \frac{1}{(2\pi\sigma_w^2)^{\frac{N}{2}}} e^{-\frac{y^2}{2\sigma_y^2}} e^{-\frac{1}{2\sigma_w^2} \sum_{i=1}^{N} (x_i-y)^2}
+    f(y|x) \propto \pi(y) \ell(x|y) = \frac{1}{\sqrt{2\pi\sigma_y^2}} \frac{1}{(2\pi\sigma_w^2)^{\frac{N}{2}}} \exp{-\frac{y^2}{2\sigma_y^2}} \exp{-\frac{1}{2\sigma_w^2} \sum_{i=1}^{N} (x_i-y)^2}
 \]
 We can ignore the constants:
 \[
-    f(y|x) \propto e^{-\frac{y^2}{2\sigma^2_y} - \frac{1}{2\sigma_w^2} \sum_{i=1}^{N} x_i^2 - y^2 \frac{N}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
+    f(y|x) \propto \exp{-\frac{y^2}{2\sigma^2_y} - \frac{1}{2\sigma_w^2} \sum_{i=1}^{N} x_i^2 - y^2 \frac{N}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
 \]
 Since the second term of the exponential is costant with respect to $y$ and the exponential can be written as a product of exponentials, it can be ignored because for what we said before we're considering the fact that is proportional. After ignoring the constant, we can observe that in the following expression the first term depends on the \textit{prior} function while the second term depends on the \textit{posterior} function.
 \[
-    f(y|x) \propto e^{-\frac{y^2}{2\sigma^2_y} - \frac{N}{2} \frac{y^2}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
+    f(y|x) \propto \exp{-\frac{y^2}{2\sigma^2_y} - \frac{N}{2} \frac{y^2}{2 \sigma_w^2} + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
 \]
 We can factor the terms that depend on $y^2$:
 \[
-    f(y|x) \propto e^{-\frac{y^2}{2}\left(\frac{1}{\sigma_y^2} + \frac{1}{\frac{\sigma^2_w}{N}}\right) + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
+    f(y|x) \propto \exp{-\frac{y^2}{2}\left(\frac{1}{\sigma_y^2} + \frac{1}{\frac{\sigma^2_w}{N}}\right) + \frac{y}{\sigma_w^2} \sum_{i=1}^{N} x_i}
 \]
 and then by defining:
 \[
@@ -541,15 +539,15 @@ and then by defining:
 \]
 We get:
 \[
-    f(y|x) \propto e^{-\frac{1}{2\sigma^2} y^2 + \frac{y}{\sigma_w^2} \sum_{i=1}^N x_i}
+    f(y|x) \propto \exp{-\frac{1}{2\sigma^2} y^2 + \frac{y}{\sigma_w^2} \sum_{i=1}^N x_i}
 \]
 Ideally, since we started from a product of gaussians, we would like to obtain a gaussian. We can do that by noting that the exponent of the exponential is a partial square of a binomial.
 So, first we try to complete the square by adding and subtracting a function $g(x)$ and then we can ignore by proportionality the remaing term that is not included in the square:
 \begin{gather*}
-    f(y|x) \propto e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \right) } \\
-    = e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)-g(x)}\right) } \\
-    \propto e^{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)}\right) } \\
-    = e^{-\frac{1}{2\sigma^2} \left(y^2 - 2\frac{\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i - g(x)2\sigma^2\right)}
+    f(y|x) \propto \exp{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \right) } \\
+    = \exp{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)-g(x)}\right) } \\
+    \propto \exp{-\frac{1}{2\sigma^2}\left(y^2 - \frac{2\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i \textcolor{red}{+g(x)}\right) } \\
+    = \exp{-\frac{1}{2\sigma^2} \left(y^2 - 2\frac{\sigma^2}{\sigma_w^2}y\sum_{i=1}^N x_i - g(x)2\sigma^2\right)}
 \end{gather*}
 By making the position:
 \[
@@ -557,7 +555,7 @@ By making the position:
 \]
 we get:
 \begin{gather*}
-    f(y|x) \propto e^{\frac{-(y-\mu)^2}{2\sigma^2}} \\
+    f(y|x) \propto \exp{\frac{-(y-\mu)^2}{2\sigma^2}} \\
     f(y|x) \sim \mathcal N \left(\frac{\sigma^2}{\sigma_w^2}\sum_{i=1}^{N} x_i,  \frac{\sigma^2_y\sigma^2_w}{\sigma^2_w+N\sigma^2_y}\right)
 \end{gather*}
 
@@ -580,7 +578,7 @@ Now consider the case when the variance of the prior function goes to zero. In t
 \[
     \lim_{\sigma^2_y\to0} \hat Y = \bar X \lim_{\sigma^2_y\to 0}\frac{1}{1+\frac{\sigma^2_w}{N\sigma^2_y}} = 0
 \]
-Simply, if the variance of the prior function goes to zero, it means that the value of $Y$ tends to be the same at every time and there are no noise or randomicity on it. So, the estimator will be the mean of the prior function that we said to be zero. % TODO: check di questo periodo
+Simply, if the variance of the prior function goes to zero, it means that the estimator will be the mean of the prior function that we said to be zero.
 
 \begin{exercise}
     For the estimator obtained in the previous exercise compute the theoretical error.
@@ -640,7 +638,7 @@ Since the Bayesian setting try to estimate the value of a random variable $Y$, a
 \[
     \E{}{\hat Y} = Y
 \]
-But we know that, since the expected value of a random variable is a constant, the previous equation is ambiguos.
+But we know that, since the expected value of a random variable is a constant, the previous equation is ambiguous.
 Instead, what we can ask is that for a specific observation of $Y$, the estimator $\hat Y$ is unbiased. So, we can ask that:
 \[
     \E{}{\hat Y|Y} = y
