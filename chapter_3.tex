@@ -830,11 +830,133 @@ The model will have the following shape:
     \end{cases}
 \]
 Observe that, if we used a different coding scheme as -1/1, the model would have a different shape.
-\subsection*{Interactions}
+\subsection*{Extensions of the linear model}
+With the model we've seen so far, we're able to reach good results in many cases. However, we've done 2 important assumptions that could be limiting in some cases:
+\begin{enumerate}
+    \item \textbf{Linearity}: we've assumed that with a unitary change of the predictors, the response changes constantly. 
+    \item \textbf{Additivity}: we've assumed that the effect of a change in a predictor is independent from the other predictors.
+\end{enumerate}
+We try to overcome these limitations.
+\subsubsection*{Interactions}
+A simple way to estend the linear model is to include \textbf{interaction terms}. An interaction term is the product of two (or more) predictors.
+For example, suppose we have a model with two predictors $X_1$ and $X_2$, the interaction term will be $X_1 \cdot X_2$. The model will have the following general shape:
+\[
+    Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 \cdot X_2 + \varepsilon
+\]
+Introducing this terms allows to relax the additivity assumption. In this example, the effect of a change in $X_1$ on $Y$ depends on the value of $X_2$ and vice versa and it can be shown:
+\[
+    Y = \beta_0 + (\beta_1+\beta_3X_2)X_1 + \beta_2X_2 + \varepsilon 
+\]
+\subsubsection*{Non-linear effects of predictors}
+To overcome the limitation of the linearity assumption, we can use \textbf{polynomial regression}. This extension of multiple linear regression allows to introduct regressors that are non-linear functions of the predictors. 
+A general shape of a polynomial regression model is:
+\[
+    Y = \beta_0 + \sum_{k=1}^p \beta_kX^k + \varepsilon
+\]
 
-\subsection*{Non-linear effects of predictors}
+\subsection*{Potential problems}
+When we fit a linear regression model to a particular data set, many problems may arise. Most of them are related to the assumption that we've previously done. The most common of these are:
 
-\subsection*{Diagnostics}
+\begin{enumerate}
+    \item Non-linearity of the response-predictors relationship
+    \item Correlation of error terms
+    \item Non-constant variance of error terms
+    \item Outliers
+    \item High-leverage points
+    \item Collinearity
+\end{enumerate}
+
+\subsubsection*{Non-linearity of the response-predictors relationship}
+The linear regression model assumes that there is a \textit{straight-line relationship} between the predictors and the response. If the true relationship is far from the linear axis, then virtually all conclusions drawn from the fit are suspect. In addition, the model's predictive accuracy would be significantly reduced.
+
+The \textbf{residual plots} is a useful graphical method for identifying non-linearities.
+Given a simple linear regression model we can plot the residuals $e_i=y_i-\hat y_i$ towards the predictor $x_i$.
+In the case of a multiple regression model, since we have multiple predictors, we can plot the residual towards the predicted (or fitted) value $\hat y_i$.
+
+Ideally, the residual plot should show no obvious patterns. 
+The presence of patterns such as a \textit{U-shape} or an \textit{inverted U-shape} may indicate that the relationship between the predictors and the response is non-linear.
+An example is shown in figure \ref{fig:residuals_example}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/chapter_3/residuals_example.png}
+    \caption{On the left a residual plot that show a pattern. On the left the same but without visible patterns.}
+    \label{fig:residuals_example}
+\end{figure}
+
+In that cases, we can use \textbf{non-linear transformation} of the predictors or the response to overcome the non-linearity. For example, we can use $log X$, $X^2$, $\sqrt{X}$, $1/X$ and so on.
+\subsubsection*{Correlation of error terms}
+An important assumption of the linear regression model is that the error terms $\varepsilon_i$ are uncorrelated.
+
+This means, for example, that the fact that $\epsilon_i$ is positive provides no information (or minimally) about the sign of $\epsilon_{i+1}$.
+
+The standard errors of the estimated coefficients or the fitted values themselves are based on the assumption of uncorrelation of the error terms.
+
+If, in fact, there was correlation between these error terms, then the estimates of the standard errors will greatly underestimate their true value. And as a result, the confidence and prediction intervals will be narrower than they should be. For example:
+
+- A confidence interval at $95\%$ may actually have a much lower probability than $0.95$ of containing the true value of the parameter
+- $p$-values associated with the model will be more basic than they should be; leading to the erroneous conclusion that some parameters are statistically significant
+
+In essence, we would be led to have an unjustified sense of confidence in our model.
+
+These correletions could arise from \textbf{time series}, i.e. observations that are collected over time, where the error terms may be correlated across time. 
+
+By the way, the correltions could arise also for other reasons. For example, if we're trying to predict the height of people basing on their weight, we could be wrong if we assume error term incorrelation because some people can belong to the same family or can have the same lifestyle.
+\subsubsection*{Non-constant variance of error terms}
+Confidence intervals, prediction intervals, hypotesis tests, standard errors and $p$-values are all based on the assumptio of \textbf{homoschedasticity}.
+Unfortunately, this assumption is often violated in practice. The presence of \textbf{heteroschedasticity} can be identified by the presence of a \textit{funnel shape} in the residual plot, as shown in the left panel of figure \ref{fig:eteroschedasticity_example}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/chapter_3/eteroschedasticity_example.png}
+    \caption{On the left a residual plot that show a funnel shape. On the left the same but without visible patterns.}
+    \label{fig:eteroschedasticity_example}
+\end{figure}
+
+A possible solution to this problem is to transform the response $Y$ using a concave function such as $log Y$ or $\sqrt{Y}$. This transformation involves a greater contraction of the broader responses, therefore leading to a reduction in heteroschedasticity as shown in right panel of figure \ref{fig:eteroschedasticity_example}.
+\subsubsection*{Outliers}
+An \textbf{outlier} is a point for which the response $Y_i$ is far from the value predicted by the model. Outliers can have a large effect on the estimated coefficients and can have a significant impact on the fit of the model.
+They can emerge from a variety of reasons, such as:
+\begin{itemize}
+    \item Data entry errors
+    \item Measurement errors
+    \item Sampling errors
+    \item Unusual observations
+\end{itemize}
+The presence of outliers can be identified by the presence of points that are far from the others in the residual plot. By the way, it can be difficult to identify a threshold that separates the outliers from the other points. For that reason, a common approach is to use the \textbf{studentized residuals} $\tau_i$, defined as a normalization of classical residuals:
+\[
+    \tau_i = \frac{e_i}{\hat{\sigma}\sqrt{1-h_{ii}}}
+\]
+where $h_{ii}$ is the $i$-th diagonal element of the hat matrix $\underline {\underline H}$. An empirical rule is that if $|\tau_i| > 3$, then the $i$-th observation is an outlier.
+
+If we think that the outlier is due to a mistake, we can remove it from the dataset. But if we think that the outlier is due to a deficiency of the model, we must preserve it and try to enhance the model.
+\subsubsection*{High-leverage points}
+A \textbf{high-leverage point} is an observation that has a value of the predictor that is far from the other values of the predictor. As the outliers, these points can have a large effect on the estimated coefficients and can have a significant impact on the fit of the model.
+In the case of a simple linear regression model, a high-leverage point is an observation with an extreme value of the predictor $X$ and it can be simply identified by the presence of points that are far from the others in the scatter plot of the response $Y$ against the predictor $X$.
+In the case of multiple linear regression model, the identification of high-leverage points is more complex. A point can be in the range for each predictor individually, but can be inusual in terms of all the predictors. 
+
+A common approach is to use the \textbf{leverage statistic} $h_{i}$. For the simple regression is defined as:
+\[
+    h_{i} = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{i=1}^{n}(x_i - \bar{x})^2}\qquad h_i\in\left[\frac 1n, 1\right]
+\]
+There is also a generalization for the multiple regression model, but it is more complex.
+The mean value of $h_i$ is $\frac{(p+1)}n$. So, if an observation has a leverage statistic that greatly exceeds $\frac{(p+1)}{n}$, then it can be considered a high-leverage point.
+\subsubsection*{Collinearity}
+\textbf{Collinearity} is a situation in which two or more predictors are highly correlated.
+
+Collinearity can be a problem because it can be difficult to separate out the individual effects of collinear predictors on the response.
+When two predictors are collinear, the estimated coefficients of the predictors can be highly variable and can be sensitive to small changes in the model. This derive from the fact that there are a large number of values with similar values of RSS.
+
+The effect is that the standard errors of the estimated coefficients can be large, leading to an increase of the $t$-statistics (because is inversely proportional to $SE(\beta)$) and a decrease of the $p$-values. This means that the model will be less likely to identify the true predictors as statistically significant.
+So, the power of hypothesis tests will be reduced and the confidence intervals will be wider than they should be.
+
+A naive way to identify collinearity is to compute the correlation matrix of the predictors. If the correlation between two predictors is close to $1$ or $-1$, then the two predictors are collinear. However, this approach is not always effective because the collinearity can be present on a combination of predictors and not on a single pair. This is called \textbf{multicollinearity}.
+A more effective approach is to compute the \textbf{variance inflation factor} (VIF) for each predictor. The VIF is a measure of how much the variance of the estimated coefficient $\hat{\beta}_j$ is inflated due to collinearity. The VIF is defined as:
+\[
+    VIF(\hat{\beta}_j) = \frac{1}{1-R^2_{X_j|X_{-j}}}
+\]
+where $R^2_{X_j|X_{-j}}$ is the $R^2$ value obtained by regressing the $j$-th predictor on the remaining predictors. The VIF is always greater than or equal to $1$. If the VIF is equal to $1$, then the $j$-th predictor is completely uncollinear with the other predictors. 
+A rule of thumb is that if the VIF is greater than $5$ or $10$, then the $j$-th predictor is highly collinear with the other predictors.
+
+If we find that two predictors are highly collinear, we can remove one of them from the model because one of them is redundant. If we think that both predictors are important, we can combine them into a single predictor but is not so simple to implement this strategy.
 
 \newpage
 \section{Supervised Non Parametric Regression}
