@@ -731,36 +731,73 @@ For example, if we perform a test with $p=100$ predictors and we use $\alpha = 0
 $F$-statistic adapt itself to the number of predictors, so if $H_0$ is true, there is just the $5\%$ of chance to have a p-value less than $\alpha$.
 
 \paragraph*{Variable Selection}
-The F-statistic is one of the techniques adopted to select the predictors that are associated with the response. The task of determining the predictors is called \textit{variable selection}.
+The F-statistic is one of the techniques adopted to select the predictors that are associated with the response. The task of determining the predictors is called \textbf{variable selection}.
 
-\textit{Variable selection} is used to improve the \textbf{prediction accuracy}, because the least squares estimates have low bias but large variance. The variance is reduced by fitting a model that only contains the predictors that are actually associated with the response.
+The \textit{prediction accuracy} is improved by performing the variable selection, because the least squares estimates have low bias but large variance. The variance is reduced by fitting a model that only contains the predictors that are actually associated with the response.
 
 \textit{Interpretation} is another reason to perform variable selection. We want to identify a smaller subset of predictors with the strongest relationship with the response.
 
-Other than the F-statistic, there are other \textit{statistics} to perform variable selection, such as Mallow's $C_p$, Akaike information criterion (AIC), Bayesian information criterion (BIC), adjusted $R^2$.
+Ideally we could perform variable selection using a \textit{brute force approach} by fitting all the possible subset of the predictors and then choose between them based on some criterion. This is the most computationally expensive method because with $p$ predictors we have $2^p$ possible models cause each predictor has $2$ possible state. This approach can be considered only if $p$ is small.
 
-There are also \textit{algorithms} to perform variable selection, such as \textit{best subsets selection}, \textit{forward selection}, \textit{backward selection}, \textit{stepwise selection}. This involves fitting all the possible subset of the predictors and then choose between them based on some criterion. This is the most computationally expensive method.
+In order to judge the quality of a model we can use several criterion such as Mallow's $C_p$, Akaike information criterion (AIC), Bayesian information criterion (BIC), adjusted $R^2$.
 
-\paragraph*{Forward selection} which starts with the \textit{null model} (only intercept term). At each step fit $p$ simple linear regressions and add to the model the variable that results in the lowest RSS, then add to that model the variable that results in the lowest RSS for the new two-variable model, and so on, until some stopping rule is satisfied.
+There are also other \textit{algorithms} to perform variable selection, such as \textit{best subsets selection}, \textit{forward selection}, \textit{backward selection}, \textit{stepwise selection}.
 
-\paragraph*{Backward selection} which starts with all the variables in the model, then removes the variable with the largest p-value, that is the variable that is the least statistically significant. The new $(p-1)$-variable model is fit, and the variable with the largest p-value is removed. This procedure continues until a stopping rule is reached. This technique cannot be used if the number of predictors is greater than the number of samples, while forward selection can always be used.
+\subparagraph*{Forward selection} which starts with the \textit{null model} (only intercept term). At each step fit $p$ simple linear regressions and add to the model the variable that results in the lowest RSS, then add to that model the variable that results in the lowest RSS for the new two-variable model, and so on, until some stopping rule is satisfied.
 
-\paragraph*{Mixed selection} which starts with no variable in the model and add the variable that provides the best fit. However, if at any point the $p$-value for one of the variables in the model rises about a certain threshold, we remove it from the model. We continue to perform both the forward and backward steps until all variables in the model have a sufficiently low $p$-value and all variables outside the model would have a large p-value if added to the model.
+\subparagraph*{Backward selection} which starts with all the variables in the model, then removes the variable with the largest p-value, that is the variable that is the least statistically significant. The new $(p-1)$-variable model is fit, and the variable with the largest p-value is removed. This procedure continues until a stopping rule is reached. This technique cannot be used if the number of predictors is greater than the number of samples, while forward selection can always be used.
+
+\subparagraph*{Mixed selection} which starts with no variable in the model and add the variable that provides the best fit. However, if at any point the $p$-value for one of the variables in the model rises about a certain threshold, we remove it from the model. We continue to perform both the forward and backward steps until all variables in the model have a sufficiently low $p$-value and all variables outside the model would have a large p-value if added to the model.
 
 An important thing to note is that while an $R^2$ value close to $1$ indicates that the model explains a large portion of the variance in the response variable, it does not indicate that the model will predict future observations with great accuracy. In fact, $R^2$ will always increase when more variables are added to the model, even if only weakly associated with the response. This is because the $R^2$ statistics is computed on the training data and indicates a better fit on those data.
 
-When fitting a model, it can be useful to plot the data if it is possible.
+% When fitting a model, it can be useful to plot the data if it is possible.
 
 \subsection*{Confidence and prediction intervals}
-After fitting the multiple regression model, it is possible to predict $Y$ on the basis of a set of values for the predictors $X_1, X_2, \dots, X_p$. However, there is some uncertainty associated with this prediction which concernes coefficient estimates, the model bias and the irreducible error.
+After fitting the multiple regression model, it is possible to predict $Y$ on the basis of a set of values for the predictors $X_1, X_2, \dots, X_p$. However, there are three type of uncertainty associated with this prediction:
+\begin{itemize}
+    \item the coefficient estimates $\hat{\underline\beta}$ are only estimates of the true values of the coefficients $\underline\beta$.
+    \item we assumed a linear model for $f(X)$, but the true relationship between the predictors and the response may not be linear, this is called \textbf{model bias}.
+    \item even if the know exactly $f(X)$, the error term $\varepsilon$ is still present and it is a source of uncertainty. We called this \textbf{irreducible error}.
+\end{itemize}
 
-The inaccuracy in the coefficient estimates is related to the reducible error.
+We can use the \textbf{confidence intervals} to quantify the uncertainty surrounding the estimates of the coefficients $\underline\beta$. 
+But we can also use the \textbf{prediction intervals} to quantify the uncertainty surrounding the prediction of $Y$ for a given value of $X$.
+
+\subsubsection*{Confidence intervals}
+As we said for simple linear regression, we have to assume a normal distribution for the error term $\varepsilon$:
 \[
-    E(y_0 - \hat{f}(x_0))^2 = \text{bias}(\hat{f}(x_0))^2 + \var(\hat{f}(x_0)) + \var{\epsilon}
+    \varepsilon_i \sim N(0, \sigma^2)
+\]
+Given a new input vector $X_0 = (x_{01}, x_{02}, \dots, x_{0p})$, we want to create a confidence interval for $f(X_0)=\E{}{Y|X = X_0} = X_{new}^T\cdot \underline \beta$, where $X_{new} = (1, X_0)$.
+We can note that:
+\[
+    X_{new}^T\cdot \hat{\underline \beta} \sim \mathcal N (X_{new}^T\cdot \underline \beta, \sigma^2 X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new})
 \]
 
+The confidence interval for $f(X_0)$ with a confidence level of $1-\alpha$ is:
+\[
+    \hat{f}(X_0) \pm t_{1-\alpha/2, n-p-1} \cdot \hat{\sigma} \sqrt{X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new}}
+\]
+We could also use the quantile of the standard normal distribution if we assume that the number of samples is large enough ($n > 30$).
 
+\subsubsection*{Prediction intervals}
+Again, we have to assume:
+\[
+    \varepsilon_i \sim \mathcal N (0,\hat\sigma^2)
+\]
+and the Independence by $X$.
 
+For a new input vector $X_0 = (x_{01}, x_{02}, \dots, x_{0p})$, we want to create a prediction interval for $Y_0 = f(X_0) + \varepsilon = X_{new}^T\cdot \underline \beta + \varepsilon$, where $X_{new} = (1, X_0)$.
+We can note that:
+\[
+    X_{new}^T\hat{\underline \beta} + \varepsilon \sim \mathcal N (X_{new}^T\cdot \underline \beta, \sigma^2 + \sigma^2 X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new})
+\]
+
+The prediction interval for $Y_0$ with a confidence level of $1-\alpha$ is:
+\[
+    \hat{f}(X_0) + \varepsilon \pm t_{1-\alpha/2, n-p-1} \cdot \hat{\sigma} \sqrt{1 + X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new}}
+\]
 \subsection*{Qualitative predictors}
 
 \subsection*{Interactions}

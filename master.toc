@@ -34,15 +34,15 @@
 \contentsline {subsection}{\numberline {3.2.2}Hypothesis testing}{38}{subsection.3.2.2}%
 \contentsline {subsection}{\numberline {3.2.3}Assessing the accuracy of the model}{39}{subsection.3.2.3}%
 \contentsline {subsection}{\numberline {3.2.4}Multiple Linear Regression}{40}{subsection.3.2.4}%
-\contentsline {section}{\numberline {3.3}Supervised Non Parametric Regression}{46}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Consistency}{46}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Asymptotic methods}{47}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{49}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{49}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{50}{subsection.3.3.5}%
-\contentsline {subsubsection}{Naive-kernel estimator}{50}{section*.35}%
-\contentsline {subsubsection}{Nearest-neighbour estimator}{51}{section*.37}%
-\contentsline {section}{\numberline {3.4}Exercise}{52}{section.3.4}%
+\contentsline {section}{\numberline {3.3}Supervised Non Parametric Regression}{47}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Consistency}{47}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Asymptotic methods}{48}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{50}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{50}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{51}{subsection.3.3.5}%
+\contentsline {subsubsection}{Naive-kernel estimator}{51}{section*.37}%
+\contentsline {subsubsection}{Nearest-neighbour estimator}{52}{section*.39}%
+\contentsline {section}{\numberline {3.4}Exercise}{53}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Linear Methods for Regression}{55}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Resampling Methods}{55}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Model Selection}{61}{section.4.2}%
