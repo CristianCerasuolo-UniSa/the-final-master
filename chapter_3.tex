@@ -799,7 +799,37 @@ The prediction interval for $Y_0$ with a confidence level of $1-\alpha$ is:
     \hat{f}(X_0) + \varepsilon \pm t_{1-\alpha/2, n-p-1} \cdot \hat{\sigma} \sqrt{1 + X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new}}
 \]
 \subsection*{Qualitative predictors}
+The predictors inside a multiple linear regression model can be both quantitative and qualitative. The qualitative predictors are also called \textbf{categorical} or \textbf{factor} variables. 
+The \textbf{levels} of a qualitative predictor are the different values that the predictor can assume. We can use \textbf{dummy variables} to represent the levels of a qualitative predictor. 
 
+A dummy variable is a binary variable that indicate the presence or absence of some categorical effect that may be expected to shift the outcome. For each categorical predictor we need to create $k-1$ dummy variables, where $k$ is the number of levels of the predictor. This process of creating that variables is also called \textbf{one-hot encoding}.
+Each dummy variable adopt a \textbf{coding scheme} that manage the values assumed by the dummy variables. 
+
+For example, suppose to have e qualitative predictor with three levels: South, West, East. We can create two dummy variables with a 0/1 coding scheme as following:
+\[
+    \begin{cases}
+        X_1 =  
+        \begin{cases}
+            1 & \text{if the observation is in the South} \\
+            0 & \text{otherwise}
+        \end{cases}\\
+        X_2 = 
+        \begin{cases}
+            1 & \text{if the observation is in the West} \\
+            0 & \text{otherwise}
+        \end{cases}
+    \end{cases}
+\]
+The model will have the following shape:
+\[
+    Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon  = 
+    \begin{cases}
+        \beta_0 + \varepsilon & \text{if the observation is in the East} \\
+        (\beta_0 + \beta_1) + \varepsilon & \text{if the observation is in the South} \\
+        (\beta_0 + \beta_2) + \varepsilon & \text{if the observation is in the West}
+    \end{cases}
+\]
+Observe that, if we used a different coding scheme as -1/1, the model would have a different shape.
 \subsection*{Interactions}
 
 \subsection*{Non-linear effects of predictors}
