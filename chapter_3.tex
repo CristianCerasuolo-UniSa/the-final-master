@@ -675,22 +675,60 @@ Another important aspect is that the estimator of the variance $\hat{\sigma}^2$ 
 \]
 and $\hat{\underline\beta}$ and $\hat{\sigma}^2$ are statistically independent.
 
-\paragraph*{Hypothesis testing}
-In order to answer the question \textit{is a particular $X_j$ predictor important?}.
-We could answers using the following hypotesis test:
-\[
-    \begin{cases}
-        H_0: \beta_j = 0\\ H_A:\beta_j \neq 0
-    \end{cases}
-\]
-To run this test, we calculate the $t$-statistic:
-\[
-    t_j = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)} = \frac{\hat{\beta}_j}{\hat{\sigma} \sqrt{v_j}}
-\]
-where $v_j$ is the $j$-th diagonal element of $(X^T X)^{-1}$
+% \paragraph*{Hypothesis testing}
+% In order to answer the question \textit{is a particular $X_j$ predictor important?}.
+% We could answers using the following hypotesis test:
+% \[
+%     \begin{cases}
+%         H_0: \beta_j = 0\\ H_A:\beta_j \neq 0
+%     \end{cases}
+% \]
+% To run this test, we calculate the $t$-statistic:
+% \[
+%     t_j = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)} = \frac{\hat{\beta}_j}{\hat{\sigma} \sqrt{v_j}}
+% \]
+% where $v_j$ is the $j$-th diagonal element of $(X^T X)^{-1}$
 
 % CONTINUARE DA QUIII
+\paragraph*{Is there a relationship between the response and predictors?}
+By working with the multiple linear regression model, we could ask ourselves if at least one of the selected predictors is associated with the response. In order to answer this question, we can construct an hypothesis test called \textbf{$F$-test}:
+\[
+    \begin{cases}
+        H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0\\
+        H_A: \text{At least one } \beta_j \text{ is different from zero}
+    \end{cases}
+\]
+This kind of test can be solved using the \textbf{$F$-statistic}:
+\[
+    F = \frac{(TSS - RSS)/p}{RSS/(n-p-1)}
+\]
+If the linear hypothesis are true, it can be shown that:
+\[
+    \E{}{RSS/(n-p-1)} = \sigma^2
+\]
+Moreover, if the null hypothesis is true, it can be shown that:
+\[
+    \E{}{(TSS - RSS)/p} = \sigma^2
+\]
+This means that if the null hypothesis is true, the $F$-statistic will be close to $1$. If the null hypothesis is false, the $F$-statistic will be greater than $1$.
+When the null hypothesis is true, the $F$-statistic follows an \textbf{$F$-distribution}, called \textbf{Fisher-Snedecor distribution} with $p$ and $n-p-1$ degrees of freedom.
 
+It can be useful to test the hypothesis that just a subset of the predictors have a relationship with the response. In order to do that, we can use the \textbf{partial $F$-test}:
+\[
+    \begin{cases}
+        H_0: \beta_{p-q+1} = \dots = \beta_{p} = 0\\
+        H_A: \text{At least one is different from zero}
+    \end{cases}
+\]
+The $F$-statistic for the partial test is:
+\[
+    F = \frac{({RSS}_0 - RSS)/q}{RSS/(n-p-1)}
+\]
+where ${RSS}_0$ is the residual sum of squares for a model that contains all the predictors except for those in question.
+
+Note that perform a $t$-test for each variable is different from perform a $F$-test for the whole model. The $F$-test is a \textit{joint test} of the significance of a group of variables, while the $t$-test is a \textit{individual test} of the significance of a single variable.
+For example, if we perform a test with $p=100$ predictors and we use $\alpha = 0.05$, we would expect to see 5 predictors with $p$-value less than $0.05$ even if the null hypothesis of $F$-test is true. This is called \textit{multiple comparison problem}.
+$F$-statistic adapt itself to the number of predictors, so if $H_0$ is true, there is just the $5\%$ of chance to have a p-value less than $\alpha$.
 
 \paragraph*{Variable Selection}
 The F-statistic is one of the techniques adopted to select the predictors that are associated with the response. The task of determining the predictors is called \textit{variable selection}.
