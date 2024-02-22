@@ -40,8 +40,8 @@
 \contentsline {subsection}{\numberline {3.3.3}Naive-Kernel Estimator}{49}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Nearest-Neighbour Estimator}{49}{subsection.3.3.4}%
 \contentsline {subsection}{\numberline {3.3.5}Consistency of the estimators}{50}{subsection.3.3.5}%
-\contentsline {subsubsection}{Naive-kernel estimator}{50}{section*.35}%
-\contentsline {subsubsection}{Nearest-neighbour estimator}{51}{section*.37}%
+\contentsline {subsubsection}{Naive-kernel estimator}{50}{section*.34}%
+\contentsline {subsubsection}{Nearest-neighbour estimator}{52}{section*.36}%
 \contentsline {section}{\numberline {3.4}Exercise}{52}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Linear Methods for Regression}{55}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Resampling Methods}{55}{section.4.1}%

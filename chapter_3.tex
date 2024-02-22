@@ -83,9 +83,9 @@ Note that if we assumed the shape of optimal function, like we did in the linear
         \underset{(d+1) \times 1}{XY} = \underset{(d+1)\times 1}{X X^T\beta} + \underset{(d+1)\times 1}{X\mathcal{E}}
     \]
     Then we take expectation, to remove the unknown error term, and we get the following relation:
-    \[
-        \E{}{XY} = \E{}{X X^T} \beta + \E{}{X \varepsilon} \label{eq:1} \tag{1}
-    \]
+    \begin{equation}
+        \E{}{XY} = \E{}{X X^T} \beta + \E{}{X \varepsilon} \label{eq:1}
+    \end{equation}
     And we compute each term separately.
 
     For the first term, we can observe that the parameter vector is a constant with respect to $X$ so we can take it out of the expectation. To compute the expectation of the matrix $X^T X$, let's consider a generic entry:
@@ -107,7 +107,7 @@ Note that if we assumed the shape of optimal function, like we did in the linear
     \]
     since in the inner expectation $X$ is a constant, it can be taken out of the expectation and since we assumed that the error term is zero mean given $X$, we find out that the whole expectation is zero.
 
-    We can rewrite the equation \ref*{eq:1} as: % TODO: reference to unknown equation (on pdf is not visible the number)
+    We can rewrite the equation \ref{eq:1} as:
     \[
         R_{XY} =  R_X \beta
     \]
@@ -256,7 +256,7 @@ To prove this result, we first need to introduce the \textbf{orthogonality princ
     \]
     By expanding the square we get:
     \[
-        \E{}{([\hat{r}(X_0) - r(X_0)]^2 + [r(X_0) - Y_0]^2 + 2 [\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0])^2} %TODO: Miriam aveva messo -2, idkw
+        \E{}{([\hat{r}(X_0) - r(X_0)]^2 + [r(X_0) - Y_0]^2 + 2 [\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0])}
     \]
     And applying the linearity property:
     \[
@@ -795,17 +795,17 @@ Suppose we want to compute the error term:
 But we cannot compute the error term because it depends also on the training set $T_n$, which is another random variable.
 
 In order to solve this problem, we would need to condition the expectation on the training set, by computing the error for a fixed realization of $T_n$:
-\[
-    \E{}{(r_n(X_0) - Y_0)^2 \mid T_n} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right) \mid T_n} 
-\]
+\begin{equation}
+    \E{}{(r_n(X_0) - Y_0)^2 \mid T_n} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right) \mid T_n}  \label{eq:2}
+\end{equation}
 Since the MMSE does not depend on the training set, we can ignore the conditioning.
 
 Under the assumption that $(X_0, Y_0)$ is independent on the training set $T_n$, when applying the \textit{tower property}, we obtain:
-\[
-    \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)} 
-\]
+\begin{equation} 
+    \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)} \label{eq:3}
+\end{equation}
 %TODO: evitare first e second insernedo dei riferimenti specifici
-The first expression is a \textbf{random error term}, because the expression depends on the random variable $T_n$, while the second expression is a \textbf{deterministic error term}, because we compute the expectation with respect to all the possible realizations of the training set.
+The expression \ref{eq:2} is a \textbf{random error term}, because the expression depends on the random variable $T_n$, while the expression \ref{eq:3} is a \textbf{deterministic error term}, because we compute the expectation with respect to all the possible realizations of the training set.
 
 % rivedi questa parte
 In practical terms, if I had to implement these two expressions in MATLAB, for the first expression I would need compute it for each single training set, while for the second expression I would need to average over all the possible realizations of the training sets.
@@ -867,13 +867,13 @@ For example, if we wanted to estimate the mean of the labels given $X = 0$, we w
 \[
     \E{}{Y \mid X = 0 } \approx \frac{y_1 + y_3 + y_5 + y_7}{4}
 \]
-\textcolor{red}{And to find the conditional mean, we would repeat the same thing for every possible $x_i$ in our training set.} %TODO: chiedere a Miriam cosa intende
-
-In general, we can approximate the conditional probability by using the following estimator:
+By generalizing this example, we can approximate the conditional probability by using the following estimator:
 \[
     \E{}{Y \mid X = x} \approx \frac{\sum_{i=1}^n Y_i \cdot \mathbb{I}\{Y_i = r(x)\} }{\sum_{i=1}^n  \mathbb{I}\{Y_i = r(x)\}}
 \]
-where $\mathbb{I}\{\}$ is the indicator function and it is equal to $1$ if the condition inside brackets is satisfied, and $0$ otherwise.
+where $\mathbb{I}\{\cdot\}$ is the indicator function and it is equal to $1$ if the condition inside brackets is satisfied, and $0$ otherwise.
+
+The estimator will compute the arithmetic mean of the labels that are associated to the points of the training set that are equal to $r(x)$, for each $x$ in the training set.
 
 This approach works correctly when we have a discrete random variable, because we can find the exact value of $X_i$ in the training set. However, if we assume that $X_i$ is a continuous random variable, we know that the event $X_i = x_0$ is not an impossible event but it is highly unlikely because:\footnote{Although the probability is zero, the event is not impossible, which means that we can observe $x_0$.}
 \[
@@ -957,8 +957,21 @@ Firstly, we try to approximate the probability that a point lies in $I_h(x_0)$:
 \[
     \Pr{X_i \in I_h(X_0)} \approx f_X(x_0) 2 h_n
 \]
-because we can assume that if $h$ is very small, then the area under pdf curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the value of pdf in $x_0$. %TODO: sarebbe bello inserire un'immagine
-
+because we can assume that if $h$ is very small, then the area under pdf curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the value of pdf in $x_0$. 
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=1.5]
+        % Axes
+        \draw[->,thick] (-0.55,0) -- (2.5,0) node[right] {$x$};
+        \draw[->,thick] (0,-0.7) -- (0,1.5) node[above] {$y$};
+        % Lines
+        \draw[-,dashed] (0.52,0) node[below] {$\underbrace{x_0}_{I_h(x_0)}$} -- (0.52,1.5) node[above] {};
+        \draw[-,dashed] (0.72,0) node[below] {} -- (0.72,1.5) node[above] {};
+        \draw[-,dashed] (0.32,0) node[below left] {} -- (0.32,1.5) node[above] {};
+        % Curve
+        \draw[blue,domain=-0.5:2,samples=100] plot (\x, {exp(-3*(\x - 0.52)^2)});
+      \end{tikzpicture}        
+\end{figure}
 We also know that we can approximate the probability by the definition given by the frequentist approach:
 \[
     \Pr{X_i \in I_n(X_0)} \approx \frac{\#\{X_i \in I_h(x_0)\}}{n} \approx f_X(x_0) 2 h_n
@@ -1001,7 +1014,7 @@ If we had $d$ dimensions, since we need to compute the volume of the hypercube t
 \]
 This means that if we increase $d$, $n$ should grow \textbf{exponentially} to match the growth rate of $h$, and this is also known as the \textit{curse of dimensionality}.
 
-Under that condition, can be proved that the nearest neighbour estimator is \textbf{weakly consistent}.
+Under that condition, it can be proved that the nearest neighbour estimator is \textbf{weakly consistent}.
 \subsubsection{Nearest-neighbour estimator}
 For this estimator, the number of points is given by the parameter $k_n$, so the conditions are reversed with respect to the naive estimator.
 
@@ -1013,8 +1026,6 @@ We can simply require that:
 \[
     \frac{k_n}{n} \to 0
 \]
-% Under that condition, can be proved that the nearest neighbour estimator is \textbf{weakly consistent}. %TODO: questa cosa matta l'ha affermata solo per naive kernel
-
 \section{Exercise}
 Now we want to implement the theory on non-parametric regression, using the estimators we studied.
 
