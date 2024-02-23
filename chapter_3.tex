@@ -1215,7 +1215,7 @@ We can simply require that:
 \[
     \frac{k_n}{n} \to 0
 \]
-\section{Exercise}
+\subsection{Exercise} \label{sec:ex_3}
 Now we want to implement the theory on non-parametric regression, using the estimators we studied.
 
 Assume we have a random variable $Y$ and a random vector $X \in \mathbb{R}^d$, and we want to estimate the regression function:
@@ -1223,81 +1223,6 @@ Assume we have a random variable $Y$ and a random vector $X \in \mathbb{R}^d$, a
     Y = \sin(X) + \mathcal{E}
 \]
 where $\mathcal{E} \sim N(0,1)$ and $X \sim U(0,a)$.
-
-Let's implement a function that computes the optimal regression function, naive kernel estimator and the nearest neighbour estimator.
-
-Let us now examine the plots.
-
-By selecting $h = 10$ the naive kernel estimator curve has degenerated into a straight line, because the interval is too large with respect to the number of samples, so the estimator just took all of the points and made the average of all the point, that is about zero because the sine is a periodic function. We actually converged to the expectation of $Y$ that is zero.
-
-On the other hand by selecting $k=10$, the nearest neighbour estimator has a shape similar to the one of the sine function.
-
-By selecting $k = 5$ and $h=0.5$, the \textit{naive estimator} starts to take some shape but it is not very similar to the optimal regression function
-% i put 10 and 0.1 much better
-
-By changing values, we observed that if $h$ is too small then we will not statisfiy the law of large numbers, and the effect is that...
-and if $k$ is too large we lose locality, and the effect is that...
-
-If H is too small i will lose law of large number => 0.01
-If K is too larg i will use locality => 50
-
-K = 50 => blue is flattered
-H = 0.01 => each point is just the sample, I am enhancing the jumps
--> small H is similar to Knn = 1
-
-if i put K = 100 -> flat line, so i recover large
-
-small k => no LLN
-any local avg is not avg but a sample
-
-large K takes all of them but it coverges to the exeception of Y which is close of zero bc we have sin(X)
-
-0.1 and 10
-
-are we statisfied with this learned regression function
-
-we examine what happens with more samples and see if we increase we do better with other number of samples.
-
-1000 of samples
-disappointed => blue curve is not nice
-
-Knn =>
-if k remains fixed we lose LLN
-we are local but the oscillations are great
-we are not growing in term of LLN
-k must increase with N
-
-recovering LLN
-
-but there are flat => boundary effect because there are not points on the left
-
-increasing K
-increasing K
-
-we can acutally converging to the regression function
-
-
-write this code here and add the analysis of the error
-compute the error between these regression function looking at definiction
-
-montecarlo simulation
-either with a fixed training set
-or
-generate a training set each time
-
-for different size of the training set
-
-we need one law that relates k to n or h to n
-a
-$knn / n \to 0$
-$kn \to \infty$
-$1/sqrt(N)$
-
-check whether the error is going to zero
-
-check this behaviour of the plot + run simluation
-there are not theoretical values
-
 
 We would expect that the error of the optimal regression function tends to the MMSE, which can be computed as following:
 \[
