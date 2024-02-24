@@ -4,29 +4,30 @@
 
 They can be computationally expensive because the same statistical method is repeated multiple times, using different subsets of the training data set.
 
-These methods are used to perform \textbf{model assessment} and \textbf{model selection}. Model assessment involves quantifying model uncertainty or estimate test error taes, while \textit{model selection} involves selecting the proper level of flexibility for a model, identifying which regressor are used to describe the dependent variable.
+These methods are used to perform \textbf{model assessment} and \textbf{model selection}. \textit{Model assessment} involves quantifying model uncertainty or estimate test error, while \textit{model selection} involves selecting the proper level of flexibility for a model, identifying which regressor are used to describe the dependent variable.
 
+%TODO: questo confrono secondo me merita un discorso ben a parte dove si avedenzia il fatto che il test error è la somma tra bias^2 e variance
 \textit{Difference between training error and test error}: the \textbf{test error} is the average error that results from using a statistical learning method to predict the response on a new observation, one that was not used in training the method.
-
 In contrast, the \textbf{training error} can be easily computed by applying the statistical learning method to the observations used in its training.
 
-The training error rate often is quite different from the test error rate. In particular, the training error rate can be \textit{much smaller} than the test error rate, because most statistical methods specifically estimate parameters by minimizing the training error rate.
+The training error rate often is quite different from the test error rate. In particular, the training error rate can be \textit{much smaller} than the test error rate, because most statistical methods specifically estimate parameters by minimizing the training error.
+In general, training error will always decline. However, the test error rate will decline at first but will then start to increase again. So, the general behavior is that the training error will understimate the test error.
 
-In general, training error will always decline. However, the test error rate will decline at first but will then start to increase again.
-
-The best solution to estimate the test error is to use a \textit{large} designated test set. However, often we do not have a large enough test set available. Some methods involve adjusting the training error rate to account for the bias by employing a correction factor (\textit{AIC}, \textit{BIC} or the Cp statistic).
+The best solution to estimate the test error is to use a \textit{large} designated test set. However, often we do not have a large enough test set available. Some methods involve adjusting the training error rate to account for the bias by employing a correction factor (\textit{AIC}, \textit{BIC} or the \textit{Mallow's Cp} statistic).
 
 Resampling methods instead estimate the test error rate by holding out a subset of the training observations from the fitting process, and then applying the statistical learning method to those held out observations.
 
-\subsubsection*{Validation Set Approach}
-In this approach, we randomly divide the available set of samples into two parts: a \textbf{training set} and a \textbf{validation set} or \textbf{hold-out set}. The model is fit on the training set and the fitted model is used to predict the responses for the observations in the validation set.
+\subsection*{Validation Set Approach}
+In this approach, we randomly divide the available set of samples into two parts: a \textbf{training set} and a \textbf{validation set} or \textbf{hold-out set}. The choice of the amount of observation could follow several rules, one of them is $50:50$ or, in general a rule that gives more weight to the training.
+The model is fitted on the training set and the resulting model is used to predict the responses for the observations in the validation set.
 
-The resulting validation-set error provides an estimate of the test error. The validation-set error is compute using MSE in the case of a quantitative response, and using the classification error rate in the case of a qualitative response.
+The resulting validation-set error provides an estimate of the test error. The validation-set error is computed using MSE in the case of a quantitative response, and using the classification error rate in the case of a qualitative response.
 
+%TODO: Lo vogliamo lasciare? È la prima volta che nel documento si fa esplicito riferimento ad un dataset del libro 
 \paragraph*{Example}
-Suppose that we want to predict \textit{mpg} from \textit{horsepower}. The \texttt{Auto Dataset} is made by $392$ observations. We try to fit a polynomial regression model, with $d$ degree. In order to find which degree gives the best fit, we:
+Suppose that we want to use the \texttt{Auto Dataset} to predict \textit{mpg} from \textit{horsepower}. That dataset is made by $392$ observations. We try to fit a polynomial regression model, with $d$ degree. In order to find which degree gives the best fit, we:
 \begin{itemize}
-    \item randomly split the data into training and validation data of size $196$ each;
+    \item randomly split the data into training and validation data of size $196$ each ($50:50$);
     \item fit the models on the training set using different degree of the polynomial;
     \item evaluate all fitted models using the validation data set;
     \item the model with the lowest validation MSE is selected.
@@ -35,20 +36,28 @@ Then the final model will have the degree of the model with the lowest validatio
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{./figures/lec_15_validation_set.png}
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lec_15_validation_set.png}
     \caption{Left: Validation error rate for a single split; Right: Validation error rate for different random splits.}
     \label{fig:lec_15_validation_set}
 \end{figure}
 
-As we can see from the plots above, there is a lot of variability among the MSE if we change the training/validation set. The validation set approach has two main drawbacks:
+As we can see from the plots above, there is a lot of variability among the MSE if we change the training/validation set. The results obtained don't agree on a particular degree. 
+
+In fact, we can state that the validation set approach has two main drawbacks:
 \begin{itemize}
-    \item the validation MSE can be highly variable
-    \item only a subset of the observations are used to fit the model, reducing the data uset to train the model.
+    \item the validation MSE can be highly variable, depedening on the observations included in the training set and the validation set. 
+    \item only a subset of the observations are used to fit the model, reducing the data used to train the model. This can lead into an overestimation of the test error.
 \end{itemize}
-The validation set error may tend to \textbf{overestimate} the test error for the model fit. The \textbf{cross-validation} approach overcomes these two drawbacks.
+To overcome these two drawbacks, a \textbf{cross-validation} technique is often used.
 
 \subsubsection*{Leave-One-Out Cross-Validation}
-Split the data ${(x_i, y_i)}$ into a validation set $(x_1,y_2)$ and a training set $(x_2, y_2, \dots, x_n, y_n)$. Fit the model on the training set and validate the model using the validation set, computing the corresponding \textit{test error} MSE. Repeat this procedure $n$ times, each time leaving out a different observation. The LOOCV estimate for the test MSE is the average of these $n$ test error estimates.
+As the validation set approach, the \textbf{leave-one-out cross-validation} (LOOCV) expect the split of the data in two parts. 
+The first one is a validation set made by a single observation $(x_i, y_i)$, and the second one is the training set made by all the other observations. The model is fitted on the training set and the resulting model is used to predict the response for the single observation in the validation set.
+This procedure is repeated $n$ times, each time leaving out a different observation. 
+
+The LOOCV estimate for the test error is the average of these $n$ test error estimates.
+
+% Split the data ${(x_i, y_i)}$ into a validation set $(x_1,y_2)$ and a training set $(x_2, y_2, \dots, x_n, y_n)$. Fit the model on the training set and validate the model using the validation set, computing the corresponding \textit{test error} MSE. Repeat this procedure $n$ times, each time leaving out a different observation. The LOOCV estimate for the test MSE is the average of these $n$ test error estimates.
 \[
     CV_{(n)} = \frac{1}{n} \sum_{i=1}^{n} MSE_i
 \]
@@ -56,13 +65,13 @@ Split the data ${(x_i, y_i)}$ into a validation set $(x_1,y_2)$ and a training s
 The LOOCV approach has a number of desirable properties:
 \begin{itemize}
     \item it has far less bias than the validation set approach, since we repeatedly fit the model using a training set that contains $n-1$ observations, almost as many as are in the entire data set.
-    \item it produces a less variable MSE estimate, since there is no randomness in data splits.
+    \item it produces a less variable MSE estimate, since there is no randomness in data splits. For this reason, by applying several times the LOOCV we obtain the same result.
 \end{itemize}
 
-The main issues with this method is that it can be computationally expensive, because each model is fit $n$ times.
+The main issues with this method is that it can be computationally expensive, because each model is fit $n$ times, especially for a very large dataset.
 
 \subsubsection*{k-Fold Cross-Validation}
-The idea behind the k-fold cross.validation is to randomly divide the data into $K$ equal-sized parts. We leave out part $k$, fit the model to the other $K-1$ parts and then obtain predictions for the left-out $k$th part. This is done in turn for each part $k = 1, \dots, K$, and then the results are averaged.
+The idea behind the k-fold cross validation is to randomly divide the data into $K$ equal-sized parts. We leave out part $k$, fit the model to the other $K-1$ parts and then obtain predictions for the left-out $k$th part. This is done in turn for each part $k = 1, \dots, K$, and then the results are averaged.
 
 Let the $K$ parts be $C_1, \dots, C_K$, where $C_k$ denotes the indices of the observations in the $k$th part. There are $n_k$ observations in part $k$, if $n$ is a multiple of $K$ then $n_k = \frac{n}{K}$.
 
@@ -70,25 +79,39 @@ We compute:
 \[
     CV_{(K)} = \frac{1}{K} \sum_{k=1}^{K} MSE_k = \frac{1}{K} \sum_{k=1}^{K} \frac{1}{n_k} \sum_{i \in C_k} (y_i - \hat{y}_i)^2
 \]
-Where $MSE_k$ is the mean squared error for the $k$th part, and $\hat{y}_i$ is the prediction obtained from the fit of the model to the $k$th part, excluding observation $i$.
-
+%TODO: qua credo ci fosse un errore nel definire \hat y_i. per cui commento e correggo, ma da chiedere a Miriam
+% Where $MSE_k$ is the mean squared error for the $k$th part, and $\hat{y}_i$ is the prediction obtained from the fit of the model to the $k$th part, excluding observation $i$.
+Where $MSE_k$ is the mean squared error for the $k$th part, and $\hat{y}_i$ is the prediction obtained from the fitted onto the $i$-th observation of the $k$-th part.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{./figures/lec_15_k_fold_cv.png}
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lec_15_k_fold_cv.png}
     \caption{Left: LOOCV error curve; Right: 10-fold CV error curves.}
     \label{fig:lec_15_k_fold_cv}
 \end{figure}
+As we can see in the plots above, if we repeat the $k$-fold cross validation with different splits we obtain different MSE, but the variance is lower than the validation set approach. 
 
-As we can see in the plots above, if we repeat the k-fold cross validation with different $K$ we obtain different MSE, but the variance is lower than the validation set approach. Both the LOOCV and the k-fold CV methods tend to give similar results, they are both stable and produce similar MSE estimates.
+Both the LOOCV and the $k$-fold CV methods tend to give similar results, they are both stable and produce similar MSE estimates.
 
-\paragraph*{LOOCV vs K-Fold CV}
-K-fold CV with $K < n$ has a computational advantage over LOOCV, and gives \textit{more accurate estimates} of the \textit{test error} rate with respect to LOOCV, this is because of the \textbf{bias-variance trade-off}.
+\paragraph*{Bias-Variance Trade Off for $k$-fold CV}
+When used with $k < n$, the $k$-fold CV method has a computational advantage over LOOCV, and gives more accurate estimates of the test error rate with respect to LOOCV, this is because of the \textbf{bias-variance trade-off}.
 
-\textbf{LOOCV} has \textit{less bias} but \textit{higher variance} than $K$-fold CV. The bias is smaller because LOOCV uses a training dataset containing $n-1$ samples while k-fold uses a training dataset containing $(K-1) \frac{n}{k}$. The variance is higher because LOOCV averages the outputs of $n$ fitted models each of which is trained on an almost identical set of observations, highly correlated with each other, by contrast in K-fold CV we are averaging the outputs of $K$ fitted models that are trained on less correlated sets of observations, because the overlap between the training set is smaller.\footnote{The mean of many highly corrlated quantities has higher variance with respect to the mean of many quantities that are not highly correlated.}
+\subparagraph*{Bias} 
+Typically the validation set approach leads to an overestimation of the test error, because we use a training set that is smaller than the actually one. Instead, for the very same reason, the LOOCV provides approximatively unbiased estimates of the test error, due to the fact that the model is fitted using a training set that contains $n-1$ observations, almost as many as are in the entire data set. For what concerns the $k$-fold CV, when used with $K=5$ or $K=10$, it provides a trade-off between the computational expense of LOOCV and the potential bias of the validation set approach, because the model is fitted using a training set that contains $(K-1) \frac{n}{k}$ observations (less thant LOOCV but more than validation set approach).
 
-In conclusion, most of the times we use $K$-fold CV with $K=5$ or $K=10$, because it has been shown empirically that it suffer neither from excessively high bias nor from very high variance.
+\subparagraph*{Variance}
+In an estimation procedure also the variance of the estimate is important.
 
-\subsubsection*{Bootstrap}
+Since in the LOOCV we are averaging the outputs of $n$ fitted models, each of which is trained on an almost identical set of observations, with high correlation with each other. Instead, using $k$-fold CV we are averaging the outputs of $K$ fitted models that are trained on less correlated sets of observations, because the overlap between the training set is smaller. The mean of many highly correlated quantities has higher variance with respect to the mean of many quantities that are not highly correlated. So, the test error estimate resulting from LOOCV has higher variance with respect to the test error estimate resulting from $k$-fold CV.
+
+We can resume by saying that, in the general case of $k$-fold CV, the bias-variance trade-off is dictated by the choice of $K$. The more we increase $K$, the more we reduce the bias of the test error estimate, but the more we increase the variance of the test error estimate. Empirically, it has been shown that $K=5$ or $K=10$ is a good compromise.
+% \paragraph*{LOOCV vs K-Fold CV}
+% K-fold CV with $K < n$ has a computational advantage over LOOCV, and gives \textit{more accurate estimates} of the \textit{test error} rate with respect to LOOCV, this is because of the \textbf{bias-variance trade-off}.
+
+% \textbf{LOOCV} has \textit{less bias} but \textit{higher variance} than $K$-fold CV. The bias is smaller because LOOCV uses a training dataset containing $n-1$ samples while k-fold uses a training dataset containing $(K-1) \frac{n}{k}$. The variance is higher because LOOCV averages the outputs of $n$ fitted models each of which is trained on an almost identical set of observations, highly correlated with each other, by contrast in K-fold CV we are averaging the outputs of $K$ fitted models that are trained on less correlated sets of observations, because the overlap between the training set is smaller.\footnote{The mean of many highly corrlated quantities has higher variance with respect to the mean of many quantities that are not highly correlated.}
+
+% In conclusion, most of the times we use $K$-fold CV with $K=5$ or $K=10$, because it has been shown empirically that it suffer neither from excessively high bias nor from very high variance.
+
+\subsection*{Bootstrap}
 The \textbf{bootstrap} method is used to quantify the uncertainty associated with a given estimator. For example, it can provide an estimate of the standard error of a coefficient, or a confidence interval for that coefficient. The main advantage is the fact it can be easily applied to a wide range of statistical learning methods, including some for which a measure of variability is otherwise difficult to obtain.
 
 \paragraph*{Example}
@@ -98,29 +121,45 @@ We will invest a fraction $\alpha$ of our money in $X$ and will invest the remai
 
 The \textbf{variance} of our investment is given by:
 \[
-    \sigma^2 = \text{Var}(\alpha X + (1-\alpha)Y)
+    \sigma^2 = \var{\alpha X + (1-\alpha)Y}
 \]
-The value of $\alpha$ that minimizes $\sigma^2$ is given by:
+We want the value of $\alpha$ that minimizes $\sigma^2$. The value of $\alpha$ that minimizes $\sigma^2$ is given by:
+\[
+    \alpha^\ast  = \arg\min_{\alpha} \var{\alpha X + (1-\alpha)Y} = \arg\min_{\alpha} \left(\alpha^2 \sigma^2_X + (1-\alpha)^2 \sigma^2_Y + 2\alpha(1-\alpha)\sigma_{XY}\right)
+\]
+Compute it by taking the derivative of the expression with respect to $\alpha$ and setting it equal to zero, we obtain: %TODO: possiamo esplicitare il calcolo?
 \[
     \alpha = \frac{\sigma^2_Y - \sigma_{XY}}{\sigma^2_X + \sigma^2_Y - 2\sigma_{XY}}
 \]
 The problem is that the variances and covariances are unknown, so we cannot compute $\alpha$. We can compute estimates of these quantities using a dataset that contains past measurements for $X$ and $Y$ and then use these estimates to compute $\hat{\alpha}$.
-
+\[
+    \hat\alpha = \frac{\hat\sigma^2_Y - \hat\sigma_{XY}}{\hat\sigma^2_X + \hat\sigma^2_Y - 2\hat\sigma_{XY}}
+\]
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{./figures/lec_15_investment_simulations.png}
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lec_15_investment_simulations.png}
     \caption{Each panel displays 100 simulated returns for investments $X$ and $Y$, each of them gives a different estimate of $\alpha$.}
     \label{fig:lec_15_bootstrap_example}
 \end{figure}
 
-To estimate the standard deviation of $\hat{\alpha}$ we repeated the process of simulating the data set of 100 paired observations of $X$ and $Y$ many times, each time recomputing $\hat{\alpha}$. This gave us $1000$ estimates for $\alpha$ which we can call $\hat{\alpha}_1, \hat{\alpha}_2, \dots, \hat{\alpha}_{1000}$.
+Let's imagine simulating this experiment, obtaining small datasets containing $100$ pairs representing the return on investment in $X$ and $Y$. We use this data to estimate $\sigma^2_Y$, $\sigma^2_X$ and $\sigma_{XY}$ and consequently make an estimate of $\hat \alpha$ for each of the datasets.
+We would quantify the accuracy of the estimate of $\alpha$ by computing the standard deviation of the $\hat{\alpha}$ estimates. This can be done by repeating the process of simulating the data set many times, each time recomputing $\hat{\alpha}$.
+In this way, if repeat the process $1000$ times, we obtain $1000$ estimates for $\alpha$ which we can call $\hat{\alpha}_1, \hat{\alpha}_2, \dots, \hat{\alpha}_{1000}$.
+% To estimate the standard deviation of $\hat{\alpha}$ we repeated the process of simulating the data set of 100 paired observations of $X$ and $Y$ many times, each time recomputing $\hat{\alpha}$. This gave us $1000$ estimates for $\alpha$ which we can call $\hat{\alpha}_1, \hat{\alpha}_2, \dots, \hat{\alpha}_{1000}$.
 
-For these simulation the parameters were $\sigma_X^2 = 1$, $\sigma_Y^2 = 1.25$, $\sigma_{XY} = 0.5$ and thus $\alpha=0.6$.
+% For these simulation the parameters were $\sigma_X^2 = 1$, $\sigma_Y^2 = 1.25$, $\sigma_{XY} = 0.5$ and thus $\alpha=0.6$.
 
-The mean of the $\hat{\alpha}_i$ is $0.5996$ and the standard deviation is $0.083$. Since the standard deviation is an estimate of the standard error of $\hat{\alpha}$, we can say that $0.083$ is almost certainly a good estimate of the standard error of $\hat{\alpha}$.
+Using these data we can compute mean and standard deviation of the $\hat{\alpha}$ estimator.
+\[
+    \bar \alpha = \frac 1{1000}\sum_{r=1}^{1000} \hat{\alpha}_r = 0.5996
+\]
+\[
+    SE(\hat \alpha) = \sqrt{\frac 1{1000-1}\sum_{r=1}^{1000} \left(\hat{\alpha}_r - \bar{\alpha}\right)^2} = 0.083
+\]
+So, we can say that the estimate $\hat\alpha$ will differ from the true value of $\alpha$ by approximately $0.083$ on average.
 
 \paragraph*{Bootstrap}
-For real data we cannot generate new samples from the original population. The bootstrap approach allow us to mimic the process of obtaining new data sets, so that we can estimate the variability of our estimate without generating additional samples.
+For real data we cannot generate new samples from the original population, as we did in the last experiment. The bootstrap approach allow us to mimic the process of obtaining new data sets, so that we can estimate the variability of our estimate without generating additional samples.
 
 Rather than repeatedly obtaining independent data sets from the population, we instead obtain distinct data sets by repeatedly sampling observations from the original data set with replacement.
 
@@ -128,7 +167,7 @@ Each of these data sets is of the same size as the original data set. As a resul
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{./figures/lec_15_bootstrap.png}
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lec_15_bootstrap.png}
     \caption{Example of bootstrap procedure.}
     \label{fig:lec_15_bootstrap}
 
@@ -142,11 +181,11 @@ The standard error is given by the formula below:
 \]
 This serves as an estimate of the standard error of $\hat{\alpha}$.
 
-In the investement example, we can use the bootstrap to estimate a standard error of $\hat{\alpha}$, which is $0.087$ which is very close to the value of $0.083$ obtained from the simulation.
+In the investement example, we can use the bootstrap to estimate a standard error of $\hat{\alpha}$. Doing it we obtained an estimate of $0.087$ which is very close to the value of $0.083$ obtained from the simulation.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{./figures/lec_15_bootstrap_2.png}
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lec_15_bootstrap_2.png}
     \caption{Comparison between bootstrap and simulation.}
     \label{fig:lec_15_bootstrap_2}
 
@@ -181,16 +220,18 @@ The standard linear model is commonly used to describe the relationship between 
 
 There are two reasons we might not just use the ordinary least squares estimates, that are \textit{prediction accuracy} and \textit{model interpretability}.
 
-\textbf{Prediction accuracy} decreases when, fixing the number of samples, we increase the number of predictors.
+\paragraph*{Prediction accuracy} 
+If the true relationship between the response and the predictors is approximately linear, the least squares estimates will have low bias. However, we have to consider the following cases:
+\begin{itemize}
+    \item If $n \gg p$, meaning that if the number of observation is much larger than the number of variables, then the least squares estimates tend to also have low variance and will perform well on test observations.
+    \item If $n \simeq p$, then the least squares fit can have high variance and may result in overfitting and poor estimates on unseen observation.
+    \item When $n < p$ then there is no longer a unique least squares coefficient estimate, since the variance is infinite so the method cannot be used at all.
+\end{itemize}
 
-If $n \gg p$, meaning that if the number of observation is much larger than the number of variables, then the least squares estimates tend to also have low variance and will perform well on test observations\dots
+\paragraph*{Model Interpretability} 
+In addition, when we have a large number of predictors $X$ in the model, there will be many of them that have little or no effect on $Y$, this reduces the \textbf{model interpretability}. Leaving these variables in the model makes it harder to see the real relationships among predictors and the dependent variable and it is difficult to appreciate the effect of the \textit{relevant variables} describing $Y$. The model would be easier to interpret by removing the unimportant variables.
 
-If $n \simeq p$, then the least squares fit can have high variance and may result in overfitting and poor estimates on unseen observation.
-
-When $n < p$ then there is no longer a unique least squares coefficient estimate, since the variance is infinite so the method cannot be used at all.
-
-In addition, when we have a large number of predictors $X$ in the model, there will be many that have little or no effect on $Y$, this reduces the \textbf{model interpretability}. Leaving these variables in the model makes it harder to see the real relationships among predictors and the dependent variable and it is difficult to appreciate the effect of the \textit{relevant variables} describing $Y$. The model would be easier to interpret by removing the unimportant variables.
-
+\subsection{Alternative fitting procedures}
 There are three different approaches that we can use to prevent this problems:
 \begin{itemize}
     \item \textbf{subset selection}, in which we identify a subset of the $p$ predictors that we believe to be related to the response, we then fit a model using the least squares on the reduced set of variables.
@@ -198,7 +239,8 @@ There are three different approaches that we can use to prevent this problems:
     \item \textbf{dimension reduction}, in which we project the $p$ predictors into a $M-$dimensional subspace. This is achieved computing $M$ different linear combinations or projections of the variables. This $M$ projects are used as predictors to fit a linear regression model using OLS.
 \end{itemize}
 
-There are four different kinds of algorithms that implement the \textbf{subset selection approach}:
+\subsubsection*{Subset Selection}
+There are four different kinds of algorithms that implement the \textbf{subset selection} approach:
 \begin{itemize}
     \item \textbf{best subset selection}
     \item \textbf{forward stepwise selection}
@@ -206,33 +248,80 @@ There are four different kinds of algorithms that implement the \textbf{subset s
     \item \textbf{hybrid approach}
 \end{itemize}
 
-\subsection*{Best Subset Selection}
+\paragraph*{Best Subset Selection}
 In this approach, we run a linear regression for each possibile combination of the $X$ predictors. In order to select the "best" model, one simple apporach is to take the subset with the smallest \textit{RSS} or equivalently the largest $R^2$.
 
-Unfortunately, the model that includes all the variables will always have the largest $R^2$ and the smallest \textit{RSS}, since these quantities are related to the training error.
-
-The algorithm for best subset selection is the following:
-\begin{enumerate}
-    \item Let $\mathcal{M}_0$ denote the \textit{null model}, which contains no predictors. This model simply predicts the sample mean for each observation.
-    \item For $k = 1,2,\dots, p$:
-    \item[(a)] Fit all $\binom{p}{k}$ models that contain exactly $k$ predictors.
-    \item[(b)] Pick all the best among these $\binom{p}{k}$ models, and call it $\mathcal{k}$. Here best is defined as having the smallest RSS, or equivalently largest $R^2$.
-    \item Select a single best model from among $\mathcal{M}_0, \dots, \mathcal{M}_p$ using cross-validated prediction error, $C_p$, AIC, BIC or adjusted $R^2$.
-\end{enumerate}
-
-This algorithm can be used for other types of models not based on least squares regression, such as \textit{logistic regression}.
-
-\textit{Example. }
-
-RSS and $R^2$ are not suitable for selecting the best model among a collection of models with \textit{different} number of predictors.
-
+Unfortunately, the model that includes all the variables will always have the largest $R^2$ and the smallest \textit{RSS}, since these quantities are related to the training error. For this reason, we have to consider other measures to select the best model that depends on an estimate of the test error.
 In order to select the best model with respect to the test error, we need to estimate this test error. There are two possible approaches:
 \begin{enumerate}
     \item Estimate test error by making an \textit{adjustement} to the training error to account for the bias due to overfitting. We can use measurements such as: $C_p$, $AIC$, $BIC$, and adjusted $R^2$. These methods add a penalty to RSS for the number of variables in the model.
     \item We can \textit{directly} estimate the test error, using a validation set or a cross-validation approach.
 \end{enumerate}
 
-\subsubsection*{Mallow's $C_p$}
+
+The algorithm for best subset selection is defined by algorithm \ref{alg:best_subset_selection}.
+\begin{algorithm}[h]
+    \begin{enumerate}
+        \item Let $\mathcal{M}_0$ denote the \textit{null model}, which contains no predictors. This model simply predicts the sample mean for each observation.
+        \item For $k = 1,2,\dots, p-1$:
+        \begin{enumerate}
+            \item Fit all $\binom{p}{k}$ models that contain exactly $k$ predictors.
+            \item Pick all the best among these $\binom{p}{k}$ models, and call it $\mathcal M_{k}$. Here best is defined as having the smallest RSS, or equivalently largest $R^2$.
+        \end{enumerate}
+        \item Select a single best model from among $\mathcal{M}_0, \dots, \mathcal{M}_p$ using validation set approach, cross-validated prediction error, $C_p$, AIC, BIC or adjusted $R^2$.
+    \end{enumerate}
+    \label{alg:best_subset_selection}
+    \caption{Best Subset Selection algorihtm}
+\end{algorithm}
+
+This algorithm can be used for other types of models not based on least squares regression, such as \textit{logistic regression}.
+
+\paragraph*{Stepwise Selection}
+The best subset selection approach is computationally infeasible for large $p$. Moreover, a large search space can lead to overfitting and high variance of the coefficient estimates. For these reasons, we usually adopt \textit{stepwise methods} that explore a smaller set of models.
+
+The \textbf{forward stepwise selection} and \textbf{backward stepwise selection} are two common stepwise methods. The \textbf{forward stepwise selection} starts with the null model and adds the "best" predictor to the model at each step. The \textbf{backward stepwise selection} starts with the full model and removes the "worst" predictor at each step. Both of them fit a total of $p(p+1)/2 + 1$ models that is substantially better than $2^p$. These two methods are defined by algorithms \ref{alg:forward_stepwise_selection} and \ref{alg:backward_stepwise_selection}.
+\begin{algorithm}
+    \begin{enumerate}
+        \item Let $\mathcal M_0$ be the \textit{null model}, i.e. it does not contain any predictors
+        \item For $k=0,1,\dots,p-1$:
+        \begin{enumerate}
+            \item Consider all $p-k$ models that increase the number of predictors in $\mathcal M_k$ with an additional predictor
+            \item We choose the best among these $p-k$ models, we call it $\mathcal M_{k-1}$. Here best means the model that optimizes $RSS$ or $R^2$.
+        \end{enumerate}
+        \item We select a single best model among $\mathcal M_0,\dots,\mathcal M_p$ using the prediction error on the validation set, or techniques like $C_p$ $(AIC)$, $BIC$, or $ AdjR^2$. Alternatively we can also use the cross validation method.
+    \end{enumerate}
+    \caption{Forward Stepwise Selection}
+    \label{alg:forward_stepwise_selection}
+\end{algorithm}
+
+\begin{algorithm}
+    \begin{enumerate}
+        \item Let $\mathcal M_p$ be the \textit{full model}, i.e. it contains all the $p$ predictors
+        \item For $k=p,\dots,1$:
+        \begin{enumerate}
+            \item Consider all $k$ models that contain all but one of the predictors in $\mathcal M_k$, for a total of $k-1$ predictors
+            \item We choose the best among these $k$ models, we call it $\mathcal M_{k-1}$. Here *best* means the model that optimizes $RSS$ or $R^2$.
+        \end{enumerate}
+        \item We select a single best model among $\mathcal M_0,\dots,\mathcal M_p$ using the prediction error on the validation set, or techniques like $C_p$ $(AIC)$, $BIC$, or $ AdjR^2$. Alternatively we can also use the cross validation method.
+    \end{enumerate}
+    \caption{Backward Stepwise Selection}
+    \label{alg:backward_stepwise_selection}
+\end{algorithm}
+
+Certainly, the forward stepwise selection and the backward stepwise selection are not guaranteed to find the best model out of all $2^p$ models. However, they are much faster than the best subset selection and they are more stable.
+
+Another interesting aspect is that the forward stepwise selection can be used when $n < p$, while the backward stepwise selection cannot be used in this case.
+
+Forward stepwise and backward stepwise selection return similar models in general, but not identical. An alternative to them is the \textbf{hybrid approach}, which is a combination of the two methods. It starts with no predictors and at each step adds the best predictor among all the predictors not in the model, but can also remove a predictor at each step. This approach tries to mimic the best subset selection, but it is computationally more efficient.
+\subsubsection*{Choosing the Optimal Model}
+In the algorithms presented above, we have to choose the best model among $\mathcal M_0, \dots, \mathcal M_p$. Potentially, there are two different approaches to do this:
+\begin{itemize}
+    \item \textbf{directly estimation} with data for each model and then select the model for which the estimated test error is smallest. This can be done using the validation set approach, cross-validated prediction error.
+    \item \textbf{make an adjustment} of the trainin error for estimate the test error. We can use measurements such as $C_p$, $AIC$, $BIC$, and adjusted $R^2$.
+\end{itemize}
+
+Let's see the most common methods for model selection by making an adjustment of the training error.
+\paragraph*{Mallow's $C_p$}
 For a fitted OLS model containing $d$ predictors, the $C_p$ estimate of test MSE is:
 \[
     C_p = \frac{1}{n} \left(RSS + 2d\hat{\sigma}^2\right)
@@ -241,7 +330,7 @@ where $\hat{\sigma}^2$ is an estimate of $\sigma^2 = \text{Var}(\epsilon)$. This
 
 We can show that if $\hat{\sigma}^2$ is an unbiased estimate of $\sigma^2$, then $C_p$ is an unbiased estimate of test MSE.
 
-\subsubsection*{Akaike Information Criterion}
+\paragraph*{Akaike Information Criterion}
 The AIC criterion is defined for a large class of models fit by maximum likelihood:
 \[
     \text{AIC} = -2\log L + 2 \cdot d
@@ -254,7 +343,7 @@ In the case of the linear model with Gaussian errors, maximum likelihood and lea
 \]
 Thus, for least squares models, $C_p$ and AIC are equivalent.
 
-\subsubsection*{Akaike Information Criterion}
+\paragraph*{Akaike Information Criterion}
 The BIC criterion is derived from a Bayesian point of view, but ends up looking similar to $C_p$ and AIC. For the OLS model with $d$ predictors the BIC is given by:
 \[
     \text{BIC} = - 2 \log L + \log(n) d
@@ -266,7 +355,7 @@ which means:
 
 Since $\log n > 2$, for any $n > 7$, the BIC statistic generally places a heavier penalty on models with many variables and hence results in the selection of smaller models than $C_p$.
 
-\subsubsection*{Adjusted $R^2$}
+\paragraph*{Adjusted $R^2$}
 For a least squares model with $d$ variables, the adjusted $R^2$ statistic is calculated as:
 \[
     \text{adjusted } R^2 = 1 - \frac{\frac{\text{RSS}}{n-d-1}}{\frac{\text{TSS}}{n-1}}
@@ -280,26 +369,37 @@ Unlike the $R^2$ statistic, the adjusted $R^2$ statistic pays a price for the in
 
 $C_p$, AIC, BIC have all rigorous theoretical justifications. The adjusted $R^2$ is quite intuitive but it's not motivated in statistical theory. All of these measures are simple to compute and can serve estimates of the test error but none of then is perfect. They can also be compute in case of general types of models.
 
-\subsubsection*{Validation and cross-validation}
+% \subsubsection*{Validation and cross-validation}
 
-Each of the procedures returns a sequence of models $\mathcal{M}_k$ indexed by model size $k = 0,1,2,\dots$. We need to select the best $\hat{k}$.
-We then compute the validation set error or the cross-validation error for each model $\mathcal{M}_k$ under consideration and the select the $k$ for which the resulting estimated test error is smallest.
+% Each of the procedures returns a sequence of models $\mathcal{M}_k$ indexed by model size $k = 0,1,2,\dots$. We need to select the best $\hat{k}$.
+% We then compute the validation set error or the cross-validation error for each model $\mathcal{M}_k$ under consideration and the select the $k$ for which the resulting estimated test error is smallest.
 
-With respect to the previous estimates, the validation set approach provides a direct estimate of the test error without requiring the variance $\sigma^2$. This approach can also be used in a wider range of model selection tasks.
+% With respect to the previous estimates, the validation set approach provides a direct estimate of the test error without requiring the variance $\sigma^2$. This approach can also be used in a wider range of model selection tasks.
 
-\paragraph*{One-standard-error rule}
+\subsubsection*{One-standard-error rule}
 We usually see that the model with the lowest estimated test error has a certain number of predictors, but there isn't much difference in terms of test errors between the best model and some models with less predictors.
 
-We can select a model using the \textbf{on-standard-error rule}, we calculate the standard error of the estimated test \textit{MSE} for each model size and then we select the smallest model for which the estimated test error is within one-standard error of the lowest point on the curve.
+We can select a model using the \textbf{one-standard-error rule}, we calculate the standard error of the estimated test \textit{MSE} for each model size and then we select the smallest model for which the estimated test error is within one-standard error of the lowest point on the curve.
 
-\subsubsection*{Stepwise selection}
-Best subset selection suffer from computational limitations, meaning that it can work for at most $p$ as large as $30$ or $40$ predictors.
-Best subset selection may also suffer from statistical problems when $p$ is large, because the larger is the search space, the higher the change of finding models that perform well on the training data. An enourmous search space can lead to overfitting and high variance of the coefficient estimates.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/onestandarderror.png}
+    \caption{One-standard-error rule.}
+    \label{fig:lec_15_one_standard_error_rule}
+\end{figure}
 
-So we usually adopt \textit{stepwise methods}.
+A practical example of this rule is shown in figure \ref{fig:lec_15_one_standard_error_rule}. The plot shows the estimated test \textit{MSE} for each model size, the lowest point on the curve is the model with the smallest estimated test \textit{MSE}. The one-standard-error rule tells us to select the most parsimonious model for which the estimated test \textit{MSE} is within one standard error of the lowest point on the curve.
 
-\paragraph*{Forward Stepwise Selection}
-
+We can identifiy the following steps to apply the one-standard-error rule: %TODO: check
+\begin{algorithm}
+    \begin{enumerate}
+        \item $\forall d$ calculate $\sigma_{\text{TestMSE}}(d)$, as standard error of the estimated test \textit{MSE} for the model with $d$ predictors.
+        \item Take $\hat d$ as the number of predictor with the lowest estimated test \textit{MSE}.
+        \item Identify the interval $I = [\text{TestMSE}(\hat d) - \sigma_{\text{TestMSE}}(\hat d), \text{TestMSE}(\hat d) + \sigma_{\text{TestMSE}}(\hat d)]$.
+        \item Select $d^\ast = \arg\min_d[\text{TestMSE}(d) : \text{TestMSE}(d) \in I]$.
+    \end{enumerate}
+    \caption{One-standard-error rule algorithm}
+\end{algorithm}
 \section{Shrinkage Methods}
 The subset selection methods use least squares to fit a linear model that contains a subset of the predictors. As an alternative we can fit a model containing all \textit{p} predictors using a technique called \textbf{shrinkage} that \textit{constraints} or \textit{regularize} the coefficient estimates towards zero.
 
