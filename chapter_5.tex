@@ -226,14 +226,14 @@ So, given a certain distribution of the data $f$, the system will learn the hypo
 
 Note that this is the general case, and the previous proof was a special case of this. It is simple to show that if $f(x) = \ell(x \mid \theta_0)$, the minimum will be the true hypothesis $\theta_0$.
 
+This is an important result since it also tells us that if the system are using wrong models to update the belief, if that models are not so far from the true model, the system will learn the true model. This is a good property because it means that the system is robust to the model used to update the belief.
 
-
-\paragraph*{Exercise}
+\paragraph*{On the Bayes' update}
 Having defined
 \[
     \mu_n(\theta) \triangleq \mu(\theta \mid x_1, \dots, x_n)
 \]
-Can you find a relationship between $\mu_n(\theta)$ and $\mu_{n-1}(\theta)$?
+We want to find a relationship between $\mu_n(\theta)$ and $\mu_{n-1}(\theta)$.
 We know that:
 \[
     \mu_n(\theta) \propto \pi(\theta) \prod_{i=1}^n \ell(x_i \mid \theta) = \pi(\theta) \prod_{i=1}^{n-1} \ell(x_i \mid \theta) \ell(x_n \mid \theta)
@@ -250,6 +250,7 @@ This is none other that \textit{Bayes' rule} where our past belief $\mu_{n-1}(\t
 
 This property holds only thanks to the hypothesis of \textbf{independendence} of the data. With an independent model, all the knowledge we have at a certain step is contained in the current belief. This property is really important, due to computation reasons, because it simplifies the calculations and allows to use Bayes updates in a streaming setting. In some ways it can be considered as a form of online learning.
 
+By the way, sometimes this approach is used also when the data is not independent because a lot of times we don't have any other choice. 
 \subsection{Neyman-Pearson Criterion}
 Now we want to find what happens when our parameter $\Theta$ is deterministic. First of all, let us clarify that in the Bayes problem we encountered before, $\Theta$ was random, even though we worked with fixed value of theta. This is because the same reasoning applies to any choice of the hypothesis.
 
