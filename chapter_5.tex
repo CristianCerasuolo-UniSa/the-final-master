@@ -297,64 +297,75 @@ The straight line in the ROC curve of figure \ref{fig:roc} is the silliest decis
 That situation can also be seen as the case in which, in order to increase the value of $1-\beta$, we have to increase the value of type 1 error probability $\alpha$. This is not a desirable behaviour.
 
 \section{Supervised Classification}
-In our previous lessons, we have seen model-based classification, both the bayesian setting and the Neyman-Person case. In this lesson, we will see how to perform supervised classification. The setting is similar to the one of the regression.
+In the previous sections, we have seen model-based classification, both the bayesian setting and the Neyman-Person case. Now, we will see how to perform supervised classification. The setting is similar to the one of the regression.
 We have our classes
 \[
     \Theta \in \{\theta_1, \theta_2, \dots, \theta_H\}
 \]
-and our features $X \in \mathbb{R}^d$. As in the regression case, we will have to define a risk function based on the model-based theory (the MMSE) and then use the empirical version of the risk to perform the supervised classification.
+and our features 
+\[
+    X \in \mathbb{R}^d
+\]
+As in the regression case, we will have to define a risk function based on the model-based theory (the MMSE) and then use the empirical version of the risk to perform the supervised classification.
 
 In the regression case, we have seen that the MMSE is
 \[
     \text{MMSE} = \min_f \mathbb{E}\left[ \left( Y - f(X) \right)^2 \right]
 \]
+We haven't specified the shape of the function $f$, but it needs to be an integrable function.
+However, when we need to let the calculator to solve the optimization problem we need to specify the shape of the function $f$ in order to derive the optimal parameter (and it's the same thing we do in deep learning).
 
-We now replace $\mu(\theta\mid X)$ with $\hat{\mu}_\beta(\theta \mid X) \in f$. $f$ will be a parametric class, which has $\beta$ as a paramater. We will then have to pick a function of this class which will always be a probability mass function for each value of $f$.
+So, as we've done in regression for the optimal regression function, we now replace the ideal classification object $\mu(\theta\mid X)$ with its empirical version $\hat{\mu}_\beta(\theta \mid X) \in \mathcal F$. $\mathcal F$ will be a parametric class, which has $\beta$ as a paramater. 
+The fundamental requirement is that $\hat \mu_{\beta}(\theta \mid X)$ will always be a probability mass function.
 
-Assume that now we have picked a model. Our goal is to find a function $\hat{\mu}$ which error probability is comparable to the one of $\mu$. But there is a problem that we have to replace the error probability with something that we can use in optimization theory. We can use the Kullback-Leibler divergence.
+Coming back to the risk function. In the regression case, we used the mean square error. In the classification case, we can use the Kullback-Leibler divergence to measure the "distance" from the optimal object.
+% Assume that now we have picked a model. Our goal is to find a function $\hat{\mu}$ which error probability is comparable to the one of $\mu$. But there is a problem that we have to replace the error probability with something that we can use in optimization theory. We can use the Kullback-Leibler divergence.
 
-So now our goal is to find:
+So now, given that we're estimating our ideal object $\mu(\theta\mid X)$ with $\hat\mu_{\beta}(\theta\mid X)$, our goal is to find the parameter $\beta$ that minimizes the Kullback-Leibler divergence between the two distributions:
 \[
-    \beta^\ast = \arg\min_{\beta \in \mathbb{R}^M} \overline{D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right)
-\]
-By definition of Kullback-Leibler divergence, we have that:
-\[
-    \text{D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right) = \E{\mu}{\log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}} = \sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)} = f_\beta(X)
-\]
-Since we need a number but we have a function of $X$, we can take the expectation of $f_\beta(X)$ to get a number. This version of the Kullback-Leibler divergence is called \textbf{conditional Kullback-Leibler divergence}.
-
-\[
-    \text{conditional } D_{KL} = \E{X}{\sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}}
+    \beta^\ast = \arg\min_{\beta \in \mathbb{R}^M} {D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right) % ho rimosso la bar per far evincere l'errore
 \]
 
-\textbf{Note:} In information theory, to get the conditional quantities of some measures like the entropy and the Kullback-Leibler divergence, we don't need to apply the conditional probability formula, but we just need to take the expectation of this quantities.
+By the way, by definition of Kullback-Leibler divergence, we have that:
+\[
+    {D}_{KL}\left( \mu\mid\mid \hat{\mu}_\beta\right) = \E{\mu}{\log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}} = \sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)} = f_\beta(X)
+\]
+The result of the classic Kullback-Leibler divergence is a function of $X$ but we need a number to minimize and choice the best $\beta$ for every $X$ not in function of it.
+Since we need a number but we have a function of $X$, we can take the expectation of $f_\beta(X)$ wrt $X$ to get a number. This version of the Kullback-Leibler divergence is called \textbf{conditional Kullback-Leibler divergence}.
+
+\[
+    \bar{D}_{KL} = \E{X}{\sum_{\theta} \mu(\theta \mid x) \log \frac{\mu(\theta \mid x)}{\hat{\mu}_\beta(\theta \mid x)}}
+\]
+
+In information theory, to get the conditional quantities of some measures like the entropy and the Kullback-Leibler divergence, we don't need to apply the conditional probability formula, but, instead, we need to take the expectation of this quantities.
+This difference on the nomenclature emerges from Shannon and Information Theory about what is the true meaning of the conditional quantities.
 
 Let's rewrite the conditional Kullback-Leibler divergence in a shorter form:
 \[
-    \overline{D}_{KL}(\mu \mid\mid \hat{\mu}_\beta) = \E{X, \Theta}{\log \frac{\mu(\Theta \mid X)}{\hat{\mu}_\beta(\Theta \mid X)}}
+    \bar{D}_{KL}(\mu \mid\mid \hat{\mu}_\beta) = \E{X, \Theta}{\log \frac{\mu(\Theta \mid X)}{\hat{\mu}_\beta(\Theta \mid X)}}
 \]
 To sum up:
 \begin{enumerate}
     \item We want to approximate the optimal posterior mean $\mu$ with $\hat{\mu}_\beta$.
     \item We found a way to measure the quality of the approximation, the conditional Kullback-Leibler divergence.
     \item We need to minimize the Kullback-Leibler divergence and find $\beta^\ast$
-    \item We do not know the posterior mean but we can show that it is not useful to find $\beta^\ast$.
+    % \item We do not know the posterior mean but we can show that it is not useful to find $\beta^\ast$. %% non ho capito cosa intendi
 \end{enumerate}
 Assume we have a training set $T_n = \{\theta_i, x_i\}_{i=1}^N$ and our classes are $\Theta = \{1, 2, \dots, H\}$.
 
-We can define the empirical conditional Kullback-Leibler divergence (our \textit{empirical risk}) as:
+Since we can't compute the expectation because we don't know how the models, we can define the empirical conditional Kullback-Leibler divergence by using $T_n$ (our \textit{empirical risk}) as:
 \[
-    \overline{D}_{KL} = \frac{1}{N} \sum_{i=1}^{N} \log \frac{\mu(\theta_i \mid x_i)}{\hat{\mu}_\beta(\theta_i \mid x_i)}
+    \bar{D}_{KL} = \frac{1}{N} \sum_{i=1}^{N} \log \frac{\mu(\theta_i \mid x_i)}{\hat{\mu}_\beta(\theta_i \mid x_i)}
 \]
 
-Now we have a problem. We want to minimize the conditional Kullback-Leibler divergence, but we do not know the posterior mean $\mu$. Let us isolate $\mu$ in the non-empirical conditional Kullback-Leibler divergence formula:
+Now we have a problem. We want to minimize the conditional Kullback-Leibler divergence, but we do not know the posterior mean $\mu$ that appears at the numerator. Let us isolate $\mu$ in the non-empirical conditional Kullback-Leibler divergence formula:
 \[
-    \overline{D}_{KL} = - \E{X, \Theta}{\log \frac{1}{\mu(\Theta \mid X)}} + \E{X, \Theta}{\log \frac{1}{\hat{\mu}_\beta(\Theta \mid X)}}
+    \bar{D}_{KL} = - \E{X, \Theta}{\log \frac{1}{\mu(\Theta \mid X)}} + \E{X, \Theta}{\log \frac{1}{\hat{\mu}_\beta(\Theta \mid X)}}
 \]
 
-Now we define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
+From information theory we can define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
 \[
-    \mathcal{H} = \E{X}{\log \frac{1}{p(X)}} \text{ nats}
+    \mathcal{H}(p) = \E{X}{\log \frac{1}{p(X)}} \text{ [nats]}
 \]
 For a discrete random variable:
 \[
@@ -365,58 +376,84 @@ We define the \textbf{cross-entropy} as:
 \[
     \mathcal{H}(p;q) = \sum_{\theta} p(\theta) \log \frac{1}{q(\theta)}
 \]
-The Kullback-Leibler divergence is also called \textbf{relative entropy}. Observing the decomposition we've written before, we have that the first term is the conditional entropy of the true distribution.
+Both for the entropy and the cross-entropy, we can define a conditional version.
 
+The Kullback-Leibler divergence is also called \textbf{relative entropy}. 
+Observing the decomposition we've written before, we have that the first term is the conditional entropy of the true distribution and the second term is the conditional cross entropy between $\mu$ and $\hat \mu$.
 Now we can rewrite a conditional Kullback-Leibler divergence in terms of entropy and cross-entropy:
 \[
-    \overline{D}_{KL}(p;q) = \mathcal{H}(p;q) - \mathcal{H}(p)
+    \bar{D}_{KL}(p;q) = \mathcal{H}(p;q) - \mathcal{H}(p)
 \]
+
 Since we know that the Kullback-Leibler divergence is always positive, we can write:
 \[
     \mathcal{H}(p;q) = \mathcal{H}(p) + \overline{D}_{KL}(p;q)
 \]
 
-So we found out that the cross-entropy between two distributions $p$ and $q$ is given by the sum of the entropy and the Kullback-Leibler divergence. This result is used to explain the \textit{lower bound of compression}. The number of bits in the compression of some data described by a random variable $X$ is given by the entropy of $X$. If we know the distribution of $X$, we can use the cross-entropy to compress $X$. The number of bits needed to compress $X$ is given by the entropy of $X$ plus the Kullback-Leibler divergence between the true distribution and the one we used to compress $X$. If we use the right distribution, then the Kullback-Leibler divergence is zero and we can compress $X$ with the same number of bits of the entropy of $X$.
+So we found out that the cross-entropy between two distributions $p$ and $q$ is given by the sum of the entropy and the Kullback-Leibler divergence. 
 
-We found that
+As a practical example, this result is used to explain the \textit{lower bound of compression}. Namely, the number of bits in the compression of some data described by a random variable $X$ is given by the entropy of $X$. If we know the distribution of $X$, we can use the cross-entropy to compress $X$. The number of bits needed to compress $X$ is given by the entropy of $X$ plus the Kullback-Leibler divergence between the true distribution and the one we used to compress $X$. If we use the right distribution, then the Kullback-Leibler divergence is zero and we can compress $X$ with the same number of bits of the entropy of $X$.
+
+Finally, we found that
 \[
     \overline{D}_{KL} = - \parbox{10em}{conditional entropy \\of the true distribution} + \parbox{15em}{ conditional cross-entropy\\ between true and \\ candidate distribution}
 \]
-Note that the first term does not depend on $\beta$ but it is a function of the problem. So we can minimize the conditional Kullback-Leibler divergence by minimizing the second term only. Note that without knowing the conditional entropy of the posterior mean we cannot find the value of the minimum, but we can still solve the optimization problem that requires us to find the minimizer. As in the regression part where we had the MMSE, the first term is an unbeatable error and it is an attribute of the problem, depending on the joint distribution of $X$ and $\Theta$.
+Note that the first term in the expression does not depend on $\beta$, but rather it is a function inherent to the problem itself. 
+Thus, our objective becomes minimizing the conditional Kullback-Leibler divergence by focusing solely on minimizing the second term. This approach enables us to determine the minimizer $\beta$ without the need to ascertain the conditional entropy of the posterior mean. While knowing the value of the minimum is pertinent, it is not indispensable for solving the optimization problem aimed at identifying the minimizer. 
 
-Now our optimization problem is:
+\callout{Note}{This is similar to the regression scenario where we dealt with the Minimum Mean Squared Error (MMSE), the first term represents an inherent error that cannot be surpassed, as it is dictated by the joint distribution of $X$ and $\Theta$.}
+
+Finally, out optimization problem can be formulated as:
 \[
     \beta^\ast = \arg\min_{\beta \in \mathbb{R}^M} \frac{1}{N} \sum_{i=1}^{N} \log \frac{1}{\hat{\mu}_\beta(\theta_i \mid x_i)}
 \]
-But now two problem arises:
-\begin{itemize}
-    \item \textit{How do we implement this minimation problem?} We will see in the next lecture.
-    \item \textit{How do we choose $\hat{\mu}_\beta$?}
-\end{itemize}
+% But now two problem arises:
+% \begin{itemize}
+%     \item \textit{How do we implement this minimation problem?} We will see in the next lecture.
+%     \item \textit{How do we choose $\hat{\mu}_\beta$?}
+% \end{itemize}
 
 \subsection*{Logistic Regression}
-To choose $\hat{\mu}_\beta$, there are lots of different standard methods. As an example we will see the \textbf{logistic regression}. In particular, we will see the \textbf{binary logistic regression}, where we have $\Theta \in \{1,-1\}$.
+To choose $\hat{\mu}_\beta$, there are lots of different standard methods and in particular a lot of families $\mathcal F$. As an example we will see the \textbf{logistic regression}. In particular, we will see the \textbf{binary logistic regression}, where we have $\Theta \in \{1,-1\}$.
 
 Let us start by obtaining the decision function from the MAP rule:
 \[
-    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \lessgtr 1 \Leftrightarrow \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)} \Leftrightarrow \log \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)} \lessgtr 0
+    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \gtrless^{+1}_{-1} 1 
 \]
-By defining:
+We can do on it some manipulation. First of all, moving the ratio in function of one class and then taking the logarithm of it:
+\[
+    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \gtrless^{+1}_{-1} 1  \Leftrightarrow \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)}  \gtrless^{+1}_{-1} 1 \Leftrightarrow \log \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)} \lessgtr 0
+\]
+We apply the logarithm for several reasons:
+\begin{itemize}
+    \item It is a monotonic function, so it does not change the order of the inequality.
+    \item It has the nice property to transform the product of two probabilities in a sum of two logarithms.
+    \item There are other theoretical reasons that con be found in the information theory.
+\end{itemize}
+
+We obtained a decision function that is a function of $x$ and $\beta$. 
+Note that we can obtain a different function simply applying a different monotonic function.
+
 \[
     f_\beta(X) \triangleq \log \frac{\hat{\mu}_\beta(+1\mid x)}{1 - \hat{\mu}_\beta(+1\mid x)}
 \]
-We derive $\mu$ as a function of $f$:
+
+We can now try to derive $\mu$ as a function of the decisor $f$:
 \[
-    \mu = \frac{1}{1 + e^{-f}}
+    f=\log\frac\mu{1-\mu}\implies \mu=e^f-e^f\mu\implies \mu = \frac{e^f}{1+e^f} = \frac{1}{1 + e^{-f}}
 \]
-and we can rewrite it for each class:
+and we can rewrite in function of the specific class $\theta$:
 \[
     \hat{\mu}_{\beta}(\theta) = \frac{1}{1 + e^{-\theta f_\beta(X)}}
 \]
+This function is a well-known function in statistics and it is called \textbf{sigmoid function}.
+Using this function is simple to construct the posterior function by evaluating the function $f_\beta(x)$ and then applying the sigmoid function to it. 
+This is useful since, otherwise, we would have to manually annotate the posterior mean for every possible value of $x$ and this is impractical.
+Also, a general property of the sigmoid function is that from a real domain it maps to the interval $[0,1]$, but this is not the real reason why we use it. 
 
 When the problem is linearly separable, we can use \textbf{logistic regression}, by imposing $f_\beta(X) = \beta^T X$.
 
-\textbf{Important note:} This theory applies also for the m-ary case and for arbitrary decision functions that are not the MAP rule. The motive for why we use the sigmoid function is not because we need a value from 0 to 1 but because it allows us to write the posterior mean as a function of the decision function, and because it is impractical to use the posterior distribution in a supervised learning context. In any case, it is better to not to be reliant on the sigmoid function while doing binary classification.
+\callout{Note}{This theory applies also for the m-ary case and for arbitrary decision functions that are not the MAP rule.}
 
 \section{Exercises}
 \subsection{Exercise 1}
