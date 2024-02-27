@@ -38,7 +38,7 @@ Also we define the \textbf{prior distribution} as the following p.m.f:
 
 Note that the most complete information about the parameter $\Theta$ is given by the posterior distribution. We cannot have more information than the one give by this distribution. Each other information can be derived from the posterior distribution.
 
-Usually, the prior distribution is not very informative. Typically, if not specified, we assume that the prior distribution is uniform, which means that each class has the same probability to be the true class. This is a reasonable assumption when we have no information about the classes. In some cases, we can have some information about the classes, and in that case we can use a different prior distribution. 
+Usually, the prior distribution is not very informative. Typically, if not specified, we assume that the prior distribution is uniform, which means that each class has the same probability to be the true class. This is a reasonable assumption when we have no information about the classes. In some cases, we can have some information about the classes, and in that case we can use a different prior distribution.
 \[
     \pi(\theta_i) = \frac 1h\qquad i = 1, \dots, H
 \]
@@ -48,16 +48,55 @@ In the continous case, it's more complex to give a shape to an uninformative pri
 It is intuitive and in this case correct to find that in order to minimize the probability of making a mistake, we decide for the parameter that has the highest probability according to the posterior distribution that has been obtained after visualizing the data, that is also the way to maximize the probability to make the right choice. Whatever other rule we use, we cannot have better results than the one obtained by using the posterior distribution.
 
 % %TODO: MIRIAM
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{Images/classificationexample.png}
-%     \caption{Example of classification}
-%     \label{fig:classificationexample}
-% \end{figure}
+\begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}[scale=1]
+            % Axes
+            \draw[->,thick] (-0.5,0) -- (5,0) node[right] {$\theta$};
+            \draw[->,thick] (0,-0.5) -- (0,2) node[right] {$\pi(\theta)$};
+            % Stem plot
+            \foreach \x/\y in {1/1, 2/1, 3/1, 4/1} {
+                    \draw (\x,0) -- (\x,\y);
+                    \filldraw[black] (\x,\y) circle (1.5pt);
+                    \node[below] at (\x,0) {\x};
+                    \node[left] at (0,\y) {$\frac{1}{4}$};
+                }
+        \end{tikzpicture}
+    \end{minipage}
+
+    \vspace{1cm}
+
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}[scale=1]
+            % Axes
+            \draw[->,thick] (-0.5,0) -- (5,0) node[right] {$\theta$};
+            \draw[->,thick] (0,-0.5) -- (0,2) node[right] {$\Pr{\Theta = \theta \mid X}$};
+
+            \draw (1,0) -- (1,0);
+            \filldraw[black] (1,0) circle (1.5pt);
+            \node[below] at (1,0) {1};
+
+            % Stem plot
+            \foreach \x/\y in {2/1, 3/0.5, 4/0.5} {
+                    \draw (\x,0) -- (\x,\y);
+                    \filldraw[black] (\x,\y) circle (1.5pt);
+                    \node[below] at (\x,0) {\x};
+                    \pgfmathsetmacro{\ytick}{\y/2}
+                    \node[left] at (0,\y) {\ytick};
+                }
+        \end{tikzpicture}
+    \end{minipage}
+
+    \caption{Classification example}
+    \label{fig:classificationexample}
+\end{figure}
 
 A typical situation is described in figure \ref{fig:classificationexample}, in which after visualizing the data we are able to find the posterior distribution and so the hypothesis that has the highest probability to be the true one.
 
-\paragraph*{Bayes' update} 
+\paragraph*{Bayes' update}
 In this setting we're working with two quantities: the \textit{prior} distribution and the \textit{likelihood} function. The likelihood function is the generative mechanism of the data, while the prior distribution is the information we have about the classes before observing the data. These two quantities are connected to the posterior distribution by \textbf{Bayes' rule}.
 Let's recall the Bayes' rule:
 \[
@@ -81,20 +120,20 @@ but also that the system has the highest posterior distribution possible. That i
     \lim_{n \to \infty} \mu(\theta_0 \mid X) = 1
 \]
 
-This is reasonable because, in a good learning system, if we have a lot of data, we should be able to find the true hypothesis with high probability. 
-The more the data, the more is the confidence into the given choice of the hypothesis. 
+This is reasonable because, in a good learning system, if we have a lot of data, we should be able to find the true hypothesis with high probability.
+The more the data, the more is the confidence into the given choice of the hypothesis.
 
 \begin{proof}
     Let's consider the posterior distribution of interest:
     \[
         \mu(\theta_0 \mid X) = \frac{\pi(\theta_0) \prod_{i=1}^N \ell(X_i \mid \theta_0 )}{\sum_{\theta'} \pi(\theta') \prod_{i=1}^N \ell(X_i \mid \theta')}
     \]
-    
+
     The denominator of the previous quantity is a disturbing term, so, we can consider the ratio between the posterior distribution of the true hypothesis $\theta_0$ and the posterior distribution if the parameter is a certain $\theta \neq \theta_0$ to cancel out the denominator:
     \[
         \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} = \frac{\pi(\theta_0) \prod_{i=1}^N \ell(X_i \mid \theta_0 )}{m(x)} \frac{m(x)}{\pi(\theta) \prod_{i=1}^N \ell(X_i \mid \theta)} = \frac{\pi(\theta_0)}{\pi(\theta)} \frac{\prod_{i=1}^N \ell(X_i \mid \theta_0)}{\prod_{i=1}^N \ell(X_i \mid \theta)}
     \]
-    
+
     Since we want to analyze an \textbf{asymptotic behaviour}, a useful result that match the condition is the \textbf{law of large numbers}. In order to apply it we need to move in the favorable condition of a sum of terms. To do that, we move in a logarithmic space, this operation is allowed because the logarithm is a monotonic function.
     By applying the log to both members:
     \[
@@ -149,22 +188,22 @@ Now we're going to prove that, given that the ratio of belief converges to the K
     \callout{Note}{For simplicity we're going to use the notation $D_{KL}(\theta_0 \mid \mid \theta)$ instead of $D_{KL}(\ell(\cdot \mid \theta_0) \mid \mid \ell(\cdot \mid \theta))$}
     The \textbf{identifiability} assumption is necessary since it tells that $\ell(x\mid \theta_0) \neq \ell(x \mid \theta)$. So we're assuming that no one of our hypothesis share the same model, otherwise it'd be possible to have a Kullback-Leibler divergence equal to zero.
 
-    Observe that, if that quantity converges to a finite and positive number, if we remove the $\frac 1N$ ration by multiplying both members by N, we get that the first member goes to $+\infty$. 
+    Observe that, if that quantity converges to a finite and positive number, if we remove the $\frac 1N$ ration by multiplying both members by N, we get that the first member goes to $+\infty$.
     A logarithm will diverge only if its argument diverges:
     \[
         \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} \to +\infty
     \]
     This quantity can diverge either if:
     \begin{itemize}
-        \item the numerator goes to infinity 
+        \item the numerator goes to infinity
         \item the denominator goes to zero
     \end{itemize}
-    
+
     Since the posterior distribution at the numerator is a probability, it is a finite number, and the only possible event is that $\mu(\theta\mid X) \to 0 $. This implies, given the identifiability property that $\mu(\theta_0 \mid X) \to 1$.
 \end{proof}
 
 
-Now, we are going to find what happens if our data is generated by an arbitrary function $f$, that we are going to assume that no one of our hypothesis is the true one. 
+Now, we are going to find what happens if our data is generated by an arbitrary function $f$, that we are going to assume that no one of our hypothesis is the true one.
 
 As in the previous proof, we are going to compute the ratio between the belief of $\theta$ given $x$ and the belief of a $\theta^{\prime}$ given $x$.
 \[
@@ -191,7 +230,7 @@ Each $Z_i$ is generated by the true generative mechanism that is the function $f
 \[
     \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{f}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
 \]
-It's easy to understand that in this case we're not converging to the Kullback-Leibler divergence, since we're not computing the expected value under the same distribution that is at the numerator of the logarithm. 
+It's easy to understand that in this case we're not converging to the Kullback-Leibler divergence, since we're not computing the expected value under the same distribution that is at the numerator of the logarithm.
 However, we can try to manipulate the expression to find a relationship with the Kullback-Leibler divergence. Since we want to obtain divergences, we can insert the $f(X)$ into the expected value by multiplying and dividing the argument of the logarithm by $f(X)$.
 And, after some manipulation, we can find that:
 \[
