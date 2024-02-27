@@ -400,64 +400,141 @@ We can identifiy the following steps to apply the one-standard-error rule: %TODO
     \end{enumerate}
     \caption{One-standard-error rule algorithm}
 \end{algorithm}
+
+
 \section{Shrinkage Methods}
 The subset selection methods use least squares to fit a linear model that contains a subset of the predictors. As an alternative we can fit a model containing all \textit{p} predictors using a technique called \textbf{shrinkage} that \textit{constraints} or \textit{regularize} the coefficient estimates towards zero.
 
 This technique can significantly reduce the variance of the coefficients estimate at the cost of increasing the bias error.
 
-\subsection*{Ridge Regression}
-Given our training data $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n $ ordinary least squares minimzes the \textit{residual sum of squares}:
+\subsection{Ridge Regression}
+Given our training data $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n $ ordinary least squares minimizes the \textit{residual sum of squares}:
 \[
     \text{RSS} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2
 \]
-On the other hand we can use \textit{ridge regression} that minimizes the following equation:
+The Ridge Regression approach is very similar to OLS, except that the coefficient estimates are the values that minimize:
 \[
     \text{RSS'} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2 + \lambda \sum_{j=1}^{p} \beta_j^2
 \]
-where $\lambda$ is a tuning parameter. This additional term is called \textbf{shrinkage penalty}.
+where $\lambda\ge 0$ is a tuning parameter. This additional term is called \textbf{shrinkage penalty}.
 
-The shrinkage penalty can shirnk the estimates of $\beta_j$ towards zero. The tuning paramter $\lambda$ is used to enforce or reduce the shrinkage. We will use $\hat{\beta}^R$ to denote the coefficient estimates of the parameters $\beta$ for a fixed value of $\lambda$. When $\lambda = 0$, we get the OLS estimates, whereas when $\lambda \to \infty$ the impact of the penalty term grows and the coefficient estimates will approach zero.
+The shrinkage penalty can shrink the estimates of $\beta_j$ towards zero. We will use $\hat{\beta}^R$ to denote the coefficient estimates of the parameters $\beta$ for a fixed value of $\lambda$.
+The value $\text{RSS'}$ represents a \textit{trade-off} between:
+\begin{enumerate}
+    \item the fit of the model to the training data, by minimizing the RSS term
+    \item the magnitude of the coefficients, by minimizing the penalty term
+\end{enumerate}
 
-\textbf{Note:} the shrinkage penalty is not applied to the intercept parameter $\beta_0$, becase the intercept is a \textbf{measure of the mean value of the response} when independent variables are equal to zero.
+The tuning paramter $\lambda$ is used to enforce or reduce the shrinkage.
+When $\lambda = 0$, we get the OLS estimates, whereas when $\lambda \to \infty$ the impact of the penalty term grows and the coefficient estimates will approach zero.
 
-The first plot shows the standardized ridge regression coefficients with $\lambda$ as the independent variable, while the second plot shows the coefficients with the term $\frac{\lVert \hat{\beta}_\lambda^R \rVert_2}{ \lVert \hat{\beta} \rVert_2}$ as the independent variable. This term is the ratio between the $\ell_2$ norm of the ridge regression estimates and the OLS estimates. This quantity ranges from $1$, when $\lambda = 0$ to $0$, when $\lambda$ approaches infinity. If this quantity is small, it means that the ridge regression coefficient estimates have been shrunken very close to zero.
+So, a crucial difference between ridge regression and OLS is that we get a different set of coefficient estimates for each value of $\lambda$.
+
+Note that the shrinkage penalty \underline{is not applied to the intercept parameter $\beta_0$}, because the intercept is a \textbf{measure of the mean value of the response} when independent variables are equal to zero. 
+Moreover, if we assume that the predictors $(X_{\cdot, 1}, \dots, X_{\cdot, p})$, that are simply the columns of the data matrix $\underline{\underline X}$, have been centered to have mean zero, then the intercept is the mean of the response:
+\[
+    \hat{\beta}_0 = \bar{y} = \frac{1}{n} \sum_{i=1}^{n} y_i
+\]
+%TODO: provide a justification to the previous result
+
+\paragraph*{Example}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/examplecredit.png}
+    \caption{Ridge regression coefficients example on Credit dataset.}
+    \label{fig:examplecredit}
+\end{figure}
+The figure \ref{fig:examplecredit} shows an example of coefficients shrinkage on the \texttt{Credit} dataset. 
+
+The left plot shows how the standardized ridge coefficients change as $\lambda$ varies. As we increase $\lambda$, the ridge regression coefficient estimates are shrunk towards zero, so each curve tends to be flatter than the OLS estimates. As particular case, the extreme case of $\lambda = 0$ corresponds to the OLS estimates.
+The right plot, instead, shows how coefficient estimates change as the ratio between the $\ell_2$ norm of the ridge regression estimates and the OLS estimates varies. Remember that the $\ell_2$ norm of a quantity is calculated by:
+\[
+    \lVert \beta \rVert_2 = \sqrt{\sum_{j=1}^{p} \beta_j^2}
+\]
+The $\ell_2$ norm of a quantity is a measure of the distance of the quantity from the origin. 
+That particular ratio varies from $1$ to $0$ by increasing $\lambda$ from $0$ to $\infty$.
+This quantity tells us how much the ridge regression coefficient estimates have been shrunken towards zero wrt the OLS estimates. The less is the ratio, the more the ridge regression coefficient estimates have been shrunken towards zero.
 
 \paragraph*{Scaling}
-The OLS estimates are \textit{scale invariant} or \textit{scale equivariant}, which means that the we can fit the model even if the regressors have different scaling. This happens because multiplying $X_j$ by a constant $c$ means scaling the coefficient estimates by a factor of $\frac{1}{c}$, thus having the same result.
+A property of the OLS estimates is that they are \textit{scale invariant} or \textit{scale equivariant}, which means that the we can fit the model even if the regressors have different scaling. This happens because multiplying $X_j$ by a constant $c$ means scaling the coefficient estimates by a factor of $\frac{1}{c}$, thus having the same result.
 
-This is not true for the ridge regression estimates that can change substantially when multiplying a given predictor by a constant. The term $X_j \hat{\beta}_{j,\lambda}^R$ will depend not only on the value of $\lambda$ but also on the scaling of the $j$-th predictor and even the scaling of other predictors.
+This is not true for the ridge regression estimates that can \textbf{change substantially} when multiplying a given predictor by a constant. The term $X_j \hat{\beta}_{j,\lambda}^R$ will depend not only on the value of $\lambda$ but also on the scaling of the $j$-th predictor and even the scaling of other predictors.
 
-It is strongly advised to standardize the predictors before applying ridge regression:
+For these reasons, it is strongly advised to standardize the predictors before applying ridge regression:
 \[
     \tilde{x}_{ij} = \frac{x_{ij} - \overline{x}_j}{s_j}
 \]
 Where $\overline{x}_j$ is the arithmetic mean and $s_j^2$ is the \textit{sampling variance}.
 
-\paragraph*{Why does ridge regression works?}
-The penalty term makes the ridge regression estimates biased, because \textbf{???} but can also reduce variance, since that term can be minimized only by
-shrinking the coefficient estimates.
+The previous standardization covers also the what we've said about the intercept. So we get:
+\begin{itemize}
+    \item $\beta_0 = \bar{y}$
+    \item $\sigma_j = 1 \quad \forall j$
+    \item Independence from the scaling of the predictors
+\end{itemize}
 
-The first plot shows the error components with $\lambda$ as an independent variable. We can see that the bias increases as $\lambda$ increases while the variance decreases as $\lambda$ increases, so we can observe a point of minimum in the test mean squared error curve, that indicates the best value of lambda for that model.
+\paragraph*{Why does ridge regression improve OLS?}
+The advantage of Ridge Regression over OLS is rooted in the \textbf{bias-variance trade-off}. So as $\lambda$ grows, the flexibility of ridge regression decreases, which amounts to a decrease in terms of \textit{variance} but a growth in terms of \textit{bias}.
 
-Ridge regression will perform better than OLS in situations where the OLS have high variance, such as $p \simeq n$, $p > n$ or multicollinearity. It is also more efficient than OLS because the computations required to estimate ridge regression for all values of $\lambda$ are almost identical to those for fitting a model using OLS and BSS.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/ridgetradeoff.png}
+    \caption{Ridge regression trade-off. \textcolor{green}{Green} curve represents the variance, black curve represents the bias and the \textcolor{red}{red} curve represents the test mean squared error.}
+    \label{fig:ridgetradeoff}
+\end{figure}
 
-If we find out during our analysis that the best value for $\lambda$ is close to zero, then ridge regression is not improving our estimates with respect to OLS.
+We see this in the left panel of the figure \ref{fig:ridgetradeoff}, obtained using a dataset having $p=45$ and $n=50$.
 
-\subsection*{Least Absolute Shrinkage and Selection Operator}
-Ridge regression does not highlights the best predictors, but it moves the less significant coefficients towards zero. Thus, this approach cannot be used to perform \textit{subset selection}. The lasso approach overcome this disadvantage.
+For the OLS estimates, which correspond to the leftmost point in the left panel, the variance is high but the bias is practically zero.
+As we increase $\lambda$ we begin to feel the effect of shrinkage and thus the variance tends to decrease at the expense of an increase in bias.
+The MSE test is proportional to alls sum between bias and variance. When $\lambda$ goes from $0$ to $10$ we notice the variance decreasing rapidly, allowing the MSE test to reach a minimum. 
+Beyond this point, the variance decreases and then the shrinkage begins to be such that the estimates are underestimated and there is a large increase in bias.
 
-The lasso coefficients, which we will denote with $\hat{\beta}_\lambda^L$, minimize the following quantity:
+\callout{Note}{In this particular example the test error that we get for the OLS estimate is not so different from the test error obtained by the null model!}
+
+In the right panel we notice the same behavior as a function of the $\ell_2$ norm. Moving from left to right the fit becomes more flexible, decreasing the bias and increasing the variance.
+
+\callout{Note}{In general, when the relationship between predictors and response is close to being linear, the OLS estimate will have small bias but high variance. This means that a small change in training data could lead to a large change in coefficient estimation.
+This effect is especially pronounced when $p\approx n$ as in the example above. Or when one is affected by multicollinearity and similar phenomena.}
+
+\paragraph*{Final remarks}
+A final consideration that can arise is that the ridge regresssion is useful when the OLS estimates have high variance. Moreover, comparing with the \textit{Best Subset Selection}, the ridge regression is more efficient because it can be shown the computations required to estimate ridge regression for all values of $\lambda$ are almost identical to those for fitting a model using OLS and BSS.
+
+\subsection{Least Absolute Shrinkage and Selection Operator (LASSO)}
+Ridge regression does not highlights the best predictors, but it moves the less significant coefficients towards zero. Thus, this approach cannot be used to perform \textit{subset selection}, unlike BSS and the others stepwise methods do. By the way this is not a problem from the prediction accuracy point of view, but this can create difficulties in the model interpretability.
+
+The lasso approach overcome this disadvantage. In this method, the coefficients, which we will denote with $\hat{\beta}_\lambda^L$, minimize the following quantity:
 \[
     \text{RSS'} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2 + \lambda \sum_{j=1}^{p} |\beta_j |
 \]
 
-The penalty term in this case is based $\ell_1$ norm of the parameter vectors, in contrast with the $\ell_2$ norm of the ridge regression. As with ridge regression, the lasso regression shirnks the coefficient estimates towards zero because of the positive penalty term introduced. However, the $\ell_1$ penalty force some coefficient estimates to be exactly equal to zero when $\lambda$ is large enough. It is said that lasso yields \textit{sparse} models, that is models that involve only a subset of the variables.
+The difference from ridge regression is inside the penalty term that in this case is based $\ell_1$ norm of the parameter vectors, in contrast with the $\ell_2$ norm of the ridge regression. 
+As with ridge regression, the lasso regression shrinks the coefficient estimates towards zero because of the positive penalty term introduced. 
+However, the $\ell_1$ penalty force some coefficient estimates to be exactly equal to zero when $\lambda$ is large enough. 
+It is said that lasso yields \textit{sparse} models, that is models that involve only a subset of the variables.
 
-In order to select a good value of $\lambda$, we can employ the cross-validation approach.
+\paragraph*{Example}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lassoexample.png}
+    \caption{Lasso regression coefficients example on Credit dataset.}
+    \label{fig:lassoexample}
+\end{figure}
 
-The first plot shows the standardized lasso regression coefficients; here we can see that instead of converging to zero, many of the coefficients are exactly zero and this enables for model selection. In the final model we will remove the predictors that are zero.
 
-In operational research, the minimization problems of the ridge and lasso regression are also called \textbf{dual problems}. We can get an equivalent formulation for this problem called \textbf{primal problem}. For ridge regression the formulation requires to \textit{minimize} the following:
+% In order to select a good value of $\lambda$, we can employ the cross-validation approach.
+
+The first plot shows the standardized lasso regression coefficients; here we can see that instead of converging to zero, many of the coefficients are exactly zero and this enables for model selection. 
+In the final model we will remove the predictors that are zero.
+
+The final effect of lasso is that, depending on the value of $\lambda$, we can have a model containing a number of predictors ranging from $0$ to $p$.
+Ridge Regression, on the other hand, will always include all variables in the model, although their modulus will depend on $\lambda$.
+
+\subsection*{Alternative Formulation for Ridge Regression and the Lasso}
+
+In operational research, the minimization problems of the ridge and lasso regression are also called \textbf{dual problems}. We can get an equivalent formulation for this problem called \textbf{primal problem}.
+
+For ridge regression the formulation requires to \textit{minimize} the following:
 \[
     \text{RSS} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2 \qquad \text{subject to } \sum_{j=1}^p \beta_j^2 \leq s
 \]
@@ -465,54 +542,163 @@ For lasso is to minimize the following:
 \[
     \text{RSS} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2 \qquad \text{subject to } \sum_{j=1}^p |\beta_j| \leq s
 \]
-And there is also an alternative formulation for the \textit{best subset selection approach}, that is to minimze the following:
+And there is also an alternative formulation for the \textit{best subset selection approach}, that is to minimize the following:
 \[
     \text{RSS} = \sum_{i=1}^{n} \left(y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij}\right)^2 \qquad \text{subject to } \sum_{j=1}^p I(\beta_j \neq 0) \leq s
 \]
-The last formulation requires us to find a set of estimates such that RSS is minimized, but with the constraint that no more than $s$ coefficient can be nonzero.
+The last formulation requires us to find a set of estimates such that RSS is minimized, but with the constraint that no more than $s$ coefficient can be nonzero. The function $I(\beta_j \neq 0)$ is an \textit{indicator function} that equals $1$ if $\beta_j \neq 0$ and $0$ otherwise.
 
-The following plots will show intuitively why lasso regression can perform variable selection. The plot shows the \textit{contour plot} of the RSS in case of a model with two predictors. The first plot shows the constraint region for the lasso approach, while the second shows the constraint region for the ridge regression. On each plot the minimum of the RSS is marked, but we can see that it is outside of the constraint regions. When solving the optimization problems proposed before, we need to find the point associated to the smaller value of the RSS that lies inside the constraint regions.
+In other words, for each value of $\lambda$ there is a certain $s$ such that this optimation problem formulation will return the same estimates of the previously defined quantity. This holds for ridge coefficients, lasso coefficients and also for BSS.
 
-As for why the constraint regions are shaped like that, it is due to the fact that if we expand the $\ell_2$ norm, we will have the equation $\beta_1^2 + \beta_2^2 \leq s$ that describes the area inside a circumpherence; while if we expand the $\ell_1$ norm, we will have the equation $|\beta_1| + |\beta_2| \leq s$ that describes the area inside the four segments that form a rectangular shape.
+Suppose that $p=2$, for visualization purposes, with that optimization problems we're saying that:
+\begin{itemize}
+    \item the estimates of the lasso coefficients will have the lowest RSS among all the points that lie inside a diamond-shaped constraint region defined by the equation $\|\beta_1\| + \|\beta_2\| \leq s$
+    \item the estimates of the ridge coefficients will have the lowest RSS among all the points that lie inside a circular-shaped constraint region defined by the equation $\|\beta_1\|^2 + \|\beta_2\|^2 \leq s$
+\end{itemize}
 
-Due to the topology of the $\ell_1$ norm, it is more likely that the minimum for a coefficient estimate will be zero, because that topology includes also the corners of the rectangular shape.
+Moreover, that estimates, are satisfying the RSS function by knowing that there is a \textbf{budget} $s$ that we can use to fit the model. So, the constraint equation defined by the norm, must satisfy this budget.
 
-In order to compare lasso and ridge regression, let's consider the case in which we have $p=45$ and $n=50$. The first plot shows the mean squared error and its components for lasso regression. We can see that the behaviour is similar to that of the ridge regression but for large values of $\lambda$, the mean squared error converges to a fixed value that is because \textbf{??}.
+\subsubsection*{Variable Selection property}
+We've said that the lasso regression has a \textit{variable selection} property, that is, it tends to produce models that involve only a subset of the variables. This is not true for the ridge regression, which will always include all variables in the model, although their modulus will depend on $\lambda$.
+We can use the optimization problem formulation in order to graphically understand that property. For this purpose we can see at the figure \ref{fig:rssregions}
 
-The second plot shows a comparison between lasso and ridge in terms of mean squared error, with $R^2$ as independent variable. We can see that while the bias curves are almost identical, the variance of ridge is slightly lower than the variance of lasso and this makes ridge regression better than lasso in this particular case.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/rssregions.png}
+    \caption{RSS constrained regions for lasso and ridge regression.}
+    \label{fig:rssregions}
+\end{figure}
 
-This happened because all the 45 predictors were truly related to the response, and none of the true coefficients were actually equal to zero. Let us now consider the case where the response is actually a function of only $2$ out of $45$ predictors. The second plot shows that the lasso is way better than ridge regression for every component of the MSE.
+The plot shows the \textit{contour plot} of the RSS in case of a model with two predictors.
+The first plot shows the constraint region for the lasso approach, while the second shows the constraint region for the ridge regression.
+When solving the optimization problems proposed before, we need to find the point associated to the smaller value of the RSS that lies inside the constraint regions (blue regions).
 
-From this, we can derive that there is no best approach between ridge or lasso regression, since lasso tends to perform better in a setting only a small number of predictors have substantial coefficients; while ridge regression will perform better when the response is a function of many predictors. But since we don't have this information \textit{a priori} in real cases, we can use the cross validation approach to determine which approach is better on a particular dataset. Additionally, an advantage of lasso is the fact that the models are sparse and thus easier to interpret.
+The reason why the regions are shaped like that is because by expanding the norm of the coefficients, we get the equation of a circle for the ridge regression and a diamond for the lasso regression. The constraint regions are centered at the origin and the radius of the circle or the length of the diamond's sides is determined by the value of $s$.
 
+For a sufficient large value of $s$, the constraint regions will include the point that minimizes the RSS, and this point will be the OLS estimate. As we decrease $s$, the constraint regions will shrink and the OLS estimate will eventually lie outside of the constraint regions.
+Intuitively, we also get that the value of $\lambda$ is inversely proportional to the value of $s$.
 
-If $X$ is orthonormal, the three procedures have explicit solutions. Let $\hat{\beta}_j$ be the OLS estimate of $\beta_j$.
+On each plot the minimum of the RSS is marked, but we can see that in this case and also in general it lies outside of the constraint regions.
+The ellypses that surround the point that minimizes the RSS are \textbf{contours}, that are a collections of points that have the same value of the RSS. The optimization problems that we've defined before are saying that the coefficient estimates of lasso and ridge are given from the first point of the contour that lies inside the constraint region.
 
-The best subset of size $s$ is:
+Due to the topology of the $\ell_1$ norm, it is more likely that this point will have a zero component, because that topology includes also the corners of the rectangular shape. Instead, the $\ell_2$ norm has a circular shape and the point that minimizes the RSS is more likely to be on the boundary of the constraint region. So it's more difficult to have the point on the axis.
+This concept is enhanced when we have a large number of predictors, so in a high dimensional space
+
+\subsubsection*{Comparing the Lasso and Ridge regression}
+After having seen that the lasso has a variable selection property, and so the advantage to produce easier and more interpretable models, we want to compare the two methods in terms of prediction accuracy.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lassoridgecomparison.png}
+    \caption{Comparison between lasso and ridge regression. \textcolor{green}{Green} curve represents the variance, black curve represents the bias and the \textcolor{red}{red} curve represents the test mean squared error.}
+    \label{fig:lassoridgecomparison}
+\end{figure}
+
+The figure \ref{fig:lassoridgecomparison} shows on the left plot the mean squared error and its components for lasso regression as we've already seen for ridge. While, the right plot shows a comparison between lasso (straight line) and ridge (dotted line) in terms of mean squared error, with $R^2$ as independent variable. Let's analyze them.
+On the left, as we've seen for ridge, by increasing $\lambda$ we begin to feel the effect of shrinkage and thus the variance tends to decrease at the expense of an increase in bias. The MSE test is proportional to alls sum between bias and variance. When $\lambda$ goes from $0$ to $10$ we notice the variance decreasing rapidly, allowing the MSE test to reach a minimum.
+More interesting is the right plot, where we can see that while the bias curves are almost identical, the variance of ridge is slightly lower than the variance of lasso and this makes ridge regression better than lasso in this particular case.
+
+However, that example has been constructed in such a way that each predictor is related with the response, so no one of the true coefficients is actually equal to zero. So we should not be surprised that ridge regression performs better than lasso in this case.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{./figures/chapter_4/lassoridgecomparison2.png}
+    \caption{Comparison between lasso and ridge regression with a small number of predictors. \textcolor{green}{Green} curve represents the variance, black curve represents the bias and the \textcolor{red}{red} curve represents the test mean squared error.}
+    \label{fig:lassoridgecomparison2}
+\end{figure}
+
+For equity, we now consider a case where the response is actually a function of only $2$ out of $45$ predictors by analyzing the figure \ref{fig:lassoridgecomparison2}. We can see that the lasso is way better than ridge regression for every component of the MSE.
+
+These two examples allow us to understand how neither lasso nor ridge regressions represent a universal solution. In general, we might expect lasso to perform better in settings where only a small number of predictors have substantial coefficients, the remainder approaching zero. Conversely, ridge regression will perform better when the response is a function of many predictors, with similar average coefficients.
+However, the amount of predictors that are actually related to the response is never known to prori for real datasets. Thus, a technique such as cross-validation can be used in such a way as to determine which approach is best for a particular dataset.
+
+% In order to compare lasso and ridge regression, let's consider the case in which we have $p=45$ and $n=50$. The first plot shows the mean squared error and its components for lasso regression. We can see that the behaviour is similar to that of the ridge regression but for large values of $\lambda$, the mean squared error converges to a fixed value that is because \textbf{??}.
+
+% The second plot shows a comparison between lasso and ridge in terms of mean squared error, with $R^2$ as independent variable. We can see that while the bias curves are almost identical, the variance of ridge is slightly lower than the variance of lasso and this makes ridge regression better than lasso in this particular case.
+
+% This happened because all the 45 predictors were truly related to the response, and none of the true coefficients were actually equal to zero. Let us now consider the case where the response is actually a function of only $2$ out of $45$ predictors. The second plot shows that the lasso is way better than ridge regression for every component of the MSE.
+
+% From this, we can derive that there is no best approach between ridge or lasso regression, since lasso tends to perform better in a setting only a small number of predictors have substantial coefficients; while ridge regression will perform better when the response is a function of many predictors. But since we don't have this information \textit{a priori} in real cases, we can use the cross validation approach to determine which approach is better on a particular dataset. Additionally, an advantage of lasso is the fact that the models are sparse and thus easier to interpret.
+
+\subsubsection*{A special case for Ridge Regression and the Lasso}
+In such a way as to better understand the intuition behind the behavior of the ridge regression and lasso methods, let us consider a special case.
+Let's assume that:
+\begin{itemize}
+    \item $\underline{\underline X}$ is an \textbf{orthonormal matrix} 
+    \item $n=p$
+    \item $\beta_0 = 0$, so that there is no intercept
+\end{itemize}
+
 \[
-    \hat{\beta}_j^B = \hat{\beta}_j \cdot I(|\hat{\beta}_j| \geq |\hat{\beta}_{(s)}|)
+    \underbar{\underbar X} = \begin{bmatrix}
+        1 & 0 & \dots & 0 \\
+        0 & 1 & \dots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & \dots & 1
+        \end{bmatrix}\text{ Orthonormal Squared Matrix}
 \]
-where $|\hat{\beta}_{(s)}|$ is the $s$th largest among all $|\hat{\beta}_j|$.
 
-For ridge regression, we have that:
+In this special case it can be shown that the three procedures have explicit solutions. Let $\hat{\beta}_j$ be the OLS estimate of $\beta_j$.
+
+With these assumptions, the OLS estimate procedure can be reconducted to the minimization of the quantity:
 \[
-    \hat{\beta}^{ridge} = \left(X^T X + \lambda I\right)^{-1} X^T y = \hat{\beta}_j^R = \frac{\hat{\beta}_j}{1 + \lambda}
+    \sum_{j=1}^p \left(y_j - \beta_j\right)^2 
 \]
 
-And finally for lasso we have that:
+The straightfoward solution is that
+\[
+    \hat{\beta}_j = y_j
+\]
+
+While, for the ridge regresssion, the problem is to minimize the quantity:
+\[
+    \sum_{j=1}^p \left(y_j - \beta_j\right)^2 + \lambda \sum_{j=1}^p \beta_j^2
+\]
+
+Instead, for lasso:
+\[
+    \sum_{j=1}^p \left(y_j - \beta_j\right)^2 + \lambda \sum_{j=1}^p |\beta_j|
+\]
+
+It can be shown that, in this special case, the ridge regression estimate is given by:
+\[
+    \hat{\beta}^{R} = \left(\underline{\underline X}^T \underline{\underline X} + \lambda I\right)^{-1} \underline{\underline X}^T y = \hat{\beta}_j^R = \frac{\hat{\beta}_j}{1 + \lambda}
+\]
+
+While the lasso estimate is given by:
 \[
     \hat{\beta}_j^L = \text{sign}(\hat{\beta}_j)\left(|\hat{\beta}_j| - \frac{\lambda }{2}\right)_+
 \]
-where $x_+$ equals $x$ if $x>0$ and equals $0$ if $x\leq 0$.
+where:
+\[
+    x_+ = \begin{cases}
+        x\quad\text{if $x > 0$}\\
+        0\quad\text{if $x\le 0$}
+        \end{cases}
+\]
+
+For a best subset selection of size $s$ the solution is:
+\[
+    \hat{\beta}_j^B = \hat{\beta}_j \cdot I(|\hat{\beta}_j| \geq |\hat{\beta}_{(s)}|)
+\]
+where $|\hat{\beta}_{(s)}|$ is the $s$-th largest among all $|\hat{\beta}_j|$.
+
+
+
+
+
 
 This allows us to make another comparison between ridge regression, lasso and the best subset selection approach:
 \begin{itemize}
     \item ridge regression does a \textbf{proportional shrinkage} of OLS estimates of a factor of $1+\lambda$
-    \item lasso translates each coefficient by a constant factor $\frac{\lambda}{2}$, truncating at zero, so it performs a \textbf{soft-thresholding}.
+    \item lasso translates each coefficient by a constant factor $\frac{\lambda}{2}$; if the coefficients are lower thant $\frac{\lambda}2$ they will be truncate at zero (and this explain also the variable selection property). So it performs a \textbf{soft-thresholding}.
     \item best subset selection drops all variables with coefficients smaller than the $s$-th largest, this is a form of \textbf{hard-thresholding}.
 \end{itemize}
+
+In the general case, where the previous assumptions are not satisfied, the history is a bit more complicated but the main ideas are the same.
 % slide 20 plots
 
+Now, we want to prove the previous result on the ridge regression coefficients.
 \paragraph*{Proposition}
 The coefficients of the ridge regression are:
 \[
@@ -529,6 +715,7 @@ We start by solving the following problem:
 \[
     \hat{\beta}_{ridge} = \arg\min_\beta  \left\{ \sum_{i=1}^n (y_i - \beta_0 - \sum_{j = 1}^p \beta_j x_{ij})^2  + \lambda\sum_{j = 1}^p \beta_j^2 \right\} = \arg\min_\beta \text{RSS}^{\prime} (\beta)
 \]
+\callout{Note}{Note that this can be generalized by considering a penalty term $\lambda \sum_{j=1}^p|\beta_j|^q$.}
 Firstly we need to standardize the data points:
 \[
     x_{ij} \to \frac{x_{ij} - \overline{x}_j}{\sigma_j}
@@ -552,10 +739,9 @@ We now rewrite $\text{RSS}^{\prime}$ in matrix form:
                         & = Y^T Y - 2 \beta^T X^T Y + \beta^T (X^T X + \lambda I_p) \beta
 \end{align*}
 
-Now we can compute $\nabla_\beta \text{RSS}^{\prime} $. The derivative of $Y^T Y$ is zero, the derivative of $- 2 \beta^T X^T Y $ is $- 2 X^T Y $ and finally the derivative of $\beta^T (X^T X + \lambda I_p) \beta$ (because we can show that the matrix inside the brackes is a symmetric matrix) is
-$2(X^T X + \lambda I_p) \beta$ so we get:
+Now we can compute $\nabla_\beta \text{RSS}^{\prime} $. The derivative of $Y^T Y$ is zero, the derivative of $- 2 \beta^T X^T Y $ is $- 2 X^T Y $ and finally the derivative of $\beta^T (X^T X + \lambda I_p) \beta$ is composed by two main terms but since the matrix is simmetric ($(X^TX+\lambda I_p)^T=(X^TX)^T+(\lambda I_p)^T=(X^TX+\lambda I_p)$) is equal to the sum of the two terms $2(X^T X + \lambda I_p) \beta$. So we get:
 \[
-    \nabla_\beta\text{RSS}^{\prime} = - 2 \beta^T X^T Y + 2(X^T T + \lambda I_p) \beta = 0
+    \nabla_\beta\text{RSS}^{\prime} = - 2X^T Y + 2(X^T T + \lambda I_p) \beta = 0
 \]
 The solution of this equation is:
 \[
@@ -565,24 +751,23 @@ Let us now consider the $\hat{\beta}_{OLS}$ estimator:
 \[
     \hat{\beta}_{OLS} = (X^T X)^{-1} X^T Y
 \]
-The presence of a positive quantity on the primary diagonal lets us invert the matrix, because the determinant of this matrix increases thanks to the positive quantity. This solves the problem of \textit{collinearity}\dots
+The two solutions are similar. 
+The main difference is that the ridge regression estimator has a positive quantity on the diagonal of the matrix $X^T X$.
+We remember that the matrix $X^T X$ is an estimator of the \textbf{variance-covariance matrix}.
+Adding a positive quantity on its primary diagonal helps us to increase the determinant of the matrix. This helps to invert the matrix and balance the problem of \textit{collinearity} where, in that circumstance, tends to have a variance-covariance matrix near to singularity.
 
 In case of \textbf{orthonormal inputs} ($n \geq p$):
 \[
-    X^T X = I_p \qquad \text{condition of orthonormality}
+    X^T X = I_p \qquad \text{Condition of Orthonormality}
 \]
 
-In algebra, if $n = p$ the condition of orthonormality $X^T = X^{-1}$; while if $n > p$ the condition is $X^T X = I_p$ (\textit{pseudoinverse}).
-Let's compare again OLS
-\[
-    \hat{\beta}_{OLS} = (X^T X)^{-1} X^T Y = I_p^{-1} X^T Y = X^T Y
-\]
-while Ridge:
-\[
-    \hat{\beta}_{ridge} = (I + \lambda I)^{-1} X^T Y = \frac{I}{1+\lambda} \hat{\beta}_{OLS}
-\]
+The previous \textbf{Condition of Orthonormality} is satisfied when the columns of the matrix $X$ are \textbf{orthonormal}. 
+In algebra, if $n = p$ the condition of orthonormality can also be written as $X^T = X^{-1}$; while if $n > p$ the condition is $X^T X = I_p$ (\textit{pseudoinverse}).
+
+If we apply the previous condition to the OLS and Ridge estimators, we get:
+\begin{gather*}
+    \hat{\beta}_{OLS} = (X^T X)^{-1} X^T Y = I_p^{-1} X^T Y = X^T Y \\
+    \hat{\beta}_{ridge} = (X^TX + \lambda I_p)^{-1}X^T Y = (I_p + \lambda I_p)^{-1} X^T Y = \frac{I_p}{1+\lambda} \hat{\beta}_{OLS}
+\end{gather*}
+
 The same approach works also for lasso.
-Note that we can rewrite:
-\[
-    (X^T T + \lambda I_p) = (X^T X)^T + \lambda  I_p^T  = X^T X + \lambda I_p
-\]
