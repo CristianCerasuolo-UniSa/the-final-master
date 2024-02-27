@@ -254,30 +254,47 @@ By the way, sometimes this approach is used also when the data is not independen
 \subsection{Neyman-Pearson Criterion}
 Now we want to find what happens when our parameter $\Theta$ is deterministic. First of all, let us clarify that in the Bayes problem we encountered before, $\Theta$ was random, even though we worked with fixed value of theta. This is because the same reasoning applies to any choice of the hypothesis.
 
-Suppose we have only $2$ classes, that are $\theta \in \{-1, 1\}$. \textit{In this case, is our performance metric still the error probability?} No, because we have two different error probabilities. It is important to stress that the only indicators we will need to explain classification are the ones containes in the ROC curve:
-\[
-    \alpha = \Pr{\text{choose } 1 \mid -1\text{ is true}} \qquad \text{ type 1 error probability}
-\]
-\[
+Suppose we have only $2$ classes, that are $\theta \in \{-1, 1\}$. In this case our perfromance metric is not simply the error probablity, because we have two different error probabilities:
+\begin{gather*}
+    \alpha = \Pr{\text{choose } 1 \mid -1\text{ is true}} \qquad \text{ type 1 error probability} \\
     \beta = \Pr{\text{choose } -1 \mid 1\text{ is true}} \qquad \text{ type 2 error probability}
-\]
-By contrast, in the Bayesian setting, our error probability was given, according to the theorem of the total probability, by the arithmetic average of the two errors:
+\end{gather*}
+In some contexts, $\alpha$ and $\beta$ are also called \textbf{false positive} and \textbf{false negative} probabilities. But for generality we will refer to them as type 1 and type 2 error probabilities.
+\callout{Note}{It is important to stress that the only indicators we will need to explain classification are the ones contained in the ROC curve.}
+By contrast, in the Bayesian setting, our error probability was given, according to the theorem of the total probability, by the weighted arithmetic average of the two errors:
 \[
     P_{err} = \alpha \pi(-1) + \beta \pi(+1) = \alpha \pi(-1) + \beta [1-\pi(-1)]
 \]
 
-Now we want to find \textit{what is the optimal strategy to use?} Note that we cannot minimize both errors, because if we lower one error, the other one increases. For example, in target detection we want to minimize the false negatives. The optimal strategy is the \textbf{Neyman-Pearson Criterion}, which requires to \textbf{minimize $\beta$ over all possible strategies that ensure that $\alpha \leq \alpha^\ast$.}
+Now we want to find the optimal strategy to use in this setting. Note that we cannot minimize both errors, because if we lower one error, the other one increases. 
+In fact, a decision rule would compare a function of the data $g(X)$ to a threshold $\gamma$. 
+\[
+    g(X) \lessgtr^{-1}_{+1} \gamma
+\]
+
+If we lower the threshold, we lower the type 1 error probability, but we increase the type 2 error probability. And vice versa.
+So, we will have to find a trade off between the two errors.
+
+The optimal strategy and the most adopted one is the \textbf{Neyman-Pearson Criterion}, which requires to \textbf{minimize $\beta$ over all possible strategies that ensure that $\alpha \leq \alpha^\ast$.}
 The solution of this criterion is to compare the likelihood ratio to a threshold $\gamma$, which depends on $\alpha^\ast$:
 \[
     \frac{\ell(x \mid +1)}{\ell(x \mid -1)} \lessgtr^{-1}_{+1} \gamma_{\alpha^\ast}
 \]
+This criterion supposes to can tollerate a certain type 1 error probability $\alpha^\ast$ and it minimizes the type 2 error probability by consequence. It can also be seen from the other side, that is, it supposes to can tollerate a certain type 2 error probability $\beta^\ast$ and it minimizes the type 1 error probability by consequence.
 
-Let use recall the ROC curve that is the following:
-[PLOT]
+The relationship between the threshold and the type 1 error probability is inversely proportional, as we can also note from the \textbf{Receiver Operating Characteristic (ROC) curve} that describes the realtionship between $\alpha$ and $1-\beta$ when $\gamma$ varies.
+A good ROC curve is a concave curve that is close to the top-left corner of the plot. The closer the curve is to the top-left corner, the better the classifier is.
+%TODO: Miriam
 
-The straight line is the silliest decisor, which uses a \textit{randomized rule}, for example, if $\alpha=0.5$ and $\beta=0.5$, it flips a coin and decides.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{Images/roc.png}
+%     \caption{ROC curve}
+%     \label{fig:roc}
+% \end{figure}
 
-Next lecture we will discuss about the relationship betweem Neyman-Pearson criterion and the MAP rule and also how to increase the performance of a decisor.
+The straight line in the ROC curve of figure \ref{fig:roc} is the silliest decisor, which uses a \textit{randomized rule}, for example, if $\alpha=0.5$ and $\beta=0.5$, it flips a coin and decides.
+That situation can also be seen as the case in which, in order to increase the value of $1-\beta$, we have to increase the value of type 1 error probability $\alpha$. This is not a desirable behaviour.
 
 \section{Supervised Classification}
 In our previous lessons, we have seen model-based classification, both the bayesian setting and the Neyman-Person case. In this lesson, we will see how to perform supervised classification. The setting is similar to the one of the regression.
