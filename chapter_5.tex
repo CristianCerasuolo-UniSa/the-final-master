@@ -1,7 +1,7 @@
 \chapter{Classification}
 
 \section{Introduction}
-This lecture is about classification, also called decision making or hypothesis testing. In order to study classification, we will follow a path similar to the one on regression, that is we will find, at first, the best that we can do if we already have the model, then we will examine the case where the parameter is not random and finally we will study the supervised approach.
+Let's move from a regression setting to classification, also called decision making or hypothesis testing. In order to study classification, we will follow a path similar to the one on regression, that is we will find, at first, the best that we can do if we already have the model, then we will examine the case where the parameter is not random and finally we will study the supervised approach.
 
 In classification, I have data $X$ and $\Theta$ that is the parameter I am interested in and it is discrete, which means that:
 \[
@@ -9,18 +9,20 @@ In classification, I have data $X$ and $\Theta$ that is the parameter I am inter
 \]
 where each $\theta_i$ is called a \textbf{class} or an \textbf{hypothesis}.
 
-In some contexts, the parameter $\Theta$ is said to be \textbf{categorical}, which means that each class is a category. Since we are interested in the probability of each class, it's equivalent to consider them as a category or as a discrete number. However, there is a slight difference in the two terminologies, because if the parameter is discrete, then its classes will be numbers like $1, 2, \dots, H$, while if the parameter is categorical, then its classes will be categories such as cat, dog, bird, et cetera.
+In some contexts, the parameter $\Theta$ is said to be \textbf{categorical}, which means that each class is a category. Since we are interested in the probability of each class, it's equivalent to consider them as a category or as a discrete number. However, there is a slight difference in the two terminologies, because if the parameter is discrete, then its classes will be numbers like $1, 2, \dots, H$, while if the parameter is categorical, then its classes will be categories such as cat, dog, bird, et cetera. For our purposes, it makes no differences.
 
-In regression we quantify the error using as a metric the distance between the true value and the predicted value; thus it makes no sense to use categories in regression. In classification we don't care about the distance between categories, because the concept is not properly defined. We have only two possibilities that are: we belong to the category or not. Also, to quantify the error instead of using the MSE, we use the probability of error.
+In regression we quantify the error using as a metric the distance between the true value and the predicted value; thus it makes no sense to use categories in regression. In classification we don't care about the distance between categories, because the concept is not properly defined. We have only two possibilities that are: we belong to the category or not. Also, to quantify the error instead of using the MSE, we use the \textbf{probability of error}.
 
-It is important to stress that in the classification problem, during the prediction we are not instered in \textit{estimating} a class, but we are interested in make a choice about the class.
+It is important to stress that in the classification problem, during the prediction we are not insterested in \textit{estimating} a class, but we are interested in \textit{make a choice} about the class.
 
-The performance metric will be the error probability:
+\callout{Note}{There are no advantages in seeing the classification problem as a special case of a regression problem.}
+
+We can formalize the error probability as:
 \[
     \Pr{\hat{\Theta}(X) \neq \Theta }
 \]
 
-In telecommunication we used maximum error probability \textbf{MAP}.
+In telecommunication when the \textit{transmitter} sends a \textit{symbol}, the receiver has to decide which symbol has received among the finite number of possibilities. In that case, the optimal rule is the \textbf{maximum a posteriori probability (MAP)}. This rule is optimal when we have the likelihood function.
 
 \section{Model-Based Classification}
 
@@ -34,95 +36,135 @@ Also we define the \textbf{prior distribution} as the following p.m.f:
     \pi(\theta) = \Pr{\Theta = \theta}
 \]
 
-Note that the most complete information about the parameter $\Theta$ is given by the posterior distribution. We cannot have more information than the one give by this distribution.
+Note that the most complete information about the parameter $\Theta$ is given by the posterior distribution. We cannot have more information than the one give by this distribution. Each other information can be derived from the posterior distribution.
 
-%% DA CONTROLLARE
-Usually, the prior distribution is not very informative, we can assume that it is given by one over the number of hypothesis for $\theta$ and zero for all the other possibile hypothesis.
-
-    [PLOT]
-
-It is intuitive and in this case correct to find that in order to minimize the probability of making a mistake, we decide for the parameter that has the highest probability according to the posterior distribution, that is also the way to maximize the probability to make the right choice.
-
-%% DA CONTROLLARE
-Remember that in the regression case we wanted to minimze the MSE by finding the value that maximized the likelihood. $\dots$
-
-Recall that the \textit{prior} is embedded in the posterior through Bayes' rule.
-
-We can formally show that this choice maximizes the probability of making the right choice and that this minimizes the error probability, but we won't do that.
-
-We are now interested in answering the question \textit{does the system learn correctly if we have many data?}
-
-\paragraph*{Bayes' update}
-In regression, we have the prior $\pi(\theta)$ and the likelihood $\ell(X \mid \theta)$ which is usually a vector and it is the generative mechanism of our data. Let us call $\mu(\theta \mid X)$ the posterior distribution that in Bayesian statistic is usually also called \textbf{belief}. From Bayes' rule, we know the expression of the posterior:
+Usually, the prior distribution is not very informative. Typically, if not specified, we assume that the prior distribution is uniform, which means that each class has the same probability to be the true class. This is a reasonable assumption when we have no information about the classes. In some cases, we can have some information about the classes, and in that case we can use a different prior distribution. 
 \[
-    \mu(\theta \mid X) = \frac{\pi (\theta) \ell(x\mid\theta)}{\sum_{\theta^{\prime}} \pi(\theta^{\prime}) \ell(x\mid \theta^{\prime}  )}
+    \pi(\theta_i) = \frac 1h\qquad i = 1, \dots, H
 \]
-Where the denominator is a normalizing constant called \textbf{marginal distribution}.
 
-We can verify the expression of the marginal distribution by computing the sum of the marginal distribution over all the possible $\theta^{\prime}$ and checking if it equals 1. % fallo
+In the continous case, it's more complex to give a shape to an uninformative prior distribution since the domain is infinitively large. However, there are some specifical distributions that are used as uninformative prior distributions.
 
-When $x$ is frozen, the marginal distribution is just a normalizing constant, so the belief is proportional to prior times the likelihood:
+It is intuitive and in this case correct to find that in order to minimize the probability of making a mistake, we decide for the parameter that has the highest probability according to the posterior distribution that has been obtained after visualizing the data, that is also the way to maximize the probability to make the right choice. Whatever other rule we use, we cannot have better results than the one obtained by using the posterior distribution.
+
+% %TODO: MIRIAM
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{Images/classificationexample.png}
+%     \caption{Example of classification}
+%     \label{fig:classificationexample}
+% \end{figure}
+
+A typical situation is described in figure \ref{fig:classificationexample}, in which after visualizing the data we are able to find the posterior distribution and so the hypothesis that has the highest probability to be the true one.
+
+\paragraph*{Bayes' update} 
+In this setting we're working with two quantities: the \textit{prior} distribution and the \textit{likelihood} function. The likelihood function is the generative mechanism of the data, while the prior distribution is the information we have about the classes before observing the data. These two quantities are connected to the posterior distribution by \textbf{Bayes' rule}.
+Let's recall the Bayes' rule:
 \[
-    \mu(\theta \mid X) \propto \pi(\theta) \ell(x \mid \theta)
+    \mu(\theta \mid X) = \frac{\pi(\theta) \ell(X \mid \theta)}{\sum_{\theta'} \pi(\theta') \ell(X \mid \theta')} \propto \pi(\theta) \ell(X \mid \theta)
 \]
-This expression is also called Bayes update.
 
+This posterior function is also said to be the \textbf{belief} of the system. It is the probability that the true class is $\theta$ given the data $X$. Clearly, this function is a \textit{probability mass function}.
+The process of finding the posterior distribution from the prior distribution and the likelihood function is called \textbf{Bayes' update}.
 
-\textbf{\textit{What can I expect from a good learning system?}}
-Assume that I observe $X = \left[X_1, \dots, X_n\right]$ that are i.i.d according to $\ell(X_i \mid \theta_0)$.
-Ideally, I'd want that, if the true hypothesis is $\theta_0$, $\mu(\theta_0 \mid X) \to 1$ when $n \to +\infty$. This means that not only I want that the probability of the error is zero but also that my system has the highest posterior distribution possible.
+The denominator of the Bayes' rule is a normalizing constant that makes the posterior distribution a probability mass function. It is also called \textbf{marginal distribution}.
+When $X$ is frozen, the marginal distribution is just a normalizing constant, so the belief is proportional to prior times the likelihood.
+
+\subsubsection*{Behavior on multiple data}
+Assume that I observe $X = \left[X_1, \dots, X_n\right]$ that are i.i.d according to $\ell(X_i \mid \theta_0)$, where $\theta_0$ is one of our hypothesis and we know that it's the true one.
+Ideally, I'd want that, if the true hypothesis is $\theta_0$, not only the probability of error is zero, that is:
+\[
+    P_{err} = \sum_{\theta_i}\pi(\theta_i)P[err\mid \theta_i] \to 0
+\]
+but also that the system has the highest posterior distribution possible. That is:
+\[
+    \lim_{n \to \infty} \mu(\theta_0 \mid X) = 1
+\]
+
+This is reasonable because, in a good learning system, if we have a lot of data, we should be able to find the true hypothesis with high probability. 
+The more the data, the more is the confidence into the given choice of the hypothesis. 
 
 \begin{proof}
-    Let us compute the ratio between the posterior distribution if the parameter is $\theta_0$ and the posterior distribution if the parameter is a certain $\theta \neq \theta_0$.
+    Let's consider the posterior distribution of interest:
+    \[
+        \mu(\theta_0 \mid X) = \frac{\pi(\theta_0) \prod_{i=1}^N \ell(X_i \mid \theta_0 )}{\sum_{\theta'} \pi(\theta') \prod_{i=1}^N \ell(X_i \mid \theta')}
+    \]
+    
+    The denominator of the previous quantity is a disturbing term, so, we can consider the ratio between the posterior distribution of the true hypothesis $\theta_0$ and the posterior distribution if the parameter is a certain $\theta \neq \theta_0$ to cancel out the denominator:
     \[
         \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} = \frac{\pi(\theta_0) \prod_{i=1}^N \ell(X_i \mid \theta_0 )}{m(x)} \frac{m(x)}{\pi(\theta) \prod_{i=1}^N \ell(X_i \mid \theta)} = \frac{\pi(\theta_0)}{\pi(\theta)} \frac{\prod_{i=1}^N \ell(X_i \mid \theta_0)}{\prod_{i=1}^N \ell(X_i \mid \theta)}
     \]
+    
+    Since we want to analyze an \textbf{asymptotic behaviour}, a useful result that match the condition is the \textbf{law of large numbers}. In order to apply it we need to move in the favorable condition of a sum of terms. To do that, we move in a logarithmic space, this operation is allowed because the logarithm is a monotonic function.
     By applying the log to both members:
     \[
         \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) = \log \left(\frac{\pi(\theta_0)}{\pi(\theta)}\right) + \log\left(\frac{\prod_{i=1}^N \ell(X_i \mid \theta_0)}{\prod_{i=1}^N \ell(X_i \mid \theta)}\right)
     \]
-    Observe that by applying logarithm property, the product becomes a sum. Then we divide both members by $n$:
+    Observe that by applying logarithm property, the product becomes a sum. And, for the same reason followed before, we divide both members by $n$:
     \[
         \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) =\frac{1}{n} \log \left(\frac{\pi(\theta_0)}{\pi(\theta)}\right) + \frac{1}{n} \sum_{i=1}^N \log \left(\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}\right)
     \]
-    When $n$ approaches infinity, the first term goes to zero because the ratio of the priors is a finite number, while the second term converges (according to the law of large numbers) to the expected value \textbf{computed under the true hypotesis} of the logarithm of the ratio of the likelihoods.
+    Let's now consider what happens when $n$ approaches infinity.
+    \[
+        \lim_{n \to \infty} \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) = \lim_{n \to \infty} \frac{1}{n} \log \left(\frac{\pi(\theta_0)}{\pi(\theta)}\right) + \lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^N \log \left(\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}\right)
+    \]
+    The first term in the second member goes to zero because the ratio of the priors is a finite number, ignoring eventually zero probability events because there is no point in considering them in a discrete context.
+    While the second term converges (according to the law of large numbers) to an expected value \textbf{computed under the distribution of the true hypotesis} of the logarithm of the ratio of the likelihoods.
 
     \[
-        \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) \xrightarrow{n \to +\infty} \E{\ell(\cdot \mid \theta_0)}{\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}}
+        \lim_{n\to\infty} \frac{1}{n} \log \left(\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)}\right) = \E{\ell(\cdot \mid \theta_0)}{\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}}
     \]
 
+    The expected value is computed under that distribution because we want to consider all theh possible values of the data $X_i$ that are generated, and they are generated according to the \textit{generative mechanism} dictated by the true hypothesis $\theta_0$.
 
 \end{proof}
 
-This expectation is called \textbf{Kullback-Leibler divergence}.
+Note that there is a physical meaning when the ratio of the prior goes to $0$. This means that the prior information is ignored when we have a lot of data. This is a good property because it means that the system is learning from the data and not from the prior information. Moreover, this is useful beacause if we have a wrong or biased prior information, by considering a lot of data we're going to ignore it.
+
+The final obtained expectation is called \textbf{Kullback-Leibler divergence} and it's a measure of the \textit{relative entropy}.
 \[
     \E{\ell(\cdot \mid \theta_0)}{\frac{\ell(X_i \mid \theta_0)}{ \ell(X_i \mid \theta)}} \triangleq D_{KL} (\theta_0 \mid\mid \theta)
 \]
-In general, the Kullback-Leibler divergence explains how different are two distributions. It is a non-negative number that is zero if and only if the two distributions are equal.The greater the distributions are different, the greater the divergence.
+In general, the Kullback-Leibler divergence explains how different are two distributions. It is a non-negative number that is zero if and only if the two distributions are equal. The greater the distributions are different, the greater the divergence.
+
 If $p$ and $q$ are two pmfs, then:
 \[
     D_{KL}(p \mid \mid q) =\sum_{x \in X} p(x) \log\frac{p(x)}{q(x)} = \E{p}{\log \frac{p(x)}{q(x)}}
 \]
+
 If $p$ and $q$ are two pdfs, then:
 \[
     D_{KL}(p \mid \mid q) =\int p(x) \log\frac{p(x)}{q(x)} dx
 \]
 
+\callout{Warning}{It's incorrect to say that the Kullback-Leibler divergence is a distance. It is not symmetric.}
+
 Now we're going to prove that, given that the ratio of belief converges to the Kullback-Leibler divergence, our system learns the correct hypothesis.
+
 \begin{proof}
-    We've shown that the quantity for $n \to +\infty$ converges to the Kullback-Leibler divergence that is a non-negative quantity.
+    We've shown that the quantity for $n \to +\infty$ converges to the Kullback-Leibler divergence. This quantity is a non-negative quantity and if we add the \textbf{identifiabilty} assumption we know that is a positive quantity.
     \[
         \frac{1}{N} \log\frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} \to D_{KL} (\theta_0 \mid \mid \theta) > 0
     \]
-    Under the assumption of \textbf{identifiability}, that is the assumption that $\ell(x\mid \theta_0) \neq \ell(x \mid \theta)$, if we multiply both members by N, we get that $D_{KL}$ goes to $+\infty$. But this means that also the first member should diverge to infinity and we know that a logarithm will diverge only if its argument diverges:
+    \callout{Note}{For simplicity we're going to use the notation $D_{KL}(\theta_0 \mid \mid \theta)$ instead of $D_{KL}(\ell(\cdot \mid \theta_0) \mid \mid \ell(\cdot \mid \theta))$}
+    The \textbf{identifiability} assumption is necessary since it tells that $\ell(x\mid \theta_0) \neq \ell(x \mid \theta)$. So we're assuming that no one of our hypothesis share the same model, otherwise it'd be possible to have a Kullback-Leibler divergence equal to zero.
+
+    Observe that, if that quantity converges to a finite and positive number, if we remove the $\frac 1N$ ration by multiplying both members by N, we get that the first member goes to $+\infty$. 
+    A logarithm will diverge only if its argument diverges:
     \[
         \frac{\mu(\theta_0 \mid X)}{\mu(\theta \mid X)} \to +\infty
     \]
-    This quantity can diverge either if the numerator goes to infinity or the denominator goes to zero. Since the posterior distribution is a probability, it is a finite number, so we have that $\mu(\theta\mid X) \to 0 $ and this implies, given the identifiability property that $\mu(\theta_0 \mid X) \to 1$.
+    This quantity can diverge either if:
+    \begin{itemize}
+        \item the numerator goes to infinity 
+        \item the denominator goes to zero
+    \end{itemize}
+    
+    Since the posterior distribution at the numerator is a probability, it is a finite number, and the only possible event is that $\mu(\theta\mid X) \to 0 $. This implies, given the identifiability property that $\mu(\theta_0 \mid X) \to 1$.
 \end{proof}
 
 
-With respect to the previous lesson, we are going to find what happens if our data is generated by an arbitrary function $f$, that we are going to assume is not the likelihood function of the true hypothesis.
+Now, we are going to find what happens if our data is generated by an arbitrary function $f$, that we are going to assume that no one of our hypothesis is the true one. 
 
 As in the previous proof, we are going to compute the ratio between the belief of $\theta$ given $x$ and the belief of a $\theta^{\prime}$ given $x$.
 \[
@@ -132,37 +174,40 @@ Now we apply the logarithm to both members and we divide both members by $n$:
 \[
     \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{1}{n} \log \frac{\pi(\theta)}{\pi(\theta^{\prime} )} +  \frac{1}{n} \sum_{i=1}^n \log \frac{\ell(x_i \mid \theta)}{\ell(x_i \mid \theta^{\prime} )}
 \]
-Now we observe that the ratio of the prior functions goes to zero when $n$ goes to $+\infty$ because it is a constant divided by $n$. This has also another concrete meaning, that is if we have many data, the prior information we had at the start is ignored. We observed the same behaviour during the MSE analysis, where when $n$ was large the prior information was unuseful. [CORREGGERE].
 
-Even though we have a strong bias at the start, with infinite data we discard the prior information. The only exception to this is when the one of the hypotesis has the prior function equal to zero. In that case, we cannot remove the initial bias mathematically and it also makes sense in the concrete, because
-
+Let's define a new random variable: %TODO: mi sfugge la necessità di definire una nuova v.a.
+\[
+    Z_i = \log \frac{\ell(x_i \mid \theta)}{\ell(x_i \mid \theta^{\prime} )}
+\]
 Then we got:
 \[
-    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{1}{n} \sum_{i=1}^n Z_i
+    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \frac{1}{n} \log \frac{\pi(\theta)}{\pi(\theta^{\prime} )} + \frac{1}{n} \sum_{i=1}^n Z_i
 \]
 where each $Z_i$ is independent and identically distributed to the ratio of the likelihoods. When $n$ goes to $+\infty$, according to the law of large numbers we know that the term on the right converges to the expected value of $Z$
 \[
-    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{Z}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
+    \lim_{n\to\infty }\frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{}{Z} %TODO: credo sia errato -> \E{Z}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
 \]
 Each $Z_i$ is generated by the true generative mechanism that is the function $f(X)$. Thus we can write:
 \[
     \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = \E{f}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )}}
 \]
-Now we can multiply and divide the argument of the logarithm by $f(X)$ to obtain an expression that depends on the Kullback-Leibler divergence.
+It's easy to understand that in this case we're not converging to the Kullback-Leibler divergence, since we're not computing the expected value under the same distribution that is at the numerator of the logarithm. 
+However, we can try to manipulate the expression to find a relationship with the Kullback-Leibler divergence. Since we want to obtain divergences, we can insert the $f(X)$ into the expected value by multiplying and dividing the argument of the logarithm by $f(X)$.
+And, after some manipulation, we can find that:
 \[
     \E{f}{\log \frac{\ell(x \mid \theta)}{\ell(x \mid \theta^{\prime} )} \frac{f(X)}{f(X)}} = \E{f}{\log \frac{f(x)}{\ell(x \mid \theta^{\prime} )}} - \E{f}{\log\frac{f(x)}{\ell(x \mid \theta)}}
 \]
-So we found that:
+So we've found that the expression can be written as the difference of two Kullback-Leibler divergences.
 \[
-    \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} \xrightarrow{n \to +\infty} D_{KL} \left(f || \ell(\cdot \mid \theta^{\prime} )\right) - D_{KL}\left(f || \ell(\cdot \mid \theta)\right)
+    \lim_{n\to\infty }\frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} = D_{KL} \left(f || \ell(\cdot \mid \theta^{\prime} )\right) - D_{KL}\left(f || \ell(\cdot \mid \theta)\right)
 \]
-let's rewrite the this expression by using a slightly changed notation:
+let's rewrite the this expression by using a slightly simplified notation:
 \[
     \frac{1}{n} \log \frac{\mu(\theta \mid x)}{\mu(\theta^{\prime} \mid x)} \xrightarrow{n \to +\infty} D_{KL} \left(f || \theta^{\prime} \right) - D_{KL}\left(f ||  \theta\right)
 \]
 In order to find \textit{which hypothesis will the system learn}, we need to recall that the chain of implications in the previous proof, required the ratio of beliefs to converge to a positive value (when $n$ approaches $+\infty$):
 \[
-    \frac{1}{n} \frac{\mu(\theta^\ast \mid X)}{\mu(\theta^{\prime}  \mid X)} \to D_{KL} \left(f || \theta^{\prime} \right) - D_{KL}\left(f ||  \theta\right) > 0
+    \lim_{n\to\infty} \frac{1}{n} \frac{\mu(\theta^\ast \mid X)}{\mu(\theta^{\prime}  \mid X)} \to D_{KL} \left(f || \theta^{\prime} \right) - D_{KL}\left(f ||  \theta\right) > 0
 \]
 Now, we consider a $\theta^\ast$ that isn't an arbitrary hypothesis, but we assume there exists:
 \[
@@ -172,14 +217,16 @@ If this condition is satisfied, then the chain of implications used in the last 
 
 \textbf{Note} that $\theta^{\ast} $ is the hypothesis that has the smalled distance (in terms of the Kullback-Leibler divergence) from the true distribution.
 
-In our proof, there is still a singularity case but it is removed under the assumption of unidentifiability. [WHICH ONE?]
+The hypothesis $\theta^\ast$ will surely exists because, since we have a finite number of hypothesis, we can find the one that has the smallest distance from the true distribution. This is a consequence of the fact that the Kullback-Leibler divergence is a non-negative quantity and it is zero if and only if the two distributions are equal but we assume that this can't happens.
+%     [INSERT PLOT]
+% In this example, our system will learn the hypothesis $\theta_3$.
 
-    [INSERT PLOT]
-In this example, our system will learn the hypothesis $\theta_3$.
-
-From this proof, we found out that our model approximates the truth when our model is the closest in terms of Kullback-Leibler divergence to the true model.
+% From this proof, we found out that our model approximates the truth when our model is the closest in terms of Kullback-Leibler divergence to the true model.
+So, given a certain distribution of the data $f$, the system will learn the hypothesis that is the closest to the true distribution in terms of Kullback-Leibler divergence.
 
 Note that this is the general case, and the previous proof was a special case of this. It is simple to show that if $f(x) = \ell(x \mid \theta_0)$, the minimum will be the true hypothesis $\theta_0$.
+
+
 
 \paragraph*{Exercise}
 Having defined
