@@ -263,23 +263,27 @@ The hypothesis $\theta^\ast$ will surely exists because, since we have a finite 
     \begin{tikzpicture}[scale=1.5]
         \def\truef#1{-exp(-3*(2*#1 - 1)^2) + 2*exp(-0.5*(2*#1 - 1)^2)}
         % Axes
-        \draw[->,thick] (-2.7,0) -- (4,0) node[right] {$x$};
+        \draw[->,thick] (-3.7,0) -- (4,0) node[right] {$x$};
         \draw[->,thick] (0,-0.5) -- (0,2) node[above] {pdf};
 
         % Curve
-        \draw[red,domain=-2.5:0.5,samples=100] plot (\x, {1.5*exp(-3*(\x + 1)^2)});
+        \draw[red,domain=-3.5:0.5,samples=100] plot (\x, {1.5*exp(-3*(\x + 2)^2)});
 
         \draw[black, dashed, domain=-1:2.5,samples=100] plot (\x, {\truef{\x}});
 
         \draw[yellow,domain=1:3.5,samples=100] plot (\x, {1.5*exp(-3*(\x - 2)^2)});
 
-        \node[above] at (-1,1.5) {$\ell(x\mid \theta_1)$};
+        \node[above] at (-2,1.5) {$\ell(x\mid \theta_1)$};
         \node[above] at (0.5, 1.5){true f};
         \node[above] at (2,1.5) {$\ell(x\mid \theta_2)$};
     \end{tikzpicture}
+    \label{fig:klexample}
+    \caption{Kullback-Leibler divergence example}
 \end{figure}
 
-% In this example, our system will learn the hypothesis $\theta_3$.
+In the example of figure \ref{fig:klexample}, we can see that the true distribution is the one in the middle. 
+The two other distributions are the likelihood functions of two different hypothesis. We can see that the hypothesis that has the smallest distance from the true distribution is the one on the right. In this particular case, the divergence is also the distance between the two distributions but is not general.
+In this example, our system will learn the hypothesis $\theta_2$ because $\ell (x \mid \theta_2)$ is the one with the lowest divergence from the true distribution.
 
 % From this proof, we found out that our model approximates the truth when our model is the closest in terms of Kullback-Leibler divergence to the true model.
 So, given a certain distribution of the data $f$, the system will learn the hypothesis that is the closest to the true distribution in terms of Kullback-Leibler divergence.
@@ -423,6 +427,7 @@ Now we have a problem. We want to minimize the conditional Kullback-Leibler dive
     \bar{D}_{KL} = - \E{X, \Theta}{\log \frac{1}{\mu(\Theta \mid X)}} + \E{X, \Theta}{\log \frac{1}{\hat{\mu}_\beta(\Theta \mid X)}}
 \]
 
+\begin{definition}
 From information theory we can define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
 \[
     \mathcal{H}(p) = \E{X}{\log \frac{1}{p(X)}} \text{ [nats]}
@@ -431,11 +436,13 @@ For a discrete random variable:
 \[
     \mathcal{H}(p) = \sum_{\theta} p(\theta) \log \frac{1}{p(\theta)}
 \]
-
+\end{definition}
+\begin{definition}
 We define the \textbf{cross-entropy} as:
 \[
     \mathcal{H}(p;q) = \sum_{\theta} p(\theta) \log \frac{1}{q(\theta)}
 \]
+\end{definition}
 Both for the entropy and the cross-entropy, we can define a conditional version.
 
 The Kullback-Leibler divergence is also called \textbf{relative entropy}. 
