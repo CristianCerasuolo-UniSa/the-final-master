@@ -47,7 +47,6 @@ In the continous case, it's more complex to give a shape to an uninformative pri
 
 It is intuitive and in this case correct to find that in order to minimize the probability of making a mistake, we decide for the parameter that has the highest probability according to the posterior distribution that has been obtained after visualizing the data, that is also the way to maximize the probability to make the right choice. Whatever other rule we use, we cannot have better results than the one obtained by using the posterior distribution.
 
-% %TODO: MIRIAM
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -281,7 +280,7 @@ The hypothesis $\theta^\ast$ will surely exists because, since we have a finite 
     \caption{Kullback-Leibler divergence example}
 \end{figure}
 
-In the example of figure \ref{fig:klexample}, we can see that the true distribution is the one in the middle. 
+In the example of figure \ref{fig:klexample}, we can see that the true distribution is the one in the middle.
 The two other distributions are the likelihood functions of two different hypothesis. We can see that the hypothesis that has the smallest distance from the true distribution is the one on the right. In this particular case, the divergence is also the distance between the two distributions but is not general.
 In this example, our system will learn the hypothesis $\theta_2$ because $\ell (x \mid \theta_2)$ is the one with the lowest divergence from the true distribution.
 
@@ -348,14 +347,30 @@ This criterion supposes to can tollerate a certain type 1 error probability $\al
 
 The relationship between the threshold and the type 1 error probability is inversely proportional, as we can also note from the \textbf{Receiver Operating Characteristic (ROC) curve} that describes the realtionship between $\alpha$ and $1-\beta$ when $\gamma$ varies.
 A good ROC curve is a concave curve that is close to the top-left corner of the plot. The closer the curve is to the top-left corner, the better the classifier is.
-%TODO: Miriam
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{Images/roc.png}
-%     \caption{ROC curve}
-%     \label{fig:roc}
-% \end{figure}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[scale=1.5]
+        % Axis
+        \draw[thick,->] (0,0) -- (4,0) node[anchor=north west] {$\alpha$};
+        \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south east] {$\beta$};
+        \draw[thick, red, dashed] (0,0) -- (0,4) -- (4,4);
+        % Curve
+        \draw[blue] (0,0) to[out=90,in=180] (4,4);
+
+        % Random classifier line
+        \draw[dashed] (0,0) -- (4,4);
+        % Labels
+        \node[below left] at (0,0) {0};
+        \node[below right] at (5,0) {1};
+        \node[above left] at (0,4) {1};
+        \node[below] at (2,0) {0.5};
+        \node[left] at (0,2) {0.5};
+
+    \end{tikzpicture}
+    \caption{ROC curve}
+    \label{fig:roc}
+\end{figure}
 
 The straight line in the ROC curve of figure \ref{fig:roc} is the silliest decisor, which uses a \textit{randomized rule}, for example, if $\alpha=0.5$ and $\beta=0.5$, it flips a coin and decides.
 That situation can also be seen as the case in which, in order to increase the value of $1-\beta$, we have to increase the value of type 1 error probability $\alpha$. This is not a desirable behaviour.
@@ -366,7 +381,7 @@ We have our classes
 \[
     \Theta \in \{\theta_1, \theta_2, \dots, \theta_H\}
 \]
-and our features 
+and our features
 \[
     X \in \mathbb{R}^d
 \]
@@ -379,7 +394,7 @@ In the regression case, we have seen that the MMSE is
 We haven't specified the shape of the function $f$, but it needs to be an integrable function.
 However, when we need to let the calculator to solve the optimization problem we need to specify the shape of the function $f$ in order to derive the optimal parameter (and it's the same thing we do in deep learning).
 
-So, as we've done in regression for the optimal regression function, we now replace the ideal classification object $\mu(\theta\mid X)$ with its empirical version $\hat{\mu}_\beta(\theta \mid X) \in \mathcal F$. $\mathcal F$ will be a parametric class, which has $\beta$ as a paramater. 
+So, as we've done in regression for the optimal regression function, we now replace the ideal classification object $\mu(\theta\mid X)$ with its empirical version $\hat{\mu}_\beta(\theta \mid X) \in \mathcal F$. $\mathcal F$ will be a parametric class, which has $\beta$ as a paramater.
 The fundamental requirement is that $\hat \mu_{\beta}(\theta \mid X)$ will always be a probability mass function.
 
 Coming back to the risk function. In the regression case, we used the mean square error. In the classification case, we can use the Kullback-Leibler divergence to measure the "distance" from the optimal object.
@@ -413,7 +428,7 @@ To sum up:
     \item We want to approximate the optimal posterior mean $\mu$ with $\hat{\mu}_\beta$.
     \item We found a way to measure the quality of the approximation, the conditional Kullback-Leibler divergence.
     \item We need to minimize the Kullback-Leibler divergence and find $\beta^\ast$
-    % \item We do not know the posterior mean but we can show that it is not useful to find $\beta^\ast$. %% non ho capito cosa intendi
+          % \item We do not know the posterior mean but we can show that it is not useful to find $\beta^\ast$. %% non ho capito cosa intendi
 \end{enumerate}
 Assume we have a training set $T_n = \{\theta_i, x_i\}_{i=1}^N$ and our classes are $\Theta = \{1, 2, \dots, H\}$.
 
@@ -428,24 +443,24 @@ Now we have a problem. We want to minimize the conditional Kullback-Leibler dive
 \]
 
 \begin{definition}
-From information theory we can define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
-\[
-    \mathcal{H}(p) = \E{X}{\log \frac{1}{p(X)}} \text{ [nats]}
-\]
-For a discrete random variable:
-\[
-    \mathcal{H}(p) = \sum_{\theta} p(\theta) \log \frac{1}{p(\theta)}
-\]
+    From information theory we can define a quantity called \textbf{entropy}, that it is a measure of the amount of information in a random variable:
+    \[
+        \mathcal{H}(p) = \E{X}{\log \frac{1}{p(X)}} \text{ [nats]}
+    \]
+    For a discrete random variable:
+    \[
+        \mathcal{H}(p) = \sum_{\theta} p(\theta) \log \frac{1}{p(\theta)}
+    \]
 \end{definition}
 \begin{definition}
-We define the \textbf{cross-entropy} as:
-\[
-    \mathcal{H}(p;q) = \sum_{\theta} p(\theta) \log \frac{1}{q(\theta)}
-\]
+    We define the \textbf{cross-entropy} as:
+    \[
+        \mathcal{H}(p;q) = \sum_{\theta} p(\theta) \log \frac{1}{q(\theta)}
+    \]
 \end{definition}
 Both for the entropy and the cross-entropy, we can define a conditional version.
 
-The Kullback-Leibler divergence is also called \textbf{relative entropy}. 
+The Kullback-Leibler divergence is also called \textbf{relative entropy}.
 Observing the decomposition we've written before, we have that the first term is the conditional entropy of the true distribution and the second term is the conditional cross entropy between $\mu$ and $\hat \mu$.
 Now we can rewrite a conditional Kullback-Leibler divergence in terms of entropy and cross-entropy:
 \[
@@ -457,7 +472,7 @@ Since we know that the Kullback-Leibler divergence is always positive, we can wr
     \mathcal{H}(p;q) = \mathcal{H}(p) + \overline{D}_{KL}(p;q)
 \]
 
-So we found out that the cross-entropy between two distributions $p$ and $q$ is given by the sum of the entropy and the Kullback-Leibler divergence. 
+So we found out that the cross-entropy between two distributions $p$ and $q$ is given by the sum of the entropy and the Kullback-Leibler divergence.
 
 As a practical example, this result is used to explain the \textit{lower bound of compression}. Namely, the number of bits in the compression of some data described by a random variable $X$ is given by the entropy of $X$. If we know the distribution of $X$, we can use the cross-entropy to compress $X$. The number of bits needed to compress $X$ is given by the entropy of $X$ plus the Kullback-Leibler divergence between the true distribution and the one we used to compress $X$. If we use the right distribution, then the Kullback-Leibler divergence is zero and we can compress $X$ with the same number of bits of the entropy of $X$.
 
@@ -465,8 +480,8 @@ Finally, we found that
 \[
     \overline{D}_{KL} = - \parbox{10em}{conditional entropy \\of the true distribution} + \parbox{15em}{ conditional cross-entropy\\ between true and \\ candidate distribution}
 \]
-Note that the first term in the expression does not depend on $\beta$, but rather it is a function inherent to the problem itself. 
-Thus, our objective becomes minimizing the conditional Kullback-Leibler divergence by focusing solely on minimizing the second term. This approach enables us to determine the minimizer $\beta$ without the need to ascertain the conditional entropy of the posterior mean. While knowing the value of the minimum is pertinent, it is not indispensable for solving the optimization problem aimed at identifying the minimizer. 
+Note that the first term in the expression does not depend on $\beta$, but rather it is a function inherent to the problem itself.
+Thus, our objective becomes minimizing the conditional Kullback-Leibler divergence by focusing solely on minimizing the second term. This approach enables us to determine the minimizer $\beta$ without the need to ascertain the conditional entropy of the posterior mean. While knowing the value of the minimum is pertinent, it is not indispensable for solving the optimization problem aimed at identifying the minimizer.
 
 \callout{Note}{This is similar to the regression scenario where we dealt with the Minimum Mean Squared Error (MMSE), the first term represents an inherent error that cannot be surpassed, as it is dictated by the joint distribution of $X$ and $\Theta$.}
 
@@ -486,7 +501,7 @@ To choose $\hat{\mu}_\beta$, there are lots of different standard methods and in
 
 Let us start by obtaining the decision function from the MAP rule:
 \[
-    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \gtrless^{+1}_{-1} 1 
+    \frac{\hat{\mu}_\beta(+1\mid x)}{\hat{\mu}_\beta(-1\mid x)} \gtrless^{+1}_{-1} 1
 \]
 We can do on it some manipulation. First of all, moving the ratio in function of one class and then taking the logarithm of it:
 \[
@@ -499,7 +514,7 @@ We apply the logarithm for several reasons:
     \item There are other theoretical reasons that con be found in the information theory.
 \end{itemize}
 
-We obtained a decision function that is a function of $x$ and $\beta$. 
+We obtained a decision function that is a function of $x$ and $\beta$.
 Note that we can obtain a different function simply applying a different monotonic function.
 
 \[
@@ -515,9 +530,9 @@ and we can rewrite in function of the specific class $\theta$:
     \hat{\mu}_{\beta}(\theta) = \frac{1}{1 + e^{-\theta f_\beta(X)}}
 \]
 This function is a well-known function in statistics and it is called \textbf{sigmoid function}.
-Using this function is simple to construct the posterior function by evaluating the function $f_\beta(x)$ and then applying the sigmoid function to it. 
+Using this function is simple to construct the posterior function by evaluating the function $f_\beta(x)$ and then applying the sigmoid function to it.
 This is useful since, otherwise, we would have to manually annotate the posterior mean for every possible value of $x$ and this is impractical.
-Also, a general property of the sigmoid function is that from a real domain it maps to the interval $[0,1]$, but this is not the real reason why we use it. 
+Also, a general property of the sigmoid function is that from a real domain it maps to the interval $[0,1]$, but this is not the real reason why we use it.
 
 When the problem is linearly separable, we can use \textbf{logistic regression}, by imposing $f_\beta(X) = \beta^T X$.
 
