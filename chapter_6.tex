@@ -138,8 +138,6 @@ The most frequent convention in optimization is doing \textbf{minimization}, and
 However, is not critical to have a convex function, because we can always minimize the negative of the function.
 \callout{Note}{Some books indicate the convexity with $\text{convex}-\cup$ and the concavity with $\text{convex}-\cap$.}
 
-\subsubsection*{Strict Convexity}
-
 \begin{definition}
     A function $J(\beta)$ is said to be \textbf{strictly convex} if:
     \[
@@ -147,7 +145,8 @@ However, is not critical to have a convex function, because we can always minimi
     \]
 \end{definition}
 
-\subsubsection*{Strong Convexity}
+The unique difference from the convexity is that the inequality is strict.
+
 \begin{definition}
     A function $J(\beta)$ is said to  be \textbf{strongly convex} if:
     \[
@@ -159,23 +158,37 @@ However, is not critical to have a convex function, because we can always minimi
     where $\nu >0 $ is the \textbf{strong-convexity constant}.
 \end{definition}
 
+The strong convexity is again a stronger condition about the convexity.
+
 \begin{theorem}
     For the convexity, we have the following implications chain:
     \[
         \text{strong convexity} \implies \text{strict convexity} \implies \text{convexity}
     \]
 \end{theorem}
-Since the term $\frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2$ is always positive, then we have that even if the function will be equal to the chord, it will be always under the chord, thus implying the strict convexity.
+Since the term $\frac{\nu}{2} \alpha (1-\alpha) \| \beta_1 - \beta_2 \|^2$ is always positive, where $\nu>0$ is the \textbf{strong convexity constant}, then we have that even if the function will be equal to the right member, it will be always under the chord, thus implying the strict convexity.
+
+\subsubsection*{Convexity when the function is twice differentiable}
 \paragraph*{Hessian matrix}
-The Hessian matrix, indicated with $\nabla^2 J(\beta)$, is the matrix of second derivatives of a function. It is a matrix of dimensions $p \times p$, where each element is $\frac{\partial^2 J(\beta)}{\partial \beta_i \partial \beta_j}$.
+The Hessian matrix, indicated with $\nabla^2 J(\beta)$, is the matrix of second derivatives of a function. It is a matrix of dimensions $p \times p$, where each element $(i,j)$ is $\frac{\partial^2 J(\beta)}{\partial \beta_i \partial \beta_j}$.
+The Hessian matrix is a \textbf{real} matrix since the function $J$ is real, and is a \textbf{simmetric} matrix.
+
+\begin{theorem}
+    A \textbf{real} and \textbf{symmetric} matrix is \textbf{diagonalizable} and has \textbf{real eigenvalues}.
+\end{theorem}
+
+It is useful to introduce the following definitions about the comparison of matrices.
 
 \begin{definition}
     A matrix is said to be \textbf{positive definite} if all of its eigenvalues are positive. The notation $A > B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive definite matrix}.
 \end{definition}
 
 \begin{definition}
-    A matrix is said to be \textbf{positive semi-definite} if all of its eigenvalues are non-negative. The notation $A \geq B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive semi-definite matrix}. We can also use the symbol $\succ$ and $\succeq$.
+    A matrix is said to be \textbf{positive semi-definite} if all of its eigenvalues are non-negative. The notation $A \geq B$ for two symmetric matrices $A$ and $B$ means that $A-B$ is a \textbf{positive semi-definite matrix}.
 \end{definition}
+For the previous defintions we can also use the symbol $\succ$ and $\succeq$.
+
+Hovewer, given two matrices real and symmetric $A$ and $B$, the eigenvalues of $A-B$ aren't equal to the difference of the eigenvalues of $A$ and $B$. This is true if and only if states that $AB=BA$ (commutative property). The motivation behind this must be found into the theory of the \textbf{spectral decomposition} of a matrix.
 
 We can rewrite the definitions of convexity in terms of the Hessian matrix.
 \begin{definition}
@@ -202,6 +215,8 @@ For example, let us consider the one dimensional case: if the second derivative 
     where $\nu > 0$ is the \textbf{strong-convexity constant}.
 \end{definition}
 
+Since for the identity matrix the commutative property holds, then the strong convexity property can be also seen as asking that the eigenvalues of $\nabla^2 J(\beta)$ are greater or equal $\nu$ for each possible value of $\beta$ (and so for each possible diverse matrix) that represent the eigenvalues of the matrix $\nu I_p$.
+
 The parabola is the most common example of a strongly convex function.
 
 An example of function that is not strongly convex but convex is the exponential function $e^{-x}$, because we cannot find a $\nu$ such that the function is greater or equal than that threshold. This is also because the exponential function is bounded from below by zero.
@@ -225,13 +240,23 @@ An example of function that is not strongly convex but convex is the exponential
         = \E{}{2 X^T X} = 2 \E{}{X^T X}
     \end{align*}
 
-    Any covariance matrix is positive semi-definite and symmetric. Since the covariance matrix is positive semi-definite, then all of its eigenvalues are non-negative. Since the covariance matrix is then the determinant of the covariance matrix is non-zero, which means that all of its eigenvalues are non-zero. Thus, the eigenvalues of the covariance matrix are positive, and greater then the minimum eigenvalue $\lambda_{min} = \nu$, which proves the strong convexity of the MSE cost.
+    We know that if the predictors are centered to zero, $\E{}{X^TX}$ is an estimator of the variance covariance matrix and that matrix is a \textit{positive defined} and \textit{simmetric} matrix.
+
+    If, by hypothesis, the covariance matrix is invertible, then its determinant is non-zero. Since the determinant of the covariance matrix is the product of its eigenvalues, then all of its eigenvalues are (also) non-zero.
+    By consequence we have satisfied the conditions for the strict convexity:
+    \[
+        \text{det}\nabla^2 J(\beta) = \prod_{i=1}^{p} \lambda_i \neq 0 \implies \lambda_i > 0  \forall i \implies \text{Strict Convexity}
+    \]
+
+    A final observation is that the hessian matrix computed is \textbf{independent} from $\beta$. This means that the eigenvalues are the same for each value of $\beta$ and so there will be a value that minor all the eigenvalues that can be a candidate for the strong convexity constant $\nu$. Once defined $\nu$, we can say that the MSE cost is strongly convex.
+    
+    % Since the covariance matrix is positive semi-definite, then all of its eigenvalues are non-negative. Since the covariance matrix is then the determinant of the covariance matrix is non-zero, which means that all of its eigenvalues are non-zero. Thus, the eigenvalues of the covariance matrix are positive, and greater then the minimum eigenvalue $\lambda_{min} = \nu$, which proves the strong convexity of the MSE cost.
 \end{proof}
 
 \section{Gradient Descent}
 Finding the minimum of a function is not an easy problem because we need to find the point where the derivative is zero; but this alone does not guarantee that we have found the minimum, because it could be a maximum or a saddle point. And even if we ascertain that the point is a point of minimum, we don't know if it is a local or global minimum.
 
-So algorithms like the gradient descent are very useful when our problem has a complex formulation.
+So algorithms like \textbf{gradient descent} are very useful when our problem has a complex formulation.
 The basic idea of the gradient descent is to start from a random point and then move in the opposite direction of the gradient, which is the direction of the steepest descent. The gradient descent is an iterative algorithm.
 
 \begin{algorithm}[H]
@@ -243,17 +268,36 @@ The basic idea of the gradient descent is to start from a random point and then 
     \caption{Gradient Descent}
 \end{algorithm}
 
-Each time we update the parameters in the gradient descent algorithm, we are moving by a step of size $\mu$, which is usually called \textit{step-size}. We can show that if $\mu$ is small enough (where small is determined by $\delta$ and $\nu$), then the gradient descent algorithm converges to the minimum of the function. But if we choose a step-size that is too large, then the algorithm may not converge.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{./figures/chapter_6/graphicgradientdescent.png}
+    \caption{Gradient Descent}
+    \label{fig:gradient_descent}
+\end{figure}
 
+A graphical representation of the gradient descent is shown in Figure \ref{fig:gradient_descent}.
+
+Each time we update the parameters in the gradient descent algorithm, we are moving by a step that is proportional to $\mu$, which is usually called \textit{step-size}. We can show that if $\mu$ is small enough (where small is determined by $\delta$ and $\nu$), then the gradient descent algorithm converges to the minimum of the function with a certain \textbf{convergence rate}. 
+But if we choose a step-size that is too large, then the algorithm may not converge.
+
+When the value of $J(\beta_i)$ is close to the minimum, the gradient could start to oscillate around the minimum, and the algorithm could not converge. To relax this problem we requested the \textit{Lipschitz continuity} of the gradient tha tells us that when $\beta_i$ is close to $\beta^\ast$, also the module of the gradient will reduce, in order to avoid the oscillation.
+The strong convexity assumption, if satisfied, guarantees that the minimum is unique. 
+
+\subsection{Convergence}
+\subsubsection*{Constant step-size}
 If we use a \textbf{constant step-size}, then we can show that for $\mu$ smaller than a certain value (which depends on the Lipschitz constant $\delta$ and the strong-convexity constant $\nu$), the gradient descent converges to the \textbf{exact minimizer}.
-
-%If $\mu$ is greater than a certain value, then the gradient descent 
+Viceversa, if the value of $\mu$ is too large, then the gradient could oscillate around the minimum and the algorithm may not converge.
 
 The algorithm converges at a \textit{geometric} rate on the order $O(\rho^i)$ where $\rho \in (0,1)$ is a decreasing function of the step-size $\mu$ and also depends on $\delta$ and $\nu$.
 
-If use a \textbf{decaying step-size}, then if we consider an iteration-dependent step-size $\mu = \mu(i)$, with $\sum_{i=0}^{+\infty} \mu(i) = +\infty$ and $\lim_{i \to +\infty} \mu(i) = 0$, the gradient descent converges to the \textbf{exact minimizer} with a \textit{non-geometric} rate. In practice, the convergence is still guaranteed but it is slower.
+\subsubsection*{Decaying step-size}
+We can also choose to use a \textbf{decaying step-size}. 
+If we consider an iteration-dependent step-size $\mu = \mu(i)$, with $\sum_{i=0}^{+\infty} \mu(i) = +\infty$ and $\lim_{i \to +\infty} \mu(i) = 0$ (we're asking that $\mu$ decreases but not too slowly), the gradient descent converges to the \textbf{exact minimizer} with a \textit{non-geometric} rate.
+In practice, the convergence is still guaranteed but it is slower.
 
 A typical choice is $\mu(i) = \frac{\tau}{i + 1}$ with $\tau > 0$, yielding a convergence rate of $O(\frac{1}{i^{2 \nu \tau}})$.
+
+Since now, there aren't particular motivation to choose a decaying step-size because the convergence rate is slower and, even if we have the convergenze, we have to satisfy the previosly listed constraints on $\mu(i)$.
 
 \subsection{Gradient Descent Limitations}
 
@@ -288,28 +332,52 @@ The stochastic gradient descent algorithm is the following:
     \caption{Stochastic Gradient Descent}
 \end{algorithm}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{./figures/chapter_6/graphicsgd.png}
+    \caption{Stochastic Gradient Descent}
+    \label{fig:stochastic_gradient_descent}
+\end{figure}
+
 With respect to the gradient descent:
 \begin{itemize}
-    \item we are using an instantaneous approximation of the gradient based on individual samples that is \textit{noisy} estimate of the true gradient based on the current sample $d_i$, which means we are not considering the information contained in the other samples.
-    \item $\beta_i$ is a stochastic process, since it depends on the random samples $d_i$.
-    \item We are computing the average \textit{over time} of the gradients of the loss function for each sample.
+    \item we are using an instantaneous approximation of the gradient based on individual samples that is \textit{noisy} estimate of the true gradient based on the current sample $d_i$, which means we are not considering the information contained in the other samples and it tells nothing about the average. 
+    \item $\beta_i$ is a \textbf{stochastic process}, since it depends on the random samples $d_i$. This adds a source of randomness to the algorithm since $d_i$ changes at each iteration. In fact, if we evaluate $\hat{\nabla J_i}$ for the same $\beta_{i-1}$, we will obtain different values since the function is changed.
+    \item Even if not explicitly, we are computing the average \textit{over time} of the gradients of the loss function for each sample.
 \end{itemize}
-\paragraph*{Constant step-size}
-We can show that with constant step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) never reach the optimal solution. This is due to the \textit{gradient noise} that is the \textit{inherent} randomness of the gradient. The iterates are \textit{oscillating} around the exact minimizer.
 
+\subsection{Convergence}
+Let's call $\beta^\ast$ the exact minimizer of the cost function $J(\beta)$.
+\subsubsection*{Constant step-size}
+We can show that with constant step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) never reach the optimal solution. This is due to the \textit{gradient noise} that is the \textit{inherent} randomness of the gradient. The iterates are \textit{oscillating} around the exact minimizer without reach it effectively.
 
-For a $\mu$ smaller than a certain value (which depends on $\delta$ and $\nu$), the iterates $\beta_i$ oscillates in a smaller neighbourhood of the true minimizer $\beta^\ast$.
+For a $\mu$ smaller than a certain value (which depends again on $\delta$ and $\nu$), the iterates $\beta_i$ oscillates in a smaller neighbourhood of the true minimizer $\beta^\ast$.
 
 The error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to a steady-state error $O(\mu)$ at a geometric rate $O(\rho^i)$ where $\rho \in (0,1)$ is a decreasing function of the step-size $\mu$ and also depends on $\delta$ and $\nu$.
 
 The more smaller is $\mu$ the more are the data that we are averaging, which means that we are considering more the previous information and less the current information. In practice that the stochastic gradient descent with constant step-size allows us to react to data drifts within a fixed number of samples that it is about $\frac{1}{\mu}$. This means that if we set $\mu = 0.01$ we can react to data drifts within 100 samples.
 
-\paragraph*{Decaying step-size}
-We can show that with decaying step-size, the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) converge to the exact minimizer and the error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to zero.
+So, the smaller the $\mu$, the smaller will be $\E{}{\|\beta_i - \beta^\ast\|^2}$, but the slower will be the convergence since $\rho$ will increase. 
+Summarizing, $\mu$ defines the trade-off between the accuracy of the algorithm and the convergence rate.
+
+\subsubsection*{Decaying step-size}
+We can show that with decaying step-size, if $\mu=\mu(i)$ such that $\sum_{i=0}^\infty \mu(i)$ and $\lim_{i\to\infty}\mu(i)=0$ the stochastic gradient descent \textit{iterates} (meaning the $\beta_i$) converge to the exact minimizer and the error $\E{}{\|\beta_i - \beta^\ast\|^2}$ converges to zero.
 
 If $\mu(i) = \frac{\tau}{i+1}$ for $\tau > \frac{1}{\nu}$ the convergence rate it $O(\frac{1}{i})$.
 
-\paragraph*{Online learning}
+Now, the decaying step-size get more interest because it allows us to reach the minimizer that instead is not reachable with the constant step-size. 
+
+
+\subsection*{Applications to Online learning}
 We can say that decaying step-sizes converge to the exact minimizer but they are not suited to online tasks, because the algorithm cannot react to data drifts since the updates are given less importance due to the increasingly smaller values of $\mu(i)$. We can still use it in \textit{batch} applications rather than online tasks.
 
 By contrast, constant step-sizes are suited to online tasks, but they do not converge to the exact minimizer. However, they converge to a neighbourhood of the minimizer and they are able to react to data drifts. The smaller the $\mu$, the better the accuracy of the algorithm, but the slower the convergence.
+
+\section{Mini-batch Gradient Descent}
+The \textbf{mini-batch gradient descent} is a compromise between the gradient descent and the stochastic gradient descent. The idea is to use a \textit{mini-batch} of samples to compute the gradient at each iteration.
+\[
+    \beta_{i} = \beta_{i-1} - \frac{\mu}{|\mathcal S}\sum_{i\in \mathcal S} \nabla Q_\beta(d_i)
+\]
+This variant allows us to reduce the noise within the gradient as we are able to apply the LLN better and obtain more information on the average value of the gradient.
+
+Furthermore, there are versions where you have an \textbf{adaptive step-size} that choose the value of $\mu$ adaptively. Some examples are AdaGrad, Adam, RMSProp.
