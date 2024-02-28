@@ -1,19 +1,38 @@
 \chapter{Optimization}
 
 \section{Optimization in data analysis}
-Lots of problem in statistical learning can be formulated as optimization problems. Thus, optimization is important because we need to know how solve the optimization problems in a computationally efficient way.
+Lots of problem in statistical learning can be formulated as \textit{optimization problems} where we have to \textit{minimize} or \textit{maximize} an \textbf{objective function}. % NON HA MOLTO SENSO QUESTO PERODO: Thus, optimization is important because we need to know how solve the optimization problems in a computationally efficient way.
+Since some optimization problems often cannot be solved in closed form there are some specific algortihm called \textbf{optimization algorithms}.
+
+Many statistical learning tasks can be traced back to the following formulation:
+\[
+    \min_\beta J(\beta)
+\]
+
+where $J$ is the \textit{objective function}. Specifically, we call it \textit{cost function} if the problem is a \textit{minimization} problem, and \textit{reward function} if the problem is a \textit{maximization} problem.
+
+This type of problem is also referred to as \textit{unconstrained} minimization problem. In an unconstrained problem, the parameter $\beta$ has no constraints on the value it can take within its definition space ($\R^p$).
+There are, however, constrained problems where $\beta$ could take on a physical meaning: probability vector, temperature value. And consequently it takes on physical constraints.
+In that cases, we need to use algorithms that are able to handle the constraints. We will see unconstrained problems.
+
+\subsection{Objective Function}
 
 Assume that we have \textbf{random data} $D \in \mathcal{D}$ as feature-label pairs: $D = (X,Y)$.
 
 \begin{definition}
     The \textbf{loss} function $Q_\beta(d)$ is a function of $d \in D$ parameterized by $\beta \in \mathbb{R}^p$.
 \end{definition}
+
+The loss function tells, for a choice of $\beta$, how much we are losing for a specific feature-label pair $d$.
+
 \begin{definition}
     The \textbf{cost} function, also known as \textit{risk} or \textit{objective} function, is defined as the loss function averaged over $D$:
     \[
         J(\beta) = \E{}{Q_\beta(D)}
     \]
 \end{definition}
+
+Our goal is to find the $\beta$ that minimizes the cost function.
 
 %Another thing is the more we relax the assumptions, the less information we get. \textit{The less we ask, the less we get.} For example, when I work under the assumption that
 
@@ -28,18 +47,18 @@ Assume that we have \textbf{random data} $D \in \mathcal{D}$ as feature-label pa
 
 For example in the regression case we minimize the mean-square-error while in the classification case we minimize the conditional cross-entropy.
 
-\paragraph*{Regression}
-In the regression case, the loss function is the error:
+\paragraph*{Linear Regression}
+In the regression case, in particular linear regression, the loss function is the error:
 \[
     Q_\beta(d) = Q_\beta(x,y) = (x^T\beta - y)^2
 \]
-Then the cost function will be the mean square error:
+Then the cost function will be the well known mean square error:
 \[
     J(\beta) = \E{}{(X^T \beta - Y)^2}
 \]
 
-\paragraph*{Classification}
-In the logistic regression case, the loss function is the cross-entropy:
+\paragraph*{Logistic Regression}
+In the classification case, logistic regression particularly, the loss function is the cross-entropy:
 \[
     Q_\beta(d) = Q_\beta(x,y) = \log\left(1+e^{-y x^T \beta}\right)
 \]
@@ -47,17 +66,28 @@ Then the cost function will be the \textit{conditional} cross-entropy:
 \[
     J(\beta) = \E{}{\log\left(1+e^{-y x^T \beta}\right)}
 \]
+
+Note that this is the very same function seen in the previous chapter:
+\[
+    J(\beta) = \E{}{\log\left(\frac1{\hat\mu_\beta(y \mid x)}\right)} = \E{}{\log\left(\frac 1{1+e^{-y f(x)}}\right)} =  \E{}{\log\left(1+e^{-y f(x)}\right)} 
+\]
 \section{Problem assumptions}
 \begin{remark}
     Given the cost function $J: \beta \in \mathbb{R}^{p} \to  j \in \mathbb{R}$, $\nabla J(\beta)$ is the gradient of the cost function and it is a vector of dimensions $p \times 1$, where each element is $\frac{\partial J(\beta)}{\partial \beta_i}$. The norm we are going to use is the \textbf{euclidean norm}.
 \end{remark}
 
 \subsection{Lipschitz Continuity}
-First, remember that a function is continuous if two points become closer, then the values of the function evaluated in those two points also becomes closer, that is the difference between the two points becomes closer to zero.
-\[
-    x_1 - x_2 \to 0 \implies f(x_1) - f(x_2) \to 0
-\]
-When we say a function is continuous, we don't know that is the rate with which they become closer. This is why we need to introduce the \textbf{Lipschitz-continuity of the gradient}.
+Let's informally recall the definition of continuity. If two points $x_1$ and $x_2$ become closer since the difference $x_1 - x_2 \to 0$, then the values of the function evaluated in those two points also becomes closer, that is the difference between the two points becomes closer to zero.
+More formally:
+\begin{definition}
+    A function $f(x)$ is \textbf{continuous} at a point $x_0$ if:    
+    \[
+        \forall \epsilon > 0\exists \delta=\delta(\epsilon) > 0\;|\;|x-x_0| < delta\implies |f(x)-f(x_0)| < \epsilon\\
+        x,x_0\in Dom(f) 
+    \]
+\end{definition}
+
+When we say a function is continuous, we don't know that is the rate with which they become closer. This is why we need to introduce the \textbf{Lipschitz-continuity} of the gradient.
 
 \begin{definition}
     A function is defined \textbf{Lipschitz continuous} if:
@@ -69,20 +99,27 @@ When we say a function is continuous, we don't know that is the rate with which 
 
 When the gradient is Lipschitz-continuous we usually say \textit{the gradient varies smoothly}.
 
+This condition is even stronger than continuity because in addition to affirming the previous condition it also indicates the rate at which the two values of the function approach each other.
+Therefore, the value that the norm of the difference between the two functions assumes is limited above by the norm of the difference between the two points multiplied by a certain constant. 
+The larger this constant is, the more margin of variation we are giving to the function.
+
 \begin{theorem}
     \[
         \text{Lipschitz continuity} \implies \text{continuity}
     \]
 \end{theorem}
 \subsection{Convexity}
-
+Let's introduce the definition of \textbf{convext combination}.
 \begin{definition}
-    A \textbf{convex combination} is the sum of two quantites weighted respectively by the coefficient $p$ and $1-p$.
+    A \textbf{convex combination} is a sum of two quantites weighted respectively by the coefficient $p$ and $1-p$.
     \[
         c = p x_1 + (1-p) x_2
     \]
     By definition, the convex combination of $x_1$ and $x_2$ always lies in between of $x_1$ and $x_2$.
 \end{definition}
+
+There are more levels of convexity, we are going to introduce the \textit{convex} function, the \textit{strictly convex} function and the \textit{strongly convex} function.
+\subsubsection*{Simple Convexity}
 
 \begin{definition}
     A function $f(x)$ is \textbf{convex} if for every $x_1, x_2$, $x_1 \neq x_2$ and for every $p \in (0,1)$, the function evaluated in the convex combination of $x_1$ and $x_2$ lies always below the chord that is described by the convex combination.
@@ -91,13 +128,17 @@ When the gradient is Lipschitz-continuous we usually say \textit{the gradient va
     \]
 \end{definition}
 
-Another assumption of the optimization problems in statistical learning is that the cost function $J(\beta)$ need to be \textit{convex}:
+So, in the context of optimization problems in statistical learning, another assumption made is that the cost function $J(\beta)$ need to be \textit{convex}:
 \[
     J(\alpha \beta_1 + (1-\alpha)\beta_2) \leq \alpha J(\beta_1) + (1-\alpha)J(\beta_2) \qquad  \forall \alpha \in (0,1) \text{ and } \forall \beta_1 \neq \beta_2
 \]
 
 % immagine 
 The most frequent convention in optimization is doing \textbf{minimization}, and thus assuming that the cost function is convex. However, if we need to solve a \textit{maximization problem}, then we would need a \textit{concave} function.
+However, is not critical to have a convex function, because we can always minimize the negative of the function.
+\callout{Note}{Some books indicate the convexity with $\text{convex}-\cup$ and the concavity with $\text{convex}-\cap$.}
+
+\subsubsection*{Strict Convexity}
 
 \begin{definition}
     A function $J(\beta)$ is said to be \textbf{strictly convex} if:
@@ -106,6 +147,7 @@ The most frequent convention in optimization is doing \textbf{minimization}, and
     \]
 \end{definition}
 
+\subsubsection*{Strong Convexity}
 \begin{definition}
     A function $J(\beta)$ is said to  be \textbf{strongly convex} if:
     \[
@@ -118,7 +160,7 @@ The most frequent convention in optimization is doing \textbf{minimization}, and
 \end{definition}
 
 \begin{theorem}
-    We have the following chain of implications:
+    For the convexity, we have the following implications chain:
     \[
         \text{strong convexity} \implies \text{strict convexity} \implies \text{convexity}
     \]
