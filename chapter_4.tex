@@ -771,3 +771,155 @@ If we apply the previous condition to the OLS and Ridge estimators, we get:
 \end{gather*}
 
 The same approach works also for lasso.
+
+\section{PCA}
+\textbf{Principal Component Analysis} is a linear transformation that projects the data onto the space.
+The feature space is described in terms of the principal components, also named \textbf{principal directions}. PCA has the following characteristics:
+\begin{itemize}
+    \item the transformed features are linearly uncorrelated
+    \item the first transformed feature has the highest variance among the others, the second transformed feature has the second highest variance among the others, and so on...
+    \item If our features indicated something like the temperature, the pressure and so on, then after projecting them onto the new space, they will lose that meaning.
+    \item By considering a subset of the principal directions in the new space, we are able to perform \textbf{dimensionality reduction}.
+\end{itemize}
+
+An example of transformation is the Fourier transform, that maps all the samples of a sinusoidal function into one single features that represents the frequency. In this case, the \textit{base} of the space in which we want to project the new features is known, but in the principal component analysis case we need to learn first the \textit{bases} of the new space from the data.
+
+\subsubsection*{The rationale}
+By representing the data onto a new space, the PCA allows us to get a representation characterized by having the \textit{lowest projection distance} and so by . 
+The principal components of the new space are simply a linear combination of the feature in the original dataset.
+
+After the projection, the \textbf{variance} of the data is preserved. This means that the information contained is preserved. Also the feature with the highest variance will be the first principal component, and so on. In this way we are able to discard the least important features and works in a space with $k\le p$ dimensions.
+
+\subsection{Construction}
+Assume we have a dataset $X^{\prime} \in \mathbb{R}^{n \times p}$. A preliminary thing to do is to center the dataset by subtracting the mean $\mu$ of each feature from the corresponding feature.
+\[
+    \mu = \frac{1}{n} \sum_{i = 1}^{N} x^{\prime}_i
+\]
+\[
+    X = \begin{bmatrix}
+        x^{\prime}_1 - \mu_1 \\
+        x^{\prime}_2 - \mu_2 \\
+        \vdots               \\
+    \end{bmatrix}
+\]
+Principal Component Analysis is simply the application of the following linear transformation:
+\[
+    T = X W
+\]
+where $W \in \mathbb{R}^{p \times p}$ is the projection matrix which contains the \textbf{principal directions} as columns and $T \in \mathbb{R}^{n \times p}$ are the \textbf{principal components} of $X$, i.e. the new representation of $X$ in the space described by the principal directions. By construction, we assume that the principal directions are orthonormal, i.e. $W^T W = I$.
+
+Each row of $X$ is a sample of the dataset, each column of $W$ is a principal direction, so the dot product between a row of $X$ and a column of $W$ is the projection of the sample onto the principal direction. In other words, By mutiplying $X$ by $W$ we are applying the dot product on each feature, thus projecting each feature onto the principal directions.
+
+\subsubsection*{Building $W$}
+Now we want to understand how do we obtain the matrix $W$. We know that the \textbf{first} column of $T$ should have the highest variance among the others. So we will need to solve the following optimization problem:
+\[
+    w^{(1)} = \arg \max_{\omega \in \mathbb{R}^p} \left\{\frac{1}{n-1} \sum_{i = 1}^{n} \left(\sum_{i = 1}^{p} x_{ij} \omega_j \right)^2\right\} \quad \text{s.t.} \|w\|^2 = 1
+\]
+This problem is constrained by the fact that the norm of $w$ must be equal to $1$ because we impose that the principal directions are orthonormal.
+
+Note that the inner sum is the dot product between the $i$-th sample and the respective principal direction $w$ so it gives us the squared sum of the principal components, which averaged for the number of samples gives us the variance of the $j$-th principal component (recall $x$ is zero-mean because we scaled the features).
+So, the optimization problem is searching for the vector $\omega$ that maximizes the variance of the principal component calculated (on some books called \textbf{PC score}).
+
+Rewriting the problem in matrix notation:
+\[
+    w^{(1)} = \arg \max_{\omega \in \mathbb{R}^p} \|X\omega\|^2 = \arg \max_{\omega \in \mathbb{R}^p} \left(\omega^T X^T X \omega\right)\quad \text{s.t.} \|w\|^2 = 1
+\]
+We can consider the assumption of orthonormality inside the expression:
+\[
+    w^{(1)} = \arg \max_{\omega \in \mathbb{R}^p} \left(\frac{\omega^T X^T X \omega}{\omega^T \omega}\right) %\quad \text{s.t.} \|w\|^2 = 1
+\]
+The function we want to maximize is well known as \textbf{Rayleigh quotient} and is know that if $X^T X$ is a positive semi-defined matrix then the Rayleigh quotient is maximized by \textbf{the eigenvector corresponding to the largest eigenvalue} of $X^T X$.
+Since we know that $X^T X$ is an estimate of the covariance matrix of $X$, we know that it is a positive semi-defined matrix, so we can apply the result.
+
+Now in order to find the other principal directions (aka, the other columns of $W$) we first need to find the orthogonal part of the projection, by projecting the data onto the space spanned by the first principal direction and then subtracting the projection from the data. We can visually understand this by looking at the figure \ref{fig:orthogonal_projection}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{./figures/chapter_7/orthogonal_projection.png}
+    \caption{Orthogonal projection of the data onto the space spanned by the first principal direction.}
+    \label{fig:orthogonal_projection}
+\end{figure}
+
+In general, to obtain the projection onto the first $k-1$ directions, we can perform this projection by applying the following transformation:
+\[
+    X_k = X - X \underbrace{\sum_{i=1}^{k-1} w^{(i)} w^{(i)T}}_{\text{Orthogonal projection matrix}}
+\]
+Where $k$ is the number of the principal direction we want to compute.  We can now apply the same procedure as before to find the $k$-th principal direction. Then, as a generalization of the previous result, it can be shown that the $k$-th principal direction is the eigenvector corresponding to the $k$-th largest eigenvalue of $X^T X$.
+
+To sum up we've shown that the principal directions are the eigenvectors of the covariance matrix $X^T X$ and the principal components are the eigenvectors associated to the largest eigenvalues of $X^T X$. 
+
+\[
+    \omega^{(k)} = \arg \max_{\omega \in \R^p} \left(\frac{\omega^T X_k^T X_k \omega}{\omega^T \omega}\right)
+\]
+
+Finally, we found that $W$ is the matrix whose columns are the eigenvectors of $X^T X$ sorted by the eigenvalues in decreasing order.
+
+\subsubsection*{Data Covariance Matrix}
+As we've said, $X^TX$ is an estimate of the covariance matrix of $X$. In particulr, the covariance matrix of $X$ is a $p\times p$ matrix defined as:
+\[
+    C = \frac{1}{n-1} \sum_{i=1}^n x_i^T x_i = \frac{1}{n-1} X^T X
+\]
+Since its columns are the \textit{principal directions} of the new space, we can show that the corresponding eigenvalues are the variances of the principal components (i.e. of the data projected onto the principal directions).
+%We will now show that the eigenvalues are the variances of each principal component. 
+Let us consider the first eigenvalue, by definition of eigenvalue and eigenvector we have:
+\[
+    \underset{\text{Property of eigenvalues}}{A u^{(k)} = \lambda_k u^{(k)}} \implies X^T X \omega^{(1)} = \lambda_1 \omega^{(1)}
+\]
+Multiplying both sides by $(w^{(1)})^T$ we get:
+\[
+    (\omega^{(1)})^T X^T X \omega^{(1)} = \lambda_1 \omega^{(1)}(\omega^{(1)})^T \implies \|X \omega^{(1)}\|^2 = \lambda_1 \|\omega^{(1)} \|^2 \underset{\|\omega^{(1)}\|^2=1}= \lambda_1
+\]
+Then by definition of variance we have:
+\[
+    \text{Var}\left[X \omega^{(1)}\right] = \frac{1}{n-1} \|X \omega^{(1)}\|^2 = \frac{\lambda_1}{n-1}
+\]
+So we have shown that the eigenvalues of $X^T X$ are (proportional to) the variances of the principal components.
+
+\subsubsection*{Uncorrelation}
+Another characteristics of the principal component analysis is that it \textit{gives us uncorrelated data} in the new space. To show this, let us consider the covariance matrix of the principal components:
+\[
+    \frac{T^T T}{n-1} = \frac{W^T X^T X W}{n-1} \overset{\tiny\text{ED}}= \frac{W^T W \Lambda W W^T}{n-1} = \frac{\Lambda}{n-1}
+\]
+First we used the fact that $X^T X$ is similar to $W \lambda W^T$ since now we know that the columns of $W$ are the eigenvectors of $X^TX$, then we've used the fact that $W^T W = I$ because we imposed orthogonality.
+So we have shown that the covariance matrix of the principal components is a diagonal matrix, which means that all the covariances are zero, i.e. the principal components are uncorrelated.
+
+\subsection{Dimensionality Reduction}
+We can use PCA to select only a subset of size $m$ of the principal components, thus reducing the dimensionality of the data. We can do this by selecting the first $m$ columns of $T$.
+
+In this way we are selecting the $m$ principal component that explain the most variance of the data. We can compute the \textbf{percentage of variance explained} or \textbf{PVE} by the $m$ principal components as:
+\[
+    PVE = \frac{\sum_{k=1}^m \lambda_k}{\sum_{j=1}^p \lambda_j}
+\]
+% something about the rank of the covariance matrix 
+
+The main drawback of applying PCA is that we are losing the meaning of the features (explainability), so we are not able to interpret the data anymore.
+
+\subsection{Singular Value Decomposition}
+\textbf{Singular Value Decomposition} is a generalization of the eigenvalue decomposition for rectangular matrices and is the effectively technique used in the software. 
+
+Let us consider a matrix $M \in \mathbb{R}^{n \times p}$, that we can decompose it as:
+\[
+    M = U \Sigma V^T
+\]
+where $U \in \mathbb{R}^{n \times n}$ and $V \in \mathbb{R}^{p \times p}$ are \textbf{orthogonal} matrices respectively called \textbf{left singular vectors} and \textbf{right singular vectors}, while $\Sigma \in \mathbb{R}^{n \times p}$ is a \textit{rectangular diagonal}\footnote{Is simply a couple of adjective to indicate a rectangular matrix that has a subdiagonal (not a complete diagonal) and all other values to $0$.} matrix with the \textbf{singular values} of $M$. 
+
+In particular, the number $r$ of non-zero singular values is equal to the rank of $M$.
+
+Since the elements under the diagonal of $\Sigma$ are zero, we can cut the matrix to simplify the calculations and obtain a matrix $\Sigma\in \R^{r\times r}$.
+
+\subsubsection*{PCA with SVD}
+If we decompose $X$ as $X = U \Sigma V^T$ then we can rewrite the covariance matrix as:
+\[
+    X^T X = (U \Sigma V^T)^T U \Sigma V^T = V \Sigma^T U^T U \Sigma V^T = V \Sigma^T \Sigma V^T
+\]
+because $U$ is defined as an orthogonal matrix, so $U^T U = I$.
+So we found out that the covariance matrix of $X$ is similar to $\Sigma^T \Sigma$ and we know that similar matrices have the same eigenvalues.
+
+If we call $\sigma_i$ the $i$-th singular value of $X$ then we have that $\sigma_i^2$ is equal to the $i$-th eigenvalue of $X^T X$.
+
+The project dataset is simply obtained using as \textit{transformation matrix} a matrix of singular vectors:
+\[
+    T = X V = U \Sigma V^T V = U \Sigma
+\]
+
+As we've done for the eigenvalue decomposition, we can use the first $m$ columns of $T$ to perform dimensionality reduction.

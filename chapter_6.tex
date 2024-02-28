@@ -412,7 +412,7 @@ By contrast, constant step-sizes are suited to online tasks, but they do not con
 \section{Mini-batch Gradient Descent}
 The \textbf{mini-batch gradient descent} is a compromise between the gradient descent and the stochastic gradient descent. The idea is to use a \textit{mini-batch} of samples to compute the gradient at each iteration.
 \[
-    \beta_{i} = \beta_{i-1} - \frac{\mu}{|\mathcal S}\sum_{i\in \mathcal S} \nabla Q_\beta(d_i)
+    \beta_{i} = \beta_{i-1} - \frac{\mu}{|\mathcal S|}\sum_{i\in \mathcal S} \nabla Q_\beta(d_i)
 \]
 This variant allows us to reduce the noise within the gradient as we are able to apply the LLN better and obtain more information on the average value of the gradient.
 
