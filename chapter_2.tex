@@ -24,31 +24,31 @@ Data analysis problems don't necessary require a \textit{training phase}. We can
 \begin{enumerate}
     \item \textbf{Model-Based}, the model is given to us.
 
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modelbased.png}
-            \caption{The model based process of extracting information from data.}
-            \label{fig:modelbased}
-        \end{figure}
+          \begin{figure}
+              \centering
+              \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modelbased.png}
+              \caption{The model based process of extracting information from data.}
+              \label{fig:modelbased}
+          \end{figure}
 
-        Figure \ref{fig:modelbased} show the scenario. The truth $Y$ influences the data $X$, hidden in it.
+          Figure \ref{fig:modelbased} show the scenario. The truth $Y$ influences the data $X$, hidden in it.
 
-        \callout{Note}{Another thing to make clear is that in statistical learning, we do not have a temporal correlation between the variables. When we say that two variables depend on each other, we just mean that they are correlated, without implying the causality.}
+          \callout{Note}{Another thing to make clear is that in statistical learning, we do not have a temporal correlation between the variables. When we say that two variables depend on each other, we just mean that they are correlated, without implying the causality.}
 
-    \item \textbf{Model Learning}, we have to learn a statistical characterization of the couple $(X,Y)$. 
-        
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modellearning.png}
-            \caption{The model learning process of extracting information from data.}
-            \label{fig:modellearning}
-        \end{figure}
+    \item \textbf{Model Learning}, we have to learn a statistical characterization of the couple $(X,Y)$.
 
-        This scenario could be seen as a \textit{supervised learning} problem when we starts from a set of examples $\mathcal{D}$ to learn the model.
-        \[
-            \mathcal{D} = \left\{ x_i, y_i \right\}_{i=1}^{N}
-        \]
-        Figure \ref{fig:modellearning} explain this scenario. 
+          \begin{figure}
+              \centering
+              \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modellearning.png}
+              \caption{The model learning process of extracting information from data.}
+              \label{fig:modellearning}
+          \end{figure}
+
+          This scenario could be seen as a \textit{supervised learning} problem when we starts from a set of examples $\mathcal{D}$ to learn the model.
+          \[
+              \mathcal{D} = \left\{ x_i, y_i \right\}_{i=1}^{N}
+          \]
+          Figure \ref{fig:modellearning} explain this scenario.
 
 
 \end{enumerate}
@@ -60,7 +60,7 @@ Assume we have a random variable $Y$ and we want to approximate it with a single
     z^\ast \colon \arg \min_{z \in \mathbb{R}} \E{}{(Y-z)^2}
 \]
 \callout{Why the squared difference?}{There are multiple reasons. The first one is that in this way the error is always positive and has a unique minimum in 0. The second reason is that the square term is the first even power and is differentiable everywhere.}
-The quantity we want to minimize is called \textit{mean squared error} (MSE) and in this case is a function of the value $z$. 
+The quantity we want to minimize is called \textit{mean squared error} (MSE) and in this case is a function of the value $z$.
 We can find the minimum of this function by computing its derivative and setting it to zero:
 \[
     f(z) = \E{}{(Y-z)^2}
@@ -71,9 +71,9 @@ By leveraging the linearity of the expectation, we can write:
 \]
 Another typical approach to solve the problem without using the derivative is by introducing $\mu$ inside the function:
 \begin{align*}
-    f(z) &= \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = \\
-    &= \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2 = \\
-    &= \var{Y} + (z - \mu)^2
+    f(z) & = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} =                 \\
+         & = \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2 = \\
+         & = \var{Y} + (z - \mu)^2
 \end{align*}
 % \[
 %     f(z) = \E{}{(Y-z)^2} = \E{}{(Y - \mu + \mu - z)^2} = 
@@ -82,7 +82,7 @@ Another typical approach to solve the problem without using the derivative is by
 %     = \E{}{(Y - \mu)^2} + 2\E{}{(Y - \mu)(z - \mu)} + (z - \mu)^2
 %     = \var{Y} + (z - \mu)^2
 % \]
-The obtained function is composed by a $z$-dependent term that is the \textbf{reducible} part and a constant term as \textbf{irreducible} part. This is a very common pattern. 
+The obtained function is composed by a $z$-dependent term that is the \textbf{reducible} part and a constant term as \textbf{irreducible} part. This is a very common pattern.
 So, the minimum of the function is equal to $\var{Y}$ and is reached when the second term is zero, that is, as we expect:
 \[
     z^{\ast} = \mu
@@ -144,7 +144,7 @@ The difference between the two error metrics is that in the first case, the expr
 
 If we want to minimize the error metric $h(\theta)$, we could compute a degenerate solution that is $g(X) = \theta$. In this case the error will be zero, but we would reach a contradiction, because that would mean that we already know $\theta$, which is not true because it is our parameter.
 
-In order to find out an estimator, we apply the \textbf{maximum likelihood} strategy.  
+In order to find out an estimator, we apply the \textbf{maximum likelihood} strategy.
 Since the previous way can't be afforded, we need to use different paradigms and assumptions.
 The maximum likelihood strategy starts from the assumption that the estimator $g(X)$ is \textbf{unbiased} (condition of \textit{unbiasedness}).
 Thinking about, it's reasonable to assume that the expected value of the estimator of the parameter is equal to the parameter itself.
@@ -203,7 +203,7 @@ Given data $X \in \mathbb{R}$ and variance $\sigma^2$, the likelihood function i
 \[
     \ell(x;\theta) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp{-\frac{(x-\theta)^2}{\sigma^2}}
 \]
-In this special case, the likelihood function for a fixed $X$ has the same shape of the probability function of $X$, $f(x)$. 
+In this special case, the likelihood function for a fixed $X$ has the same shape of the probability function of $X$, $f(x)$.
 It is intuitive, by looking at the curve that the point of maximum is the mean of the distribution, that is the parameter $\mu$.
 
 Applying the strategy at the monodimensional case, we have:
@@ -362,7 +362,7 @@ For the arithmetic average we have:
 \callout{Note}{Independence implies incorrelation of variables. When variables are incorrelated the variance of the sum is the sum of the variances.}
 For the maximum likelihood estimator we have:
 \begin{align*}
-    \var{\hat{\theta}_{\text{ML}}} = Var\left[\frac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}\hat X_1+\frac{\sigma_1^2}{\sigma_1^2+\sigma_2^2}\hat X_2\right]=                                            \\
+    \var{\hat{\theta}_{\text{ML}}} = Var\left[\frac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}\hat X_1+\frac{\sigma_1^2}{\sigma_1^2+\sigma_2^2}\hat X_2\right]=                                     \\
     = \left(\frac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}\right)^2 \var{\hat X_1}+\left(\frac{\sigma_1^2}{\sigma_1^2+\sigma_2^2}\right)^2 \var{\hat X_2} =                                       \\
     = \frac{2}{N} \left(\frac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}\right)^2 \sigma_1^2 + \frac{2}{N} \left(\frac{\sigma_1^2}{\sigma_1^2+\sigma_2^2}\right)^2 \sigma_2^2 =                     \\
     = \frac{2}{N} \frac{\sigma_1^2\sigma_2^4+\sigma_1^4\sigma_2^2}{(\sigma_1^2+\sigma_2^2)^2} = \frac{2}{N} \frac{\sigma_1^2\sigma_2^2(\sigma_1^2+\sigma_2^2)}{(\sigma_1^2+\sigma_2^2)^2} = \\
@@ -417,7 +417,7 @@ The maximun likelihood estimator has the advantage to do a \textbf{soft transiti
 \paragraph*{Analyze family of estimators}
 We can see all the previous estimators as derived by a single familiy of estimators:
 \begin{gather*}
-    \hat{\theta}_{\text{all}} = q\bar{X}_1 + (1-q) \bar{X}_2    
+    \hat{\theta}_{\text{all}} = q\bar{X}_1 + (1-q) \bar{X}_2
     q\in[0,1]
 \end{gather*}
 
@@ -431,7 +431,7 @@ We want to find:
 \]
 We can find the minimum by taking the derivative of the function and setting it to zero:
 \begin{gather*}
-    f'(q) = q\sigma_1^2+q\sigma_2^2-\sigma_2^2 = 0 \\   
+    f'(q) = q\sigma_1^2+q\sigma_2^2-\sigma_2^2 = 0 \\
     q^\ast = \frac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}
 \end{gather*}
 Compute the second derivative to check that the point is a minimum:
@@ -440,7 +440,7 @@ Compute the second derivative to check that the point is a minimum:
 \]
 The inequality is always true because the variance is always positive. So, the point is a minimum and is equal to the $p$ obtained for the maximum likelihood estimator. This result tells us that the $\theta_{\text{ML}}$ is the best estimator of the family of estimators.
 We can also observe that $f(q)$ is a convex function with a unique minimum that lies between 0 and 1 (altough this information has not been used to find the minimum), and there are no advantage to search $q$ outside that interval.
-\subsection{MMSE}
+\subsection{MMSE} \label{sec:ex_2}
 \begin{exercise}
     We have a random variable $Y \sim N(0, \sigma^2_y)$ and data
     \[
@@ -561,7 +561,7 @@ we get:
 
 So, by definition, we obtained that the posterior mean is $\mu$:
 \[
-    \hat{Y} = \mathbb{E}\left[ Y | X\right] = \frac{\sigma_y^2}{N\sigma_y^2 + \sigma_w^2} \sum_{i=1}^{N} x_i = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X 
+    \hat{Y} = \mathbb{E}\left[ Y | X\right] = \frac{\sigma_y^2}{N\sigma_y^2 + \sigma_w^2} \sum_{i=1}^{N} x_i = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X
 \]
 
 \paragraph*{Further considerations}
@@ -594,7 +594,7 @@ Simply, if the variance of the prior function goes to zero, it means that the es
     \]
     Recall our estimator $\hat Y$:
     \[
-        \hat Y = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X = a\bar X 
+        \hat Y = \frac{\sigma_y^2}{\sigma_y^2 + \sigma_w^2/N} \bar X = a\bar X
     \]
     We start by solving the inner expectation:
     \begin{gather*}
@@ -633,7 +633,7 @@ Simply, if the variance of the prior function goes to zero, it means that the es
 \end{exercise}
 
 \paragraph*{On the unbiasedness of the estimator}
-First of all, we have to explain the meaning of unbiasedness in the current setting. 
+First of all, we have to explain the meaning of unbiasedness in the current setting.
 Since the Bayesian setting try to estimate the value of a random variable $Y$, asking for unbiasedness would be equal to ask that:
 \[
     \E{}{\hat Y} = Y
@@ -649,7 +649,7 @@ What we can't (tipically) ask is that the following condition are simultaneously
     \item Estimator is unbiased (following the previous definition)
     \item Estimator is the best estimator (i.e. it has the lowest value of MSE)
 \end{enumerate}
-This can be seen on the estimator obtained in the previous exercise. 
+This can be seen on the estimator obtained in the previous exercise.
 \begin{gather*}
     \hat Y = a\bar X \\
     \E{}{\hat Y|Y} = a\E{}{\bar X|Y} = ay

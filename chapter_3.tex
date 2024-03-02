@@ -270,9 +270,9 @@ To prove this result, we first need to introduce the \textbf{orthogonality princ
 
     \begin{align*}
         \E{}{[\hat{r}(X_0) - r(X_0)][r(X_0) - Y_0]} = \E{X_0} {\E{Y_0}{\underbrace{[\hat{r}(X_0) - r(X_0)]}_{g(X_0)}[r(X_0)-Y_0]  \mid X_0}} = \\
-        = \E{X_0} {g(X_0)\E{Y_0}{r(X_0)-Y_0 \mid X_0}} = \\
-        = \E{X_0} {g(X_0)\{\E{Y_0}{r(X_0)\mid X_0}-\underbrace{\E{Y_0}{Y_0 \mid X_0}}_{r(X_0)}\}} = \\
-        = \E{X_0}{ \E{Y_0}{g(X_0) \left(r(X_0) - r(X_0)\right)}} = 0                                         \\
+        = \E{X_0} {g(X_0)\E{Y_0}{r(X_0)-Y_0 \mid X_0}} =                                                                                       \\
+        = \E{X_0} {g(X_0)\{\E{Y_0}{r(X_0)\mid X_0}-\underbrace{\E{Y_0}{Y_0 \mid X_0}}_{r(X_0)}\}} =                                            \\
+        = \E{X_0}{ \E{Y_0}{g(X_0) \left(r(X_0) - r(X_0)\right)}} = 0                                                                           \\
     \end{align*}
 
     The last equality is true because of the \textbf{orthogonality principle}.
@@ -295,7 +295,7 @@ In order to introduce the concept of \textit{supervised parametric regression}, 
 \[
     Y = \beta_0 + \beta_1 X + \varepsilon
 \]
-Where we make the \textbf{zero-mean error assumption}, so $\E{}{\varepsilon} = 0$. 
+Where we make the \textbf{zero-mean error assumption}, so $\E{}{\varepsilon} = 0$.
 
 Assume we want to estimate the parameters $\beta_0$ and $\beta_1$ and find the estimated model:
 \[
@@ -387,7 +387,7 @@ The \textbf{Gauss-Markov} theorem states that, in a model where the errors are z
 
 The \textbf{variance} of the estimates made using OLS is given by:
 \[
-    \text{SE}(\hat{\beta}_0)^2 = \sigma^2\left[\frac 1n + \frac{\bar x^2}{\sum_{i=1}^n(x_i-\bar x)^2}\right] 
+    \text{SE}(\hat{\beta}_0)^2 = \sigma^2\left[\frac 1n + \frac{\bar x^2}{\sum_{i=1}^n(x_i-\bar x)^2}\right]
     \qquad
     \text{SE}(\hat{\beta}_1)^2 = \frac{\sigma^2}{\sum_{i=1}^n(x_i-\bar x)^2}
 \]
@@ -409,7 +409,7 @@ The assumptions to make about the errors $\varepsilon_i$ are the following:
     \item \textbf{Normality}: the errors $\varepsilon_i$ are normally distributed.\footnote{This assumption is not necessary to compute the least squares estimates, but it is necessary to compute the confidence intervals.}
 \end{itemize}
 % By assuming that the errors $\varepsilon_i$ are normally distributed, we can compute the confidence intervals for the parameters $\beta_0$ and $\beta_1$:
-It's useful to compute that intervals for $\beta_0$ and $\beta_1$. 
+It's useful to compute that intervals for $\beta_0$ and $\beta_1$.
 Let's call $B_0$ and $B_1$ the random variables that represent the estimates of $\beta_0$ and $\beta_1$ respectively. Since we know the distribution of the errors $\varepsilon_i$, we can compute the distribution of $B_0$ and $B_1$:
 \[
     B_0 \sim N(\beta_0, SE^2(B_0))
@@ -449,9 +449,9 @@ If that coefficient is not significantly different from zero, then the predictor
 
 The hypotesis test is made by the \textit{null hypothesis} $H_0$ and the \textit{alternative hypothesis} $H_1$:
 \[\begin{cases}
-    H_0: \beta_1 = \beta^\ast_1 \text{ There is no relationship}\\
-    H_1: \beta_1 \neq \beta^\ast_1 \text{ There is a relationship}
-\end{cases}\]
+        H_0: \beta_1 = \beta^\ast_1 \text{ There is no relationship} \\
+        H_1: \beta_1 \neq \beta^\ast_1 \text{ There is a relationship}
+    \end{cases}\]
 This kind of test is said to be \textbf{bilateral} since, if the null hypothesis is rejected, we can say that there is a relationship between $X$ and $Y$, but we cannot say if it is positive or negative.
 As we've done for the confidence intervals, we have to accept an error level $\alpha$.
 
@@ -460,7 +460,7 @@ Let's suppose that we want to test if $\beta_1$ is equal to a certain value $\be
 \[
     t = \frac{B_1 - \beta_1^\ast}{SE(B_1)}
 \]
-We can note that, if the null hypothesis is true, the test statistic is distributed as a $t$-distribution with $n-2$ degrees of freedom. 
+We can note that, if the null hypothesis is true, the test statistic is distributed as a $t$-distribution with $n-2$ degrees of freedom.
 We can use this information to decide if we can reject the null hypothesis or not. If the evaluated test statistic is far from zero, probably the true value of $\beta_1$ is different from zero and we can reject the null hypothesis. If the test statistic is close to zero, we cannot reject the null hypothesis.
 
 To be able to choose between the hypothesis we need to impose a threshold. For this reason we introduced $\alpha$, also called \textbf{I type risk}:
@@ -541,7 +541,7 @@ Assuming a zero-mean error, we can make prediction using the following model:
 \[
     \hat{Y} = \hat{\beta}_0 + \sum_{j=1}^{p} \hat{\beta}_j X_j
 \]
-To apply the OLS approach, it's convenient to reason in a matrix form. 
+To apply the OLS approach, it's convenient to reason in a matrix form.
 \begin{gather*}
     \underline{X} = (X_1, \dots, X_p)\text{ input vector} \\
     \underline{\hat\beta} = (\hat\beta_0, \hat\beta_1, \dots, \hat\beta_p)^T\text{ parameter estimates vector} \\
@@ -554,27 +554,27 @@ we pick $\underline{\hat\beta}$ as the vector that minimize the residual sum of 
 \]
 We can write our linear regression model in matrix form:
 \[
-    \underline Y = 
+    \underline Y =
     \overset{[n\times 1]}{
         \begin{pmatrix}
-            y_1 \\ \vdots \\ y_n 
+            y_1 \\ \vdots \\ y_n
         \end{pmatrix}
-        } =
+    } =
     \overset{[n\times(p+1)]}{
         \begin{pmatrix}
             1 & x_{11} & x_{12} & \dots & x_{1p} \\
             1 & x_{21} & x_{22} & \dots & x_{2p} \\ \vdots \\ 1 & x_{n1} & x_{n2} & \dots & x_{np}
         \end{pmatrix}
-        }
+    }
     \overset{[(p+1)\times 1]}{
-            \begin{pmatrix}
-                \beta_0 \\ \beta_1 \\ \vdots \\ \beta_p 
-            \end{pmatrix}
-            } +
+        \begin{pmatrix}
+            \beta_0 \\ \beta_1 \\ \vdots \\ \beta_p
+        \end{pmatrix}
+    } +
     \overset{[n\times 1]}{
         \begin{pmatrix}
-            \epsilon_1\\
-            \vdots \\
+            \epsilon_1 \\
+            \vdots     \\
             \epsilon_n
         \end{pmatrix}}= \underline{\underline{X}} \underline \beta + \underline \epsilon
 \]
@@ -594,19 +594,19 @@ Now we need to compute the gradient of the residual sum of squares with respect 
 \end{enumerate}
 The gradient of the RSS will be (underline omitted for simplicity):
 \begin{align*}
-    \nabla_\beta \text{RSS} (\beta) & = \nabla_\beta \left((Y- X\beta)^T (Y-X\beta) \right) =                                 \\
+    \nabla_\beta \text{RSS} (\beta) & = \nabla_\beta \left((Y- X\beta)^T (Y-X\beta) \right) =                                                                                       \\
                                     & = \nabla_\beta \left(Y^T Y - \underbrace{Y^T X\beta}_{(1\times 1)} - \underbrace{\beta^T X^T Y}_{(1\times 1)} + \beta^T X^T X \beta \right) = \\
-                                    & = \nabla_\beta\left(Y^T Y - 2 \beta^T X^T Y + \beta^T X^T X \beta\right) =              \\
-                                    & = -2 X^T Y + \underbrace{(X^T X)^T \beta + (X^T X)^T \beta}_{\text{Second rule of gradient}} 
-                                    % =                                        \\
-                                    % & = X^T Y + (X^T X)^T \beta = 0 \iff \hat{\beta} = (X^T X)^{-1} X^T Y
+                                    & = \nabla_\beta\left(Y^T Y - 2 \beta^T X^T Y + \beta^T X^T X \beta\right) =                                                                    \\
+                                    & = -2 X^T Y + \underbrace{(X^T X)^T \beta + (X^T X)^T \beta}_{\text{Second rule of gradient}}
+    % =                                        \\
+    % & = X^T Y + (X^T X)^T \beta = 0 \iff \hat{\beta} = (X^T X)^{-1} X^T Y
 \end{align*}
 We can set the gradient to zero and solve for $\beta$:
 \begin{align*}
     -2 X^T Y + 2(X^T X)^T \beta = 0 \implies \\
-    X^T Y - (X^T X)^T \beta = 0 \implies \\
-    (X^T X)^T \beta = X^T Y \implies \\
-    \beta = (X^T X)^{-1} X^T Y    
+    X^T Y - (X^T X)^T \beta = 0 \implies     \\
+    (X^T X)^T \beta = X^T Y \implies         \\
+    \beta = (X^T X)^{-1} X^T Y
 \end{align*}
 
 
@@ -646,7 +646,7 @@ Assuming that:
     \item the errors $\varepsilon_i$ are iid
     \item homoschedasticity: $\E{}{\varepsilon_i} = 0$
     \item zero-mean error: $\var{\varepsilon_i} = \sigma^2$
-\end{itemize}   
+\end{itemize}
 The \textbf{variance-covariance matrix} of the least squares estimates can be computed as:
 \[
     \var{\hat{\underline\beta}} = \sigma^2 (\underline {\underline X}^T \underline {\underline X})^{-1}
@@ -669,7 +669,7 @@ Once made that assumption we also get that $\hat{\underline\beta}$ is multivaria
 \[
     \hat{\underline\beta} \sim N(\underline\beta, \sigma^2 (\underline {\underline X}^T \underline {\underline X})^{-1})
 \]
-Another important aspect is that the estimator of the variance $\hat{\sigma}^2$ has its own distribution:  
+Another important aspect is that the estimator of the variance $\hat{\sigma}^2$ has its own distribution:
 \[
     (n-p-1) \hat{\sigma}^2 \sim \sigma^2 \chi^2_{n-p-1}
 \]
@@ -694,7 +694,7 @@ and $\hat{\underline\beta}$ and $\hat{\sigma}^2$ are statistically independent.
 By working with the multiple linear regression model, we could ask ourselves if at least one of the selected predictors is associated with the response. In order to answer this question, we can construct an hypothesis test called \textbf{$F$-test}:
 \[
     \begin{cases}
-        H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0\\
+        H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0 \\
         H_A: \text{At least one } \beta_j \text{ is different from zero}
     \end{cases}
 \]
@@ -716,7 +716,7 @@ When the null hypothesis is true, the $F$-statistic follows an \textbf{$F$-distr
 It can be useful to test the hypothesis that just a subset of the predictors have a relationship with the response. In order to do that, we can use the \textbf{partial $F$-test}:
 \[
     \begin{cases}
-        H_0: \beta_{p-q+1} = \dots = \beta_{p} = 0\\
+        H_0: \beta_{p-q+1} = \dots = \beta_{p} = 0 \\
         H_A: \text{At least one is different from zero}
     \end{cases}
 \]
@@ -761,7 +761,7 @@ After fitting the multiple regression model, it is possible to predict $Y$ on th
     \item even if the know exactly $f(X)$, the error term $\varepsilon$ is still present and it is a source of uncertainty. We called this \textbf{irreducible error}.
 \end{itemize}
 
-We can use the \textbf{confidence intervals} to quantify the uncertainty surrounding the estimates of the coefficients $\underline\beta$. 
+We can use the \textbf{confidence intervals} to quantify the uncertainty surrounding the estimates of the coefficients $\underline\beta$.
 But we can also use the \textbf{prediction intervals} to quantify the uncertainty surrounding the prediction of $Y$ for a given value of $X$.
 
 \subsubsection*{Confidence intervals}
@@ -799,21 +799,21 @@ The prediction interval for $Y_0$ with a confidence level of $1-\alpha$ is:
     \hat{f}(X_0) + \varepsilon \pm t_{1-\alpha/2, n-p-1} \cdot \hat{\sigma} \sqrt{1 + X_{new}^T(\underline {\underline X}^T \underline {\underline X})^{-1} X_{new}}
 \]
 \subsection*{Qualitative predictors}
-The predictors inside a multiple linear regression model can be both quantitative and qualitative. The qualitative predictors are also called \textbf{categorical} or \textbf{factor} variables. 
-The \textbf{levels} of a qualitative predictor are the different values that the predictor can assume. We can use \textbf{dummy variables} to represent the levels of a qualitative predictor. 
+The predictors inside a multiple linear regression model can be both quantitative and qualitative. The qualitative predictors are also called \textbf{categorical} or \textbf{factor} variables.
+The \textbf{levels} of a qualitative predictor are the different values that the predictor can assume. We can use \textbf{dummy variables} to represent the levels of a qualitative predictor.
 
 A dummy variable is a binary variable that indicate the presence or absence of some categorical effect that may be expected to shift the outcome. For each categorical predictor we need to create $k-1$ dummy variables, where $k$ is the number of levels of the predictor. This process of creating that variables is also called \textbf{one-hot encoding}.
-Each dummy variable adopt a \textbf{coding scheme} that manage the values assumed by the dummy variables. 
+Each dummy variable adopt a \textbf{coding scheme} that manage the values assumed by the dummy variables.
 
 For example, suppose to have e qualitative predictor with three levels: South, West, East. We can create two dummy variables with a 0/1 coding scheme as following:
 \[
     \begin{cases}
-        X_1 =  
+        X_1 =
         \begin{cases}
             1 & \text{if the observation is in the South} \\
             0 & \text{otherwise}
-        \end{cases}\\
-        X_2 = 
+        \end{cases} \\
+        X_2 =
         \begin{cases}
             1 & \text{if the observation is in the West} \\
             0 & \text{otherwise}
@@ -822,9 +822,9 @@ For example, suppose to have e qualitative predictor with three levels: South, W
 \]
 The model will have the following shape:
 \[
-    Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon  = 
+    Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon  =
     \begin{cases}
-        \beta_0 + \varepsilon & \text{if the observation is in the East} \\
+        \beta_0 + \varepsilon             & \text{if the observation is in the East}  \\
         (\beta_0 + \beta_1) + \varepsilon & \text{if the observation is in the South} \\
         (\beta_0 + \beta_2) + \varepsilon & \text{if the observation is in the West}
     \end{cases}
@@ -833,7 +833,7 @@ Observe that, if we used a different coding scheme as -1/1, the model would have
 \subsection*{Extensions of the linear model}
 With the model we've seen so far, we're able to reach good results in many cases. However, we've done 2 important assumptions that could be limiting in some cases:
 \begin{enumerate}
-    \item \textbf{Linearity}: we've assumed that with a unitary change of the predictors, the response changes constantly. 
+    \item \textbf{Linearity}: we've assumed that with a unitary change of the predictors, the response changes constantly.
     \item \textbf{Additivity}: we've assumed that the effect of a change in a predictor is independent from the other predictors.
 \end{enumerate}
 We try to overcome these limitations.
@@ -845,10 +845,10 @@ For example, suppose we have a model with two predictors $X_1$ and $X_2$, the in
 \]
 Introducing this terms allows to relax the additivity assumption. In this example, the effect of a change in $X_1$ on $Y$ depends on the value of $X_2$ and vice versa and it can be shown:
 \[
-    Y = \beta_0 + (\beta_1+\beta_3X_2)X_1 + \beta_2X_2 + \varepsilon 
+    Y = \beta_0 + (\beta_1+\beta_3X_2)X_1 + \beta_2X_2 + \varepsilon
 \]
 \subsubsection*{Non-linear effects of predictors}
-To overcome the limitation of the linearity assumption, we can use \textbf{polynomial regression}. This extension of multiple linear regression allows to introduct regressors that are non-linear functions of the predictors. 
+To overcome the limitation of the linearity assumption, we can use \textbf{polynomial regression}. This extension of multiple linear regression allows to introduct regressors that are non-linear functions of the predictors.
 A general shape of a polynomial regression model is:
 \[
     Y = \beta_0 + \sum_{k=1}^p \beta_kX^k + \varepsilon
@@ -873,7 +873,7 @@ The \textbf{residual plots} is a useful graphical method for identifying non-lin
 Given a simple linear regression model we can plot the residuals $e_i=y_i-\hat y_i$ towards the predictor $x_i$.
 In the case of a multiple regression model, since we have multiple predictors, we can plot the residual towards the predicted (or fitted) value $\hat y_i$.
 
-Ideally, the residual plot should show no obvious patterns. 
+Ideally, the residual plot should show no obvious patterns.
 The presence of patterns such as a \textit{U-shape} or an \textit{inverted U-shape} may indicate that the relationship between the predictors and the response is non-linear.
 An example is shown in figure \ref{fig:residuals_example}.
 \begin{figure}
@@ -898,7 +898,7 @@ If, in fact, there was correlation between these error terms, then the estimates
 
 In essence, we would be led to have an unjustified sense of confidence in our model.
 
-These correletions could arise from \textbf{time series}, i.e. observations that are collected over time, where the error terms may be correlated across time. 
+These correletions could arise from \textbf{time series}, i.e. observations that are collected over time, where the error terms may be correlated across time.
 
 By the way, the correltions could arise also for other reasons. For example, if we're trying to predict the height of people basing on their weight, we could be wrong if we assume error term incorrelation because some people can belong to the same family or can have the same lifestyle.
 \subsubsection*{Non-constant variance of error terms}
@@ -931,7 +931,7 @@ If we think that the outlier is due to a mistake, we can remove it from the data
 \subsubsection*{High-leverage points}
 A \textbf{high-leverage point} is an observation that has a value of the predictor that is far from the other values of the predictor. As the outliers, these points can have a large effect on the estimated coefficients and can have a significant impact on the fit of the model.
 In the case of a simple linear regression model, a high-leverage point is an observation with an extreme value of the predictor $X$ and it can be simply identified by the presence of points that are far from the others in the scatter plot of the response $Y$ against the predictor $X$.
-In the case of multiple linear regression model, the identification of high-leverage points is more complex. A point can be in the range for each predictor individually, but can be inusual in terms of all the predictors. 
+In the case of multiple linear regression model, the identification of high-leverage points is more complex. A point can be in the range for each predictor individually, but can be inusual in terms of all the predictors.
 
 A common approach is to use the \textbf{leverage statistic} $h_{i}$. For the simple regression is defined as:
 \[
@@ -953,7 +953,7 @@ A more effective approach is to compute the \textbf{variance inflation factor} (
 \[
     VIF(\hat{\beta}_j) = \frac{1}{1-R^2_{X_j|X_{-j}}}
 \]
-where $R^2_{X_j|X_{-j}}$ is the $R^2$ value obtained by regressing the $j$-th predictor on the remaining predictors. The VIF is always greater than or equal to $1$. If the VIF is equal to $1$, then the $j$-th predictor is completely uncollinear with the other predictors. 
+where $R^2_{X_j|X_{-j}}$ is the $R^2$ value obtained by regressing the $j$-th predictor on the remaining predictors. The VIF is always greater than or equal to $1$. If the VIF is equal to $1$, then the $j$-th predictor is completely uncollinear with the other predictors.
 A rule of thumb is that if the VIF is greater than $5$ or $10$, then the $j$-th predictor is highly collinear with the other predictors.
 
 If we find that two predictors are highly collinear, we can remove one of them from the model because one of them is redundant. If we think that both predictors are important, we can combine them into a single predictor but is not so simple to implement this strategy.
@@ -990,7 +990,7 @@ In order to solve this problem, we would need to condition the expectation on th
 Since the MMSE does not depend on the training set, we can ignore the conditioning.
 
 Under the assumption that $(X_0, Y_0)$ is independent on the training set $T_n$, when applying the \textit{tower property}, we obtain:
-\begin{equation} 
+\begin{equation}
     \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)} \label{eq:3}
 \end{equation}
 %TODO: evitare first e second insernedo dei riferimenti specifici
@@ -1082,7 +1082,7 @@ Because it is reasonable to assume that $x_0 \notin T_n$. This means that we can
     So we get:
 
     \[
-        \text{Impossible Event } \bar x \implies \#\{X_i=\bar x\} = 0\implies \Pr{X_i = \bar x} = 0     
+        \text{Impossible Event } \bar x \implies \#\{X_i=\bar x\} = 0\implies \Pr{X_i = \bar x} = 0
     \]
     \[
         \Pr{X_i = \bar x} = 0 \not\implies \text{Impossible Event }\bar x
@@ -1132,7 +1132,7 @@ The first condition states that when the number of samples grows, the number of 
 \]
 When the number of samples grows, we can approximate the number of points that lie in the neighbourhood over $n$ as the probability that we will find a point in the interval. Since this probability is a positive number $p$, it means that the number of points grows linearly with the number of samples.
 
-The second condition is called \textbf{principle of locality}\footnote{This is the reason why these methods are also called \textbf{local methods}.} and it states that the neighbourhood should be small enough. 
+The second condition is called \textbf{principle of locality}\footnote{This is the reason why these methods are also called \textbf{local methods}.} and it states that the neighbourhood should be small enough.
 
 Resuming, in the case of the naive kernel estimator, the mathematical conditions to guarantee both \textbf{LLN} and \textbf{Locality} is that $h \to 0$ when $n \to +\infty$.
 
@@ -1146,7 +1146,7 @@ Firstly, we try to approximate the probability that a point lies in $I_h(x_0)$:
 \[
     \Pr{X_i \in I_h(X_0)} \approx f_X(x_0) 2 h_n
 \]
-because we can assume that if $h$ is very small, then the area under pdf curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the value of pdf in $x_0$. 
+because we can assume that if $h$ is very small, then the area under pdf curve of $x_0$ is given by the area of the rectangle with base equal to the size of the neighbourhood $2h$ and height equal to the value of pdf in $x_0$.
 \begin{figure}
     \centering
     \begin{tikzpicture}[scale=1.5]
@@ -1159,7 +1159,7 @@ because we can assume that if $h$ is very small, then the area under pdf curve o
         \draw[-,dashed] (0.32,0) node[below left] {} -- (0.32,1.5) node[above] {};
         % Curve
         \draw[blue,domain=-0.5:2,samples=100] plot (\x, {exp(-3*(\x - 0.52)^2)});
-      \end{tikzpicture}        
+    \end{tikzpicture}
 \end{figure}
 We also know that we can approximate the probability by the definition given by the frequentist approach:
 \[
@@ -1209,7 +1209,7 @@ For this estimator, the number of points is given by the parameter $k_n$, so the
 
 To guarantee the \textit{LLN} condition, we need that $k_n \to +\infty$, while to guarantee the \textit{locality} condition, we need that $n \to \infty$ because in this way we're increasing the probability that the $k$ chosen points are closer to $x_0$.
 
-By the way, the two conditions are in conflict and we need a condition that allows us to satisfi both requirements. 
+By the way, the two conditions are in conflict and we need a condition that allows us to satisfi both requirements.
 
 We can simply require that:
 \[
