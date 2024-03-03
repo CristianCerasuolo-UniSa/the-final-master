@@ -1,10 +1,63 @@
 \chapter*{Introduction}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque euismod orci tortor, pharetra auctor purus posuere at. Vivamus dignissim ex nunc, ac pharetra neque malesuada in. Cras iaculis vel neque quis semper. Pellentesque consectetur quam ac orci tincidunt scelerisque. Nunc varius nulla vitae arcu ullamcorper pulvinar. Nulla dui mi, lobortis quis erat quis, blandit fringilla velit. Nulla gravida imperdiet rhoncus. Suspendisse rhoncus odio facilisis, rutrum massa sit amet, molestie justo.
+\section*{Statistical Learning}
+Assume we observed a quantitative response $Y$ and $p$ different predictors $X_1,\dots,X_p$. We assume that there is some relationship between $Y$ and $X=(X_1,\dots,X_p)$, which can be written in the form
+$$
+Y_i=f(X_i)+\epsilon_i
+$$
+where $f$ is a fixed but unknown function and $\epsilon_i$ is a random error term, which is independent of $X$ and has mean zero.  
 
-Donec lorem magna, imperdiet condimentum egestas non, convallis vitae purus. Nam pretium blandit tincidunt. Integer eu massa diam. Vivamus commodo pretium lobortis. Cras mauris nunc, maximus sit amet fermentum non, iaculis in sapien. Ut elementum ut risus quis finibus. Mauris in eros erat. Donec libero tellus, rutrum iaculis aliquet in, dapibus quis orci. Aenean vitae aliquet metus. Fusce ac libero egestas, egestas nunc sit amet, mattis ante. Donec luctus feugiat semper. Praesent convallis sapien sit amet dui efficitur, nec pretium velit sodales. Maecenas aliquam luctus finibus. Sed a lacus vel ex fringilla auctor a id mi. Aliquam erat volutpat.
+The aim of statistical learning is to estimate the relationship between the predictors and the response (also called dependent variable) starting from the data.
 
-In velit turpis, varius et nisi ut, condimentum mollis quam. In eu leo non sem laoreet venenatis at sed enim. Mauris erat orci, finibus sed nibh et, ornare feugiat felis. Nam imperdiet nunc lectus. In hac habitasse platea dictumst. Aenean ut justo vitae sem rutrum sagittis. Nulla vitae nibh sed nunc eleifend fermentum non quis neque. Donec sed tristique massa, et mattis quam. Vestibulum leo ante, ultricies ut lectus sit amet, consectetur bibendum orci. Sed bibendum vel tellus in tincidunt. Donec eu aliquam massa, id maximus augue. Pellentesque dui tellus, eleifend vitae faucibus in, laoreet ut neque. Cras vulputate lectus eu lectus efficitur vehicula.
+Vorremmo capire la relazione tra le variabili indipendenti e la variabile dipendente basandoci sui dati.
+\section*{Data Analysis}
+Data Analysis is the process of extracting information from data. Although data and information are often used interchangeably, they are not the same. Data is something that should cointain information, but it is not information itself. In order to extract information from data, we need to build a learning system.
 
-Sed auctor odio a sem fringilla accumsan. Aenean tincidunt commodo urna quis accumsan. Nam vitae finibus arcu. Aliquam accumsan pharetra erat quis ullamcorper. In interdum nibh fringilla fringilla elementum. Ut venenatis bibendum nibh non eleifend. Aliquam elementum ligula id velit faucibus, ac mattis tellus ultricies.
+An important thing to know is that when the learning system is \textit{good}, then by increasing the amount of data we have, the available information cannot decrease. In practice, most of the times we do not have a good system (due to analytical, computational, or time skills not available), so it can happen that the data fed to the system is misleading and the information we get from the analysis decreases. A \textit{non optimal} system could be attacked using fake data in order to decrase information and make the system less reliable; the \textit{optimal} system is able to discard that data.
 
-Pellentesque auctor ullamcorper enim, in ultricies nunc pretium quis. Fusce in ipsum purus. In molestie lobortis semper. Proin consequat nibh quis sapien facilisis pellentesque et non augue. Proin libero nunc, placerat nec lorem ac, scelerisque laoreet elit. Aenean ut sagittis leo. Donec metus enim, eleifend quis dui in, pellentesque congue justo. Nunc non tempor tellus, ac hendrerit sapien. Nunc maximus ipsum id dui cursus, at hendrerit justo mattis. Proin cursus commodo tortor, eu dictum ante. Curabitur eget diam nibh. Donec ut pellentesque sapien, eget rhoncus sem. Fusce lacinia maximus elit, in faucibus diam feugiat dictum. Sed imperdiet finibus ipsum sed consectetur.
+The two main families of problems in data analysis are \textit{estimation} and \textit{classification}. The main difference is that in the estimation problem,
+we have a set of data and we want to estimate a real value, while in the classification problem the output is contained in a finite set. This difference is projected onto the output response variable $Y$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/chapter_2/data2information.png}
+    \caption{The general process of extracting information from data.}
+    \label{fig:data2information}
+\end{figure}
+
+The input of the learning system can be anything (a vector, a matrix, a graph, a sequence, etc.), but the output is always a real number or a finite set of values. In general,
+we do not care about the dimension of the output, because we can always repeat the problem as many times as the dimension of the output.
+
+% qualcosa sul fatto che esiste model based analysis e supervised parametric e non parametric
+
+Data analysis problems don't necessary require a \textit{training phase}. We can have two scenarios:
+\begin{enumerate}
+    \item \textbf{Model-Based}, the model is given to us.
+
+          \begin{figure}
+              \centering
+              \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modelbased.png}
+              \caption{The model based process of extracting information from data.}
+              \label{fig:modelbased}
+          \end{figure}
+
+          Figure \ref{fig:modelbased} show the scenario. The truth $Y$ influences the data $X$, hidden in it.
+
+          \callout{Note}{Another thing to make clear is that in statistical learning, we do not have a temporal correlation between the variables. When we say that two variables depend on each other, we just mean that they are correlated, without implying the causality.}
+
+    \item \textbf{Model Learning}, we have to learn a statistical characterization of the couple $(X,Y)$.
+
+          \begin{figure}
+              \centering
+              \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modellearning.png}
+              \caption{The model learning process of extracting information from data.}
+              \label{fig:modellearning}
+          \end{figure}
+
+          This scenario could be seen as a \textit{supervised learning} problem when we starts from a set of examples $\mathcal{D}$ to learn the model.
+          \[
+              \mathcal{D} = \left\{ x_i, y_i \right\}_{i=1}^{N}
+          \]
+          Figure \ref{fig:modellearning} explain this scenario.
+
+
+\end{enumerate}
