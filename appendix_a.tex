@@ -133,8 +133,10 @@ In table \ref{tab:mmse} we can see the theoretical values of the MMSE varying $\
         $\gg$          & $\sigma^2_W/N$     & $\sigma^2_Y$                                   \\
         \hline
         $\sigma^2_W/N$ & -                  & $\alpha \approx \frac{\sigma^2_Y}{\sigma^2_W}$ \\
-        $\sigma^2_Y$   & $\alpha \approx 1$ & -                                              \\| $\lim$ | $\alpha$ | $MMSE$ |
+        $\sigma^2_Y$   & $\alpha \approx 1$ & -                                              \\
+        \hline
     \end{tabular}
+    \label{tab:mmse}
 \end{table}
 
 \subsection*{Variation of $\sigma^2_Y$}
@@ -150,7 +152,6 @@ Let's first consider the case where $\sigma^2_Y$ is much larger than $\frac {\si
 As in the theoretical analysis, we can observe that when the variance of the prior function is much larger than the ratio between the variance of the error and the number of samples, the two estimators tend to behave in the same way. In fact, in this case, $\alpha\to 1$ and the MMSE tends to the arithmetic mean.
 
 Also as expected, if we did not have data (or equivalent data that is independent of $Y$), but only the information of the prior distribution, the MMSE would be the mean of the prior distribution.
-
 $$
     \mathbb E[Y|X]=\mathbb E[Y]=\mu_Y
 $$
@@ -249,8 +250,12 @@ In generale, dal valore atteso interno poiché stiamo variando la distribuzione 
 
 
 \subsection*{Final considerations}
-% TOOD: Add plot
-%![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/62ff284d-70cf-4d0a-8be7-5596284adb1b/89954581-3456-43ea-ae34-92be37e572e0/Untitled.png)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/appendix_a/figure_21.png}
+    %\caption{Caption goes here}
+    %\label{fig:figure_20}
+\end{figure}
 
 \begin{enumerate}
     \item the theoretical error matches the error derived from the simulations
@@ -258,12 +263,12 @@ In generale, dal valore atteso interno poiché stiamo variando la distribuzione 
     \item the MMSE error saturates to that of the arithmetic mean (likelihood estimator).
 \end{enumerate}
 
-
-% TODO: Add plot
-%![Possiamo guardare l'asse X come indicante la qualità (migliore a dx, peggiore a sx) del dispositivo di misurazione.
-
-%Il grafico si potrebbe migliore andando a diminuire l'asse Y.](https://prod-files-secure.s3.us-west-2.amazonaws.com/62ff284d-70cf-4d0a-8be7-5596284adb1b/490fa1ae-42ab-4fb0-8972-5b31e96cd470/Untitled.png)
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/appendix_a/figure_22.png}
+    \caption{We can look at the X-axis as indicating the quality (better to the right, worse to the left) of the measuring device. The graph could be improved by decreasing the Y-axis.}
+    %\label{fig:figure_22}
+\end{figure}
 
 \begin{enumerate}
     \item If we fixed $\sigma^2_Y$ and change $\sigma_W^2$ (and then we change the ration of this with $N$) we move from a condition ($\sigma_Y^2>\sigma^2_W/N$) where the error of the MMSE tends to the one of the arithmetic mean to a condition ($\sigma_Y^2<\sigma^2_W/N$) where the error derives from the usage of the prior information only.
@@ -272,9 +277,14 @@ In generale, dal valore atteso interno poiché stiamo variando la distribuzione 
     \item If the ration tends to infinity we will have that $\alpha \to 0$ and so the MMSE will be equal to the mean of the priori distribution that is $0$. The MSE, when approacing infinity will be equal to the error that we make when we use as estimator $0$; since $Y$ has standard deviation up to $1$, the error will be up to $1$.
 \end{enumerate}
 
-In plot \ref{fig:mse} we show the MSE with both logarithmic axes to evaluate the scaling law of the error.
+In plot \ref{fig:figure_23} we show the MSE with both logarithmic axes to evaluate the scaling law of the error.
 
-% TODO: Add plot
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/appendix_a/figure_23.png}
+    %\caption{Caption goes here}
+    \label{fig:figure_23}
+\end{figure}
 
 We can see that differently from the deterministic case, the asymptotic scaling law is $\frac{1}{N}$ when $N$ is sufficiently large (and we can expect this because by increasing $N$ we go near the performances of the arithmetic mean).
 
@@ -283,86 +293,107 @@ There is a low that in the deterministic case tells us that the best error we ca
 In the bayesian case we do not have a similar rule but from this example we understood that if $N$ goes to infinity, we can except that the most important thing are the data, if we collect infinite indipendent data the prior information becomes almost irrelevant.
 
 \section{Supervised Non Parametric Regression}
-% TODO: Da sistemare
-%In this exercise, we are going to use Monte Carlo simulations to verify the theoretical results obtained in the exercise \ref{sec:ex_3} and provide an analysis of the estimators $\hat f_{opt}$, $\hat f_{naive}$ and $\hat f_{knn}$ with varying parameters.
-%
-%Let's implement a function that computes the optimal regression function, naive kernel estimator and the nearest neighbour estimator.
-%
-%Let us now examine the plots.
-%
-%By selecting $h = 10$ the naive kernel estimator curve has degenerated into a straight line, because the interval is too large with respect to the number of samples, so the estimator just took all of the points and made the average of all the point, that is about zero because the sine is a periodic function. We actually converged to the expectation of $Y$ that is zero.
-%
-%On the other hand by selecting $k=10$, the nearest neighbour estimator has a shape similar to the one of the sine function.
-%
-%By selecting $k = 5$ and $h=0.5$, the \textit{naive estimator} starts to take some shape but it is not very similar to the optimal regression function
-%% i put 10 and 0.1 much better
-%
-%By changing values, we observed that if $h$ is too small then we will not statisfiy the law of large numbers, and the effect is that...
-%and if $k$ is too large we lose locality, and the effect is that...
-%
-%If H is too small i will lose law of large number => 0.01
-%If K is too larg i will use locality => 50
-%
-%K = 50 => blue is flattered
-%H = 0.01 => each point is just the sample, I am enhancing the jumps
-%-> small H is similar to Knn = 1
-%
-%if i put K = 100 -> flat line, so i recover large
-%
-%small k => no LLN
-%any local avg is not avg but a sample
-%
-%large K takes all of them but it coverges to the exeception of Y which is close of zero bc we have sin(X)
-%
-%0.1 and 10
-%
-%are we statisfied with this learned regression function
-%
-%we examine what happens with more samples and see if we increase we do better with other number of samples.
-%
-%1000 of samples
-%disappointed => blue curve is not nice
-%
-%Knn =>
-%if k remains fixed we lose LLN
-%we are local but the oscillations are great
-%we are not growing in term of LLN
-%k must increase with N
-%
-%recovering LLN
-%
-%but there are flat => boundary effect because there are not points on the left
-%
-%increasing K
-%increasing K
-%
-%we can acutally converging to the regression function
-%
-%
-%write this code here and add the analysis of the error
-%compute the error between these regression function looking at definiction
-%
-%montecarlo simulation
-%either with a fixed training set
-%or
-%generate a training set each time
-%
-%for different size of the training set
-%
-%we need one law that relates k to n or h to n
-%a
-%$knn / n \to 0$
-%$kn \to \infty$
-%$1/sqrt(N)$
-%
-%check whether the error is going to zero
-%
-%check this behaviour of the plot + run simluation
-%there are not theoretical values
-%
-%
-\section{Classification}
-%% TODO: 
-%
-%
-%
+
+In this exercise, we are going to use Monte Carlo simulations to verify the theoretical results obtained in the exercise \ref{sec:ex_3} and provide an analysis of the estimators $\hat f_{opt}$, $\hat f_{naive}$ and $\hat f_{knn}$ with varying parameters, in particular $h$ for the Naive Kernel and $K$ for the K-NN. In particular, we are going to see what happens when LLN and Locality are not satisfied.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_15.png}
+    \caption{Naive Kernel with $h=1$ and K-NN with $K=1$}.
+    \label{fig:non_parametric_regression}
+\end{figure}
+
+Figure \ref*{fig:non_parametric_regression} shows the optimal function $f(x)=\sin(2\pi x)$ in green, the Naive Kernel in red and the K-NN in yellow. We can observe that:
+
+\begin{enumerate}
+    \item The Naive Kernel is a flat line because we have chosen $h=1$ which is exactly equal to the interval $a$ chosen for the extraction of the samples. In practice, in the calculation of the estimate, it is always taking into account all the points of the training set and the result is that whatever the $x_0$ it receives, it returns the average of the training set.
+    \item The K-NN has a certain shape, but we are probably conditioned by the fact that we know the true regression function. However, it is true that it follows a trend similar to the one of the true regression function.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_16.png}
+    \caption{Naive Kernel with $h=0.5$ and K-NN with $K=5$}.
+    \label{fig:non_parametric_regression_2}
+\end{figure}
+
+Figure \ref*{fig:non_parametric_regression_2} shows the Naive Kernel with $h=0.5$ and the K-NN with $K=5$. We can observe that:
+\begin{enumerate}
+    \item The Naive Kernel is starting to move according to a certain shape, but it is not yet sufficient.
+    \item The K-NN has further reduced its error compared to the previous plot.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_17.png}
+    \caption{Naive Kernel with $h=0.1$ and K-NN with $K=10$}.
+    \label{fig:non_parametric_regression_3}
+\end{figure}
+
+In figure \ref*{fig:non_parametric_regression_3} we can observe that the estimation of the Naive Kernel is now very close to the true regression function.
+
+This improvement is due to the fact that we have reduced the amplitude of the neighborhood and increased the number of samples to use.
+By using a very large $h$ (as we did before with $h=1$), we were guaranteeing the LLN but not the Locality. Therefore, the function was converging to $\E{}{Y_0}$ instead of $\E{}{Y_0|X_0}$. Instead, by reducing $h$, we have gained Locality.
+
+By contrast, using a small $K$ ($K=1$ in the first case), we had Locality but not the LLN. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_18.png}
+    \caption{Naive Kernel with $h=0.01$ and K-NN with $K=100$}.
+    \label{fig:non_parametric_regression_4}
+\end{figure}
+
+In figure \ref*{fig:non_parametric_regression_4} we can observe that:
+\begin{enumerate}
+    \item In some points, the K-NN is not able to provide an estimate because the neighborhood is too small and it is not able to find neighbors. These jumps also remind us of the case of the K-NN with $K=1$.
+    \item In the case of the K-NN, we are in the situation seen initially for $h=1$ in the Naive Kernel, we are converging to an expected value $\E{}{Y_0}$ instead of $\E{}{Y_0|X_0}$.
+\end{enumerate}
+
+\begin{note}{Note}
+    The fact that every time we are approximating $\E{}{Y_0}$ we have a mean close to zero is not a coincidence. In fact, we generated the data as $y=\sin(2\pi x)+\epsilon$, the expected value of this quantity is the sum of two quantities having zero mean.
+\end{note}
+
+To verify the consistency of the estimators, we can observe the behavior of the MSE as a function of the number of samples $N$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_19.png}
+    \caption{Naive Kernel and KNN with $N=1000$}.
+    \label{fig:non_parametric_regression_5}
+\end{figure}
+
+In figure \ref*{fig:non_parametric_regression_5} we can observe that:
+\begin{enumerate}
+    \item Even though we have increased the number of samples, the oscillations of the K-NN are not satisfactory. By constrast the Naive Kernel is approaching the true regression function.
+    \item We may think that the Naive Kernel, which is the naive approach, works better than the K-NN.
+    \item In reality, the error made in this case is that we cannot simply increase $N$ and expect improvements, but we must choose $h$ and $K$ appropriately as a function of $N$.
+    \item If $K$ remains fixed and $N$ increases, we are not guaranteeing the LLN property.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_20.png}
+    \caption{Naive Kernel with $h=0.01$ and K-NN with $K=100$}.
+    \label{fig:non_parametric_regression_6}
+\end{figure}
+
+In figure \ref*{fig:non_parametric_regression_6} we can observe that:
+\begin{enumerate}
+    \item Increasing $K$, as we could expect, we have recovered the LLN property and therefore strongly attenuated the oscillations.
+    \item Hovewer, we notice that in the extreme points of the domain, in this case $0$ and $1$, we are losing something. This happens because in those points we have more neighbors in one direction rather than in another and this makes the estimates less accurate because they are less local estimates. This could suggest that the number of neighbors ($K$) may not be appropriate.
+\end{enumerate}
+
+In figure \ref*{fig:non_parametric_regression_7} we show a good approximation of the true regression function with both estimators.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./figures/appendix_a/figure_20.png}
+    \caption{Naive Kernel with $h=0.01$ and K-NN with $K=4000$, by using $N=100000$ samples.}.
+    \label{fig:non_parametric_regression_7}
+\end{figure}
+
+%\section{Classification}
+%%% TODO: 
+%%
+%%
+%%
