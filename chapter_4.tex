@@ -878,7 +878,7 @@ So we have shown that the eigenvalues of $X^T X$ are (proportional to) the varia
 \subsubsection*{Uncorrelation}
 Another characteristics of the principal component analysis is that it \textit{gives us uncorrelated data} in the new space. To show this, let us consider the covariance matrix of the principal components:
 \[
-    \frac{T^T T}{n-1} = \frac{W^T X^T X W}{n-1} \overset{\tiny\text{ED}}= \frac{W^T W \Lambda W W^T}{n-1} = \frac{\Lambda}{n-1}
+    \frac{T^T T}{n-1} = \frac{W^T X^T X W}{n-1} \overset{\text{ED}}= \frac{W^T W \Lambda W W^T}{n-1} = \frac{\Lambda}{n-1}
 \]
 First we used the fact that $X^T X$ is similar to $W \lambda W^T$ since now we know that the columns of $W$ are the eigenvectors of $X^TX$, then we've used the fact that $W^T W = I$ because we imposed orthogonality.
 So we have shown that the covariance matrix of the principal components is a diagonal matrix, which means that all the covariances are zero, i.e. the principal components are uncorrelated.
