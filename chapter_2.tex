@@ -192,7 +192,26 @@ And it is always true, so the point is effectively a minimum.
 Note that this is a special case where the estimator we found is optimal and is the same of the arithmetic mean.
 
 \subsection{Variance estimation on homogeneous data}
-% TODO: lo tengo su Notion da copiare. È utile perchè introduciamo anche il concetto di loglikelihood
+Let's consider the following setting: we have $N$ independent random variables $X_i \in \mathbb{R}$ which represent our data and a scalar parameter $\sigma^2 \in \mathbb{R}$ representing the \textit{variance} that we want to estimate. We assume that the mean of the data is known and equal to $\mu$ and that our data is normally distributed.
+
+The likelihood function is:
+\begin{align*}
+    &\mathcal{L}(\theta)=\prod_{i=1}^n\frac{1}{\sqrt{2\pi\theta}}\exp{-\frac{(x_i-\mu)^2}{2\theta}}=\\
+    &=(2\pi\theta)^{-\frac{n}{2}}\exp{-\frac{1}{2\theta}\sum_{i=1}^n(x_i-\mu)^2} 
+\end{align*}
+From the likelihood function we can compute the log-likelihood function:
+\begin{align*}
+    l(\theta)&=\log\mathcal{L}(\theta)=\log\left [ (2\pi\theta)^{-\frac{n}{2}}\exp{-\frac{1}{2\theta}\sum_{i=1}^n(x_i-\mu)^2}\right ]=\\
+    &=-\frac{n}{2}\log(2\pi\theta)-\frac{1}{2\theta}\sum_{i=1}^n(x_i-\mu)^2 
+\end{align*}
+The maximum likelihood estimator is the value of $\theta$ that maximizes the log-likelihood function:
+\begin{align*}    
+&\frac{d}{d\theta}l(\theta)=-\frac{n}{2}\frac{2\pi}{2\pi\theta}-\frac{-2\sum_{i=1}^n(x_i-\mu)^2}{4\theta^2}=\\
+&=-\frac{n}{2\theta}+\frac{\sum_{i=1}^n(x_i-\mu)^2}{2\theta}=0 \leftrightarrow\\
+&\hat\theta_{ML}=\frac{1}{n}\sum_{i=1}^n(x_i-\mu)^2 
+\end{align*}
+
+
 \subsection{Mean estimation on heterogeneous data} \label{sec:ex_1}
 
 Let's consider the following setting: we have $N$ independent random variables $X_i \in \mathbb{R}$ which represent our data and a scalar parameter $\theta \in \mathbb{R}$ representing the \textit{mean} that we want to estimate.
