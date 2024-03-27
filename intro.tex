@@ -146,6 +146,39 @@ To minimize the expected test MSE, we need to find the right balance between bia
     \caption{Bias-variance trade-off.}
     \label{fig:biasvariancetradeoff}
 \end{figure}
+
+Let us consider some examples of model fitting with different levels of flexibility. In figure \ref*{fig:flexibilitycomparison}, we have three different models: a linear model, a non-linear model, and a non-linear model with high flexibility. 
+
+We can see that when increasing the flexibility of the model, there's a decrease in the training MSE and an \textbf{U-Shape Test MSE}. This is a property that is common to all learning algorithms and datasets. Increasing flexibility implies a decrease in the training MSE but not necessarily in the test MSE. If the test MSE increases, it means that the model is overfitting the data.
+
+Estimating the test MSE is not easy because there are not enough data to compute an accurate estimate. There are different methods to estimate the test MSE, such as the validation set approach, the cross-validation approach, and the bootstrap approach.
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{./figures/intro/flexibilityexample1.png}
+    \end{minipage}
+    \begin{minipage}[b]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{./figures/intro/flexibilityexample2.png}
+    \end{minipage}
+    \begin{minipage}[b]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{./figures/intro/flexibilityexample3.png}
+    \end{minipage}
+    \caption{Comparison of regression models with different levels of flexibility. The plots on the left show the data and the fitted regression function for three different models. The second pictures show the training (red curve) and test (grey curve) MSE for the three models. The dashed linear curve represents the irreducible error. The black curve represents the true regression function. The yellow curve represents a linear estimation, the blue curve represents non-linear estimation and the green curve represents a non-linear estimation with high flexibility.}
+    \label{fig:flexibilitycomparison}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./figures/intro/flexibilityexample4.png}
+    \caption{Bias-variance trade-off for three different models.}
+    \label{fig:flexibilityexample4}
+\end{figure}
+
+The three plots above shows the expected test MSE for the three models. The blue curve represents the (squared) bias term for different levels of flexibility, while the organe curve represents the variance term. The dashed line represents the irreducible error and the red curve represents the expected test MSE, which is the sum of all three of them. 
+
+In all of the examples, the variance increases with the flexibility of the model, while the bias decreases. The flexibility level that minimizes the expected test MSE differs for each model, because the bias and variance trade-off is different for each model.
+
 \newpage
 \section*{Data Analysis}
 Data Analysis is the process of extracting information from data. Although data and information are often used interchangeably, they are not the same. Data is something that should cointain information, but it is not information itself. In order to extract information from data, we need to build a learning system.
@@ -155,7 +188,7 @@ An important thing to know is that when the learning system is \textit{good}, th
 The two main families of problems in data analysis are \textit{estimation} and \textit{classification}. The main difference is that in the estimation problem,
 we have a set of data and we want to estimate a real value, while in the classification problem the output is contained in a finite set. This difference is projected onto the output response variable $Y$.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{./figures/chapter_2/data2information.png}
     \caption{The general process of extracting information from data.}
@@ -171,7 +204,7 @@ Data analysis problems don't necessary require a \textit{training phase}. We can
 \begin{enumerate}
     \item \textbf{Model-Based}, the model is given to us.
 
-          \begin{figure}
+          \begin{figure}[H]
               \centering
               \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modelbased.png}
               \caption{The model based process of extracting information from data.}
@@ -184,7 +217,7 @@ Data analysis problems don't necessary require a \textit{training phase}. We can
 
     \item \textbf{Model Learning}, we have to learn a statistical characterization of the couple $(X,Y)$.
 
-          \begin{figure}
+          \begin{figure}[H]
               \centering
               \includegraphics[width=0.7\textwidth]{./figures/chapter_2/modellearning.png}
               \caption{The model learning process of extracting information from data.}
