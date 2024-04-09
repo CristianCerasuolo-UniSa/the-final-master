@@ -479,7 +479,7 @@ We can sintetize the decision rule as following:
     \item If $p \leq \alpha$ we reject the null hypothesis
     \item If $p > \alpha$ we cannot reject the null hypothesis
 \end{itemize}
-%─────────────────────── THIS SLIDE ──────────────────
+
 \subsection{Assessing the accuracy of the model}
 In order to understand if the inffered model is good enough, we should use an error metric. If we're working with a continuous target variable, we can use the \textit{RSE} or \textbf{residual standard error}. The residual standard error measures how much of the variability is not explained by our model.
 
@@ -636,9 +636,14 @@ We can see $\underline {\underline H}$ as a matrix that projects $\underline Y$ 
 
 \paragraph*{A geometrical view of least squares}
 Let's consider least squares regression with two predictors. $\hat{\underline Y}$ is nothing but the projection of $\underline Y$ obtained through $\underline {\underline H}$ onto the space (plane, in this case) of the predictors. All that we cannot explain through the predictors is the component of $\underline Y$ orthogonal to this space.
-% The outcome vector $y$ is orthogonally projected onto the hyperplane spanned by the input vectors $x_1$ and $x_2$. The projecttion $\hat{y}$ represents the vector of the least squares predictions.
+% 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{figures/chapter_3/geometrical_view.png}
+    \caption{The outcome vector $y$ is orthogonally projected onto the hyperplane spanned by the input vectors $x_1$ and $x_2$. The projection $\hat{y}$ represents the vector of the least squares predictions.}
+    \label{fig:geometrical_view}
+\end{figure}
 
-%TODO inserire immagine altrimenti non si capsice
 \paragraph*{Variance of least squares estimator}
 Assuming that:
 \begin{itemize}
@@ -993,11 +998,10 @@ Under the assumption that $(X_0, Y_0)$ is independent on the training set $T_n$,
 \begin{equation}
     \E{}{(r_n(X_0) - Y_0)^2} = \text{MMSE} + \E{}{\left(r_n(X_0) - r(X_0)\right)} \label{eq:3}
 \end{equation}
-%TODO: evitare first e second insernedo dei riferimenti specifici
+
 The expression \ref{eq:2} is a \textbf{random error term}, because the expression depends on the random variable $T_n$, while the expression \ref{eq:3} is a \textbf{deterministic error term}, because we compute the expectation with respect to all the possible realizations of the training set.
 
-% rivedi questa parte
-In practical terms, if I had to implement these two expressions in MATLAB, for the first expression I would need compute it for each single training set, while for the second expression I would need to average over all the possible realizations of the training sets.
+In practical terms, if I had to implement both expressions in MATLAB, for expression \ref{eq:1} I would need compute it for each single training set, while for expression \ref{eq:2} I would need to average over all the possible realizations of the training sets.
 
 \begin{definition}
     The estimator $r_n(X_0)$ is said to be \textbf{consistent} if the
